@@ -187,7 +187,33 @@ type RebuildIndexOptions struct {
 	MigrationFinishedAt time.Time
 }
 
+const defaultRebuildAttemptTimeout = 2 * time.Second
+
+func prepareRebuildResources(resources []schema.GroupResource) []schema.GroupResource {
+	filtered := make([]schema.GroupResource, 0, len(resources))
+	for _, res := range resources {
+		if strings.TrimSpace(res.Resource) == "" {
+			continue
+		}
+		filtered = append(filtered, res)
+	}
+	return filtered
+}
+
+func withRebuildAttemptTimeout(ctx context.Context) (context.Context, context.CancelFunc) {
+	if _, hasDeadline := ctx.Deadline(); hasDeadline {
+		return context.WithCancel(ctx)
+	}
+	return context.WithTimeout(ctx, defaultRebuildAttemptTimeout)
+}
+
 func (m *unifiedMigration) RebuildIndexes(ctx context.Context, opts RebuildIndexOptions) error {
+	opts.Resources = prepareRebuildResources(opts.Resources)
+	if len(opts.Resources) == 0 {
+		m.log.Info("no resources to rebuild index for, skipping", "namespace", opts.NamespaceInfo.Value, "orgId", opts.NamespaceInfo.OrgID)
+		return nil
+	}
+
 	m.log.Info("start rebuilding index for resources", "namespace", opts.NamespaceInfo.Value, "orgId", opts.NamespaceInfo.OrgID, "resources", opts.Resources)
 	defer m.log.Info("finished rebuilding index for resources", "namespace", opts.NamespaceInfo.Value, "orgId", opts.NamespaceInfo.OrgID, "resources", opts.Resources)
 
@@ -199,7 +225,9 @@ func (m *unifiedMigration) RebuildIndexes(ctx context.Context, opts RebuildIndex
 
 	var lastErr error
 	for boff.Ongoing() {
-		err := m.rebuildIndexes(ctx, opts)
+		attemptCtx, cancel := withRebuildAttemptTimeout(ctx)
+		err := m.rebuildIndexes(attemptCtx, opts)
+		cancel()
 		if err == nil {
 			return nil
 		}
