@@ -133,3 +133,28 @@ Build a specific plugin: `yarn workspace @grafana-plugins/<name> dev`
 - **Config**: Defaults in `conf/defaults.ini`, overrides in `conf/custom.ini`.
 - **Database migrations**: Live in `pkg/services/sqlstore/migrations/`. Test with `make devenv sources=postgres_tests,mysql_tests` then `make test-go-integration-postgres`.
 - **CI sharding**: Backend tests use `SHARD`/`SHARDS` env vars for parallelization.
+
+## Cloud-specific instructions
+
+### Node.js version
+
+The repo requires Node v24 (see `.nvmrc`). The cloud VM ships with nvm. Run `nvm use` (or `nvm install $(cat .nvmrc) && nvm use`) then `corepack enable` before any yarn command. The update script handles this automatically.
+
+### Running the application
+
+Start two processes — order matters:
+
+1. **Backend**: `make run` — compiles and starts Grafana with hot-reload via `air` (`.air.toml`). First run downloads Go tool deps and compiles the full binary (~4 min). Subsequent hot-reloads are faster. Serves on `localhost:3000`, default login `admin`/`admin`.
+2. **Frontend**: `yarn start:liveReload` — runs webpack dev server in watch mode with live-reload. First compilation takes ~45 s; the backend proxies to these assets. Wait for "Compiled successfully" before testing in the browser.
+
+### Running tests
+
+- **Frontend**: `yarn test --watchAll=false <path>` — Jest runs tests matching the path regex. Test paths must match `testRegex` in the Jest config; some plugins under `public/app/plugins/datasource/` are excluded (they are Yarn workspaces with their own test setup).
+- **Backend**: `go test ./pkg/services/myservice/` — standard Go testing. First run for a package downloads its transitive deps.
+- **Go lint** (`make lint-go`): runs `golangci-lint` across the full monorepo. Expect ~5-10 min on a cloud VM. For faster feedback on a single package, run `golangci-lint run ./pkg/services/myservice/...`.
+
+### Gotchas
+
+- `yarn install --immutable` must run with `enableScripts: false` (already set in `.yarnrc.yml`). After install, `corepack enable` may be needed if `yarn` is not on PATH for the active Node version.
+- The backend uses embedded SQLite3 by default — no external database needed for development.
+- `make lint-go` exits with code 2 when it finds lint issues; this is normal and does not indicate a setup problem.
