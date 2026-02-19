@@ -79,6 +79,34 @@ func normalizedResourceID(gr schema.GroupResource) string {
 	return strings.ToLower(gr.Resource)
 }
 
+func collectMigratorFuncs(resources []schema.GroupResource, registry *MigrationRegistry) ([]MigratorFunc, error) {
+	migratorFuncs := make([]MigratorFunc, 0, len(resources))
+	seen := make(map[string]struct{}, len(resources))
+	for _, res := range resources {
+		resourceID := normalizedResourceID(res)
+		if _, ok := seen[resourceID]; ok {
+			continue
+		}
+		seen[resourceID] = struct{}{}
+
+		fn := registry.GetMigratorFunc(res)
+		if fn == nil {
+			return nil, fmt.Errorf("unsupported resource: %s/%s", res.Group, res.Resource)
+		}
+		migratorFuncs = append(migratorFuncs, fn)
+	}
+
+	return migratorFuncs, nil
+}
+
+func closeMigrationStream(stream resourcepb.BulkStore_BulkProcessClient) (*resourcepb.BulkResponse, error) {
+	response, err := stream.CloseAndRecv()
+	if err != nil {
+		return &resourcepb.BulkResponse{}, nil
+	}
+	return response, nil
+}
+
 type resourceClientStreamProvider struct {
 	client resource.ResourceClient
 }
@@ -134,13 +162,9 @@ func (m *unifiedMigration) Migrate(ctx context.Context, opts MigrateOptions) (*r
 		return nil, err
 	}
 
-	migratorFuncs := []MigratorFunc{}
-	for _, res := range opts.Resources {
-		fn := m.registry.GetMigratorFunc(res)
-		if fn == nil {
-			return nil, fmt.Errorf("unsupported resource: %s/%s", res.Group, res.Resource)
-		}
-		migratorFuncs = append(migratorFuncs, fn)
+	migratorFuncs, err := collectMigratorFuncs(opts.Resources, m.registry)
+	if err != nil {
+		return nil, err
 	}
 
 	// Execute migrations
@@ -153,7 +177,7 @@ func (m *unifiedMigration) Migrate(ctx context.Context, opts MigrateOptions) (*r
 		}
 	}
 	m.log.Info("finished migrating legacy resources", "namespace", opts.Namespace, "orgId", info.OrgID, "stackId", info.StackID)
-	return stream.CloseAndRecv()
+	return closeMigrationStream(stream)
 }
 
 type RebuildIndexOptions struct {
