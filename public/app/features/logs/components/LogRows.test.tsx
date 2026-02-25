@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { LogRowModel, LogsDedupStrategy, LogsSortOrder } from '@grafana/data';
-import { mockTimeRange } from '@grafana/plugin-ui/test';
+import { LogRowModel, LogsDedupStrategy, LogsSortOrder, rangeUtil } from '@grafana/data';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 
 import { disablePopoverMenu, enablePopoverMenu, isPopoverMenuDisabled } from '../utils';
 

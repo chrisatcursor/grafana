@@ -1,7 +1,22 @@
 import { SelectableValue } from '@grafana/data';
-import { AdHocFilterWithLabels, OPERATORS } from '@grafana/scenes';
+import { AdHocFilterWithLabels } from '@grafana/scenes';
+
+// Operator definitions matching AdHocFiltersVariable (not exported from @grafana/scenes)
+const OPERATORS = [
+  { value: '=', description: 'Equals' },
+  { value: '!=', description: 'Not equal' },
+  { value: '=|', description: 'One of. Use to filter on multiple values.', isMulti: true },
+  { value: '!=|', description: 'Not one of. Use to exclude multiple values.', isMulti: true },
+  { value: '=~', description: 'Matches regex', isRegex: true },
+  { value: '!~', description: 'Does not match regex', isRegex: true },
+  { value: '<', description: 'Less than' },
+  { value: '<=', description: 'Less than or equal to' },
+  { value: '>', description: 'Greater than' },
+  { value: '>=', description: 'Greater than or equal to' },
+] as const;
 
 export const MULTI_OPERATOR_VALUES = new Set(OPERATORS.filter((op) => op.isMulti).map((op) => op.value));
+export { OPERATORS };
 
 export interface OverviewInitState {
   keys: Array<SelectableValue<string>>;

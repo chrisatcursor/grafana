@@ -1,5 +1,6 @@
-import { DataFrameType, Field, FieldType, LogRowModel, MutableDataFrame } from '@grafana/data';
-import { mockTimeRange } from '@grafana/plugin-ui/test';
+import { DataFrameType, Field, FieldType, LogRowModel, MutableDataFrame, rangeUtil } from '@grafana/data';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 import { setTemplateSrv } from '@grafana/runtime';
 import { ExploreFieldLinkModel, getFieldLinksForExplore } from 'app/features/explore/utils/links';
 import { TemplateSrv } from 'app/features/templating/template_srv';

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { fuzzySearch, SelectableValue } from '@grafana/data';
-import { AdHocFilterWithLabels, AdHocFiltersVariable, GroupByVariable, OPERATORS } from '@grafana/scenes';
+import { AdHocFilterWithLabels, AdHocFiltersVariable, GroupByVariable } from '@grafana/scenes';
+
+import { OPERATORS } from './utils';
 import { ComboboxOption } from '@grafana/ui';
 
 import { buildAdHocApplyFilters, buildGroupByUpdate, buildOverviewState } from './utils';
@@ -286,7 +288,7 @@ export function useFiltersOverviewState({
 
         adhocFilters.setState({
           filters: [...nextFilters, ...nonApplicableFilters],
-          originFilters: adhocFilters.validateOriginFilters([...nextOriginFilters, ...nonApplicableOriginFilters]),
+          originFilters: [...nextOriginFilters, ...nonApplicableOriginFilters],
         });
       }
     },
