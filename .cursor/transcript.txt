@@ -1,0 +1,423 @@
+[Hold] Cursor 101 Kick off - Maya
+
+Brookey Villanueva with Maya
+Recorded on Feb 19, 2026 via Microsoft Teams, 54m
+
+
+
+Participants
+
+Cursor
+Brookey Villanueva, Account Executive
+Chris Diaz, Field Engineer
+Brookey Lombardo
+Mark Boos, Field Engineer
+
+Other
+Ma Daphne Regina Toledo
+Michael Albano
+Adrian Bala
+Aldenri Cristobal
+Alfonzo Luis Pastores
+Amir Jann Castañeda
+Angela Rei Buado
+Ara Krisanne Matanguihan
+Arianne Salcedo
+Arnelo Rocafor
+Carl Anthony Castueras
+Carl Jacob Villar
+Caroline Llaneta
+Chrisjohn Dela Cruz
+Christian Kin Lascuna
+Cornellius Elfie Dagmang
+Danisse Mae Gador
+Duy Truong
+Edmund Hans Tapado
+Ellard Capiral
+Enrique Rimando
+Eraño Payawal
+Eziera Yvanne Gabriel
+Fireflies.Ai Notetaker Lambert
+Grace Magno
+Jason Buhay
+Jay Ar Bautista
+Jean Nathan Cabreza
+Jhamie Acebuche
+Joel Ferdie Geronimo
+John Phillip Ibañez
+Jonnel Bernal
+Jude Michael De Roma
+Kenichii Ana
+
+
+
+Transcript
+
+0:00 | Brookey
+in a minute or two to trickle in here would really appreciate all. Any, no feedback my… chat is loading. 
+
+0:24 | Brookey
+Oh, thank you. Cursor. Take care… here. I will send this link. If people have a chance. It would be great to just get a sense of, you know, kind of everyone's experience level, a baseline understanding of where we're all at the beginning of the trial. Hopefully, you should have access to the tool by now, but we'll be collecting kind of feedback throughout and making sure that these trainings are as relevant as possible. So while we give everyone a second or two to get into the call, would appreciate you filling that out. Awesome. And do we have Eric on or is it Daphne? 
+
+1:09 | Ma
+Hi, Brooke. Good morning. 
+
+1:11 | Brookey
+Hi. Good morning. Awesome. We're recording that's really what I wanted to double check on. Perfect. Should we get started or do you want to give some more time? Yeah, go ahead, I. 
+
+1:22 | Ma
+Don't think I need to introduce you guys. So, okay, I can get going. Yeah. 
+
+1:26 | Brookey
+Sounds good. Let me share my screen. Then… there we go. I'll just kind of start with some high level overviews of, you know, who we are and for those who are brand new to cursor, what cursor does. And then I'll pass it over to Chris from our field engineering team to run through our demo. But like I said, we're super excited to get started. Happy one on one and kickoff, I believe the team has been lightly getting into the tool over the last day or so. I know that the holiday on Monday or I guess Tuesday actually made it a little bit longer to get in but super excited to get started here by way of introduction. I'm brookey Lombardo. I'm on the enterprise go to market team here at cursor. I'll be your main point of contact as we go through the trainings and the trials. My email is just brooky cursor. Com, open invitation to send me your feedback and questions directly my way here to be a resource and make sure that you all get connected with, you know, the best out of cursor? I'm joined by Chris on our field engineering team. I forgot to update the title from mine but field engineering team, Chris, I'll let you introduce yourself. 
+
+2:33 | Chris
+Yeah. Hey, everyone. I'm Chris, like brookey said, I'm on the field engineering team. I'm excited to be working with you guys and I'm excited to hear what y'all, think about cursor and show you how we're doing things a little differently here. Awesome. 
+
+2:52 | Brookey
+Cool with that. Like I said, let me just walk through a couple of the core resources and just like the how tos around cursor and kind of like who we are. And then I'll pass it over to Chris for the demo, a little bit just on resources as we go through the trial. I'll keep sending these your way over email as well. But everything that we cover today is also kept very up to date in our docs page. So it's just cursor. Com, slash docs. If you have any questions about different features within the platform, if you're able to do something one, you can always ask cursor directly. But you can also find a lot of documentation in our docs. We also have pre recorded workshops and live workshops that happen pretty regularly on our website at slash workshops. And then we also have a couple of blogs on just best practices getting started with the tool and things you need to know immediately upon entering a lot of these things. Again, we'll cover in our trainings over the next few weeks. But just wanted you to know that there's a resource for you to have on the side. And then if there are any questions, feel free to reach out to me. You can also reach out directly to hi, at cursor. Com. If you're reaching out from your domain like your work domain, then you'll be routed into our priority support path. So you always have that as an option too. So a little bit about cursor, if you're not familiar, we are an AI coding platform. I believe the team is already using some tools internally, so it should feel at a high level like feature set wise, pretty familiar. We're really working on building the best pair program possible. And we do so through a number of different ways. But we really index on… a couple core tenets mainly being that the more contacts you bring into an agent, the better the outputs are going to be. We want to enable you to bring agent into as many parts of your sdlc and your workflows as possible. And we want to be able to give you the controls and access to make sure that you do so securely and with really high quality as well. So that's kind of like the high level overview. We have a ton of different places that you can plug in directly upon entering the tool. You have a couple of different options of layout. Chris will cover a few of those. But we want to make things or keep things code centric and really put you in the driver's seat of the feature development that you're working on or maybe the refactor that you're doing in any given day, we also want to make the agent coordination experience really easy. We think that in the next couple of months engineers will be shifting from this individual contributor role to a manager of agents role. And we want to make that agent orchestration as seamless as possible. So hope that you find that within the IDE and within our cli as possible as well. We'll walk through the IDE mainly today, but in later sessions, we'll get into how to bring cursor agent into other parts of your workflow. For those of you who are front end engineers, designers, we have the capability to bring the browser directly within the editor. So we'll showcase a little bit of that today, but you can do work directly within the browser and you can kind of move things around, kick off agents to make sure it's pixel. Perfect. The last two things here are just the different ways that you can bring in cursor, you can run cursor agent asynchronously. So via cloud agents internally, what that looks like is we have a slack channel that kind of surfaces people put in feature requests or ideas. And oftentimes we'll just kick off a cloud agent to start work on one and see how close we can get to like a really quick prototype. So it's just kind of one fun way that we use it internally, but you can also use it directly within your CI CD workflows. There's a lot of code review capabilities within cursor to make sure that you're always shipping the highest quality code possible. So the limitations are kind of endless there. And then we also really think that long running agents are going to be the future. So making sure that you're doing a lot of upfront planning and building to be able to kick off to agents for longer running tasks. Is also something that's kind of core to cursors like long term vision here. I think I covered this already. But where you can use cursor, we have the desktop apps if you haven't already definitely download that from cursor. Com, sign up with your team's account, your team invite link. I think Eric or Daphne should have sent that your way and so that you'll be added to your trial platform or your trial account. During the trial, you have unlimited usage and you can invite unlimited users. So we highly encourage you to take advantage of the tool. You know, you can run with all the expensive models if you want and try all these super advanced workflows that's really, what the trial is designed to do is help you get a sense of the power of the tool so you can use it on desktop. You can also use cursor within your code review in GitHub or gitlab. We have the cli that I mentioned, and then you can kick us off via mobile, you know, like mobile devices from web, from slack via the API, a number of different ways there. Yeah, I think I mentioned the quick start. If you're coming over from VS code, we have a one click VS code import. I'll send it in the link after this, but you can import all of your key bindings, extensions, settings, super easy to transfer everything over if you're coming over from another IDE. We also have migration guides on, you know, jetbrains ides and that kind of thing on how to make the experience as seamless as possible. And yeah, also kind of call out here. If you have like rules or skills set up in other platforms that you're running in today, you can really easily import those as well. And so we'll talk about how to do that really quickly. And then, yeah, like I said, just make sure that you're on your orgs instance… you should see it in like the top left corner to say your name, and then that you're on Maya's team plan. Cool with that. I will pass it over to Chris to run through our demo as we go through this. Feel free to drop questions in the chat. I know we have a pretty good group today, so we should have time for some questions throughout and at the end, but definitely make use of the meeting chat. I'll be monitoring there and dropping in answers as we go through things. But, yeah, Chris, I'll pass it over to you. 
+
+9:05 | Chris
+All right. Thanks, Brooke. Yeah, folks. Please ask questions. Don't be afraid to put them in the chat. If you really have something burning, you can always raise your hand… but I'm very excited to be talking with you today. We're going to talk about how cursor is really defining this category. Right… now. This should look and feel familiar. Cursor is a fork of VS code, but this layout may seem a little different than what you're used to. And so this layout, this is our agent first layout. It's meant for driving multiple agents across the code base. Now we can change back to the traditional editor layout up here on the top right? And we see here we have our code base here on the left. I've got my workspace in the middle and I have my agent panel here on the right… today. I'm working in the grafana code base. I'm going to open up settings real quick. Everything that I'm going to show you today is possible because cursor has indexed your entire code base, right? This grafana code base, this is about 20,000 files and we've indexed all of that. So unlike other solutions out there, cursor will index the entire code base, not just a subset of files, not just a small portion of the code base, but the entire code base. And so that means we have a better understanding of your code base and the relationships between the code, which means we're going to provide better suggestions, better code. 
+
+10:57 | Chris
+I'm going to switch back to the agent view. And right now the grafana repo is undergoing some migration work. So I want cursor to tell me about… the current state of the migrations that are ongoing and what is some of the work that needs to happen next? And I want cursor to use what we call sub agents to explore the code base. And so I just used some voice to text to put that prompt in. I like using voice to text just makes things a little bit easier, right? So we'll let this get going. But this is using the agent. Again, this should feel familiar. What might look a little different is our agent has just spun up two sub agents to start doing the exploration work. And so now we're already managing multiple agents that are working on this code base. I can click on these sub agents to see the work that they're doing. But this lets an agent execute more work in parallel on that code base. 
+
+12:14 | Chris
+We'll let this finish up. But then we see here a summary of the findings from the two sub agents that were spun up. These nested agents, allow the parent agent to start delegating work that needs to be done. 
+
+12:36 | Chris
+Now we get this, we get this update here. Looking at… what needs to happen next. Let's take this wire provider. I'm going to shift the agent into plan mode. And so down here at the bottom, we can select a few different things. We'll start with switching to plan mode. And I… want cursor to generate a plan for implementing the wire provider task. 
+
+13:21 | Chris
+Now plan mode… this is how the best engineers think, right? We've codified this into cursor to create the specs for you for how you need to build code and solve problems, right? We've all been working with agents and we've all had times where we have to clean up a lot of the code that the agent writes because working with these agents sometimes is like working with a black box. We give the agent a prompt but we don't know what it actually wants to do. Plan… mode solves for that. Plan mode creates… a contract between us and the agent for what the agent's going to be doing. It lets us see how does it want to solve this problem? What assumptions is it making? What outcomes? Is it optimizing for? What's the architecture that it wants to implement? What does that look like? What is the success criteria? And… so we can review this plan and we can solve for so many problems up front by understanding what the agent wants to try to do and fixing that at the beginning. And then that means later that's not code that we have to go rewrite. This is how the best engineers are working. And when we start tasks, we should always use plan mode. We can tell the agent if we need to correct something, right? If we need it to make changes, we can edit this file ourselves. But this plan looks good to me. So I'm going to go ahead and have cursor start building on this. And so by hitting build, it switches it back to agent mode where it can now execute on that plan. 
+
+15:25 | Chris
+Now I… want to pause here for a moment because I just covered a few different things. I covered how we are different, right from the beginning because we index your entire code base. I talked about how our agent can spawn sub agents to do the work. And I also talked a little about plan mode. I'm going to pause here for a moment. Are there any questions or thoughts over anything we've covered so far? Brookey, if you could help me out how's chat, looking, anything in there, we should cover live? No, I. 
+
+15:57 | Brookey
+Think we're good. I think we can continue on with, actually, yeah, we just got one. Does cursor plan mode, similar to cloud code plan mode. How would you think about the two? Yeah, I. 
+
+16:10 | Chris
+Think conceptually there's similarities here, right? But one of the big differences is going to be that part of the planning process, cursor's using a semantic search over that index. And so it has a much better understanding of the code base and it's going to be able to iterate over larger code bases faster because quad code is only using tools like grep to search through and understand the code base. We're… also using search tools like grep, but we combine those search tools with a semantic search over the index of embeddings. I would just. 
+
+16:52 | Brookey
+Echo what Chris said, this is like probably one of the first behaviors that we really want to encourage people to use especially when it comes to making sure that tasks get done well and efficiently. The best way to guide an agent is to work with it up front and kind of front load a lot of that deep thinking and kind of like feedback that you give an agent and we found that, you know, executing off of plans is the best way to do that. Cool. This one's more of a setup question. But in the case of microservices, can cursor import all those folders and set workspaces and index everything? So agents have context as to how they interact with each other. Do you want to walk through maybe like multi root workspaces? Yeah? 
+
+17:33 | Chris
+Short answer. Yes, if you need to set up like more complex workspaces, multi root workspaces, right? The easiest thing to do is create a custom workspace, where you just add those directories or those folders to the current workspace, and then you save it as a full workspace, cursor will then index all of that and you'll be able to use cursor as you would expect normally from there. 
+
+18:04 | Brookey
+Does that help Michael? 
+
+18:10 | Brookey
+Awesome. Yes, cool. 
+
+18:14 | Chris
+I think we can go forward. Thanks brookey. So we've made some code changes here. I'm going to go ahead and click review. And so this brings up a diff panel where I can review the changes, see what's changed. I'm going to go ahead and click find issues here. And so this find issues on changes that have been made. This is one way that we're providing oversight at scale, right? We know these agents are writing a lot of code, making a lot of changes. We can use this find issues to have the agent then review the code before we create a PR. And so this is a great way to confirm that we're not trying to create a PR with any vulnerabilities or insecure code or code that has bugs or issues in it. This is going to take a moment to run. So we'll come back in a little bit to check on the progress. But I'm going to start a new agent and… we've. 
+
+19:27 | Chris
+set up some tasks in Jira that I wanted to take on. So… we're going to have it take on task dev. So I want cursor to use the Jira MCP server to pull down the information for task dev. 22. Let's… create a plan and start executing on that. So we're going to shift to plan mode, right? If Brookie finds out that you're not looking using plan mode, Brookie's going to take away all your tokens. Brookie's a huge fan of plan mode, just teasing. We wouldn't do that to you guys. But I'm going to change the model I'm using. And so when we open up the model, drop down, we have a few options. We have auto which allows us to, it has cursor choose what model gets used based on the task. There's also max mode. And so max mode allows the entire context window length of some of these larger models to be used, right? Some models have a token length of 1,000,000 tokens for the context window. And so max mode allows using that. If you have max mode off the default context window length is 200 K tokens. 
+
+21:00 | Chris
+We can also use multiple models. Now, when we execute these tasks, right? We typically run them locally. We can run them on a work tree. And a work tree allows us to have agents working in parallel on the same code base without there being any collisions. And… so this is great if you need to have multiple agents work on a similar area of the code base… or if you do want to use multiple models. And so like today, gemini three point one bro just came out, you know, you might want to benchmark that against some other models. I'm just going to run gemini three flash and composer one point five on this task. Composer. One point five is our in house model. I use this a lot. It's a great daily driver. And then when I need something that has heavy reasoning lately, I've been using gpt five point three codex high. I think this is a fantastic model that's currently topping all of the benchmarks, but is also really efficient with token costs and usage. I… like gemini three flash just because it's quick, and so it works well for this demo purposes. I'm thinking of the context window length. I can hover over this wheel down here and I can see how much of the context window is being used currently by hovering over this. And so this can also be a good indicator if you need to use max mode or not. Now, we've got the plans here, right? I think the plans look good. So we're gonna go ahead and tell the agents to get to work using those or executing on those. But we could see in the formulation of these plans, they were reaching out to Jira using MCP to get the information. 
+
+23:10 | Chris
+I open up this settings wheel. We have an MCP section here. And so I can see what MCP servers I have set up. Currently, I can add custom MCP servers by using by editing the Json configuration directly. But an easy way to add MCP servers is just through our documentation. We… have one click buttons for all of the popular MCP servers. So I can just click add to cursor and it gets the MCP server set up for me. And so I can just click install and go from there, you would just add your API key or write user token if needed. 
+
+23:57 | Chris
+Let's check back in on our tasks over here. These look good. If I come back to where we had the find issues, it looks like this completed. I don't see anything highlighted here. We can click that again. But if there were any issues found, it would pop up and show us that, hey, there's an issue here and then it would offer an opportunity to fix that issue. 
+
+24:30 | Chris
+Also set up… the figma MCP server. I've got some grafana, dashboard designs and assets for dashboards here in figma. I'm… just going to go ahead and copy this link here. And. 
+
+24:54 | Chris
+I want cursor to build me some example dashboards using the figma MCP server to get the assets in my figma design. I'll drop the figma link here. 
+
+25:13 | Chris
+Cursor will now… reach out to figma, using the MCP to pull in those different design assets to then build some dashboards for me. We see it using the MCP tool here to reach out and get that data from figma. We'll let this go and iterate for a moment. While… this works. I'm going to switch back over to editor view for a moment. 
+
+25:44 | Chris
+Courser supports a few different primitives that are used… for guiding and controlling and managing these agents, right? We should all be familiar with rules at this point. I believe, right? Rules are going to be your standards, your guidelines for how you want the agent to behave, things like commands, these are saved prompts, these are your shortcuts, but we also have, skills are going to be playbooks. They're repeatable patterns that you want the agents to follow. And… then we have sub agents, right? These sub agents, these are specialists that execute on specific areas for us and they can use by the parent agents as delegated workers. When… you combine all of this together, you, this is how cursor is going to start thinking and acting like somebody on your team. 
+
+26:57 | Chris
+Now… you don't need to have all of this built out up front, right? Build it out iteratively as you work on different problems… did just release a new marketplace last Friday. This… marketplace hosts… many popular plugins and these plugins. These are different from IDE extensions. These plugins are bundles of different skills, sub agents, rules and commands for many popular tools and services. We've even posted our own most popular internal skills and sub agents and rules that you can download. So you have something to start with and you can see what we use on a day to day basis. They're… easy to install. And once you have them installed, you can even click this, try and chat to just see an explanation of like what's there to use, what's available? 
+
+28:10 | Chris
+I've just covered a bit more around rules, sub agents skills, workflows, the marketplace using MCP, right? I want to pause here again for questions, Brookie. How are we looking in chat? Yeah pretty good. 
+
+28:28 | Brookey
+One question on the agent review is if it's a local agent, does it take up a lot of ram when it's running? 
+
+28:39 | Chris
+It can, right? I mean, typically, a lot of the agentic process is happening in the cloud, all of the thinking. But if you start spinning up multiple agents in parallel, that may start to feel like it's taking up a lot of resources locally. Now… don't go for it. If it ever does feel like that's happening. And again, I would say this is pretty rare because we've really invested a lot of time in optimizing these processes. We… do have a cloud mode. So cloud is a way to have these agents run in the background. And so this is pretty cool. The agents are running in the cloud, not on your machine but they'll go and do the work in the cloud and then come back to you when it's complete. Now… again, I don't think you'll run into performance issues, running things locally where… I've seen performance issues happen the most is when there's indexing happening locally, right? Cursor does not do that. Cursor uses the cloud for generating an index. But if you feel like you ever notice any performance issues by all means, please reach out to us and let us know. I would also just. 
+
+30:05 | Brookey
+Add, I haven't heard anyone running into issues for agent review. So, Michael, I think you should be okay if you do it. It's like bug behavior. We would not expect to see that like you get overloaded to Chris's point. So you always can kick things up to the cloud for agent review. You should be able to run that with no problem. And then the other question that was in chat was just if we could, yeah, if you can invite people to your team, like I said at the beginning trials open to all. Daphne's confirmed, definitely highly encourage you to take to make the most of it. And, and, you know, include as many people as possible. It's fully free. We cover all usage, all users. So definitely feel free to share this with the team. And then I think that's it. I dropped a little bit about debug mode as well in the chat, if anyone's interested just after agent review. So debug mode's another option within your drop down of, you know, plan agent ask mode and debug mode are also options. And debug mode, will, you know, kind of add log statements, help you reproduce the issue, and kind of work through a tricky bug. So didn't mean to jump ahead if we're going to cover that, but just want to add in. And then I dropped a bunch of links on like marketplace skills, rules… get asked. Are there best practices for creating rules or markdown files that cursor will use? 
+
+31:29 | Chris
+Yes. When we think of rules, right? Think of rules for how you want the agent to behave when working on the code base. We, some things like style guides, right? Or coding standards, that stuff's better to put in a linter and then have the agent run the linter to confirm that stuff because rules should be more like principles or how you want the agent to approach certain situations because… rules do take up space in the context window. So we want to make sure that the rules that we're using, right? Are relevant and like aren't better managed somewhere else, like in a linter or like with hooks. Instead, we do have examples of rules in our documentation in our community also has a lot of examples of rules that are being used by the broader community of cursor. 
+
+32:46 | Michael
+Now, I have another question. Yeah, I have, yeah, earlier you in one of the agents, you selected two different models, what was it? Composer and gemini? What are they? And then you gave them one prompt. So what are they doing individually there? Yeah? 
+
+33:05 | Chris
+So, each of these… agents, right? So we have one agent that spun up, I guess two sessions if you will, using work trees. And so that way by using the work tree, they can each work on the same task without… competing against each other, right? And so this is often good for like benchmarking new models or just seeing like which model might handle a task better. 
+
+33:39 | Michael
+They're doing the same thing and you're just gonna pick and choose what you want exactly. 
+
+33:44 | Chris
+Yeah. In this case, they're doing the same thing. Okay. Thanks. Yes, great question. 
+
+33:56 | Chris
+I'm going to come back. It looks like my dashboards have finished. I'm going to open up the cursor browser. 
+
+34:07 | Chris
+And… it looks like I wonder if, well… so I think I need to restart grafana. So let's tell it, restart the… grafana server, and… we'll give this a moment to rebuild it and remake it. But I'll come back and show how we can work with front end applications. 
+
+34:37 | Chris
+It's restarting… I want to talk about is bugbot. So bugbot will integrate into GitHub. And so when you make and create a PR, you'll… see bugbot comment, either, hey, everything looks good to me or in this case, it's going to call out if there were certain issues that it found, right? And so bugbot now becomes that final line of oversight. I think a good workflow is always… looking for issues with the review tool, right? Find issues before you create prs. But then after prs, you also have bugbot checking. Again… bugbot does find an issue. We can either click fix in cursor which will take us right to that issue in cursor and give us a prompt to fix it or we can hit fix in web. And so if you have cloud agents set up, you can actually click off, kick off a cloud agent session here to fix this. 
+
+35:51 | Chris
+Let's try refreshing this. Here we go. So we have our grafana server running what's nice about working with front end applications here inside… cursor is we can pass context from this to the agent. So I could inspect the page, right? And I could pass in different elements. I could pass in errors from console, right? I can see network issues. And so I can do a lot of this front end testing directly in cursor to make passing context in easier. I can also click on this button which then will allow me to click on different elements. 
+
+36:44 | Chris
+Although that's not working right now, that's okay. I think I might have found a bug here, but we can normally you can click on different elements to pass that element in and have cursor make changes directly to it. Let's… check out the dashboards. I should have something from figma here. Here we go. But I can now see this dashboard that… created from the design assets in figma. And so if we have assets in figma, right? We have a web layout. These models are multimodal and so they can look at that context to bring it in and build front ends web apps using those different assets or matching the designs. 
+
+37:42 | Chris
+Everything that I had wanted to cover today, we are going to do a follow up session where we dive deeper into debug mode and, cloud agents takes a little bit of setup. So we'll walk through that later. And debug mode also requires having some bugs. I don't have any ready or handy but you can feel free to try debug mode out on your own. It'll guide you through the process. But with that said, this is everything I wanted to cover today. We still have some time left. So I'd love to open this up. What other questions do you have? What can I? 
+
+38:17 | Brookey
+Answer for you? I think we had one question on what's the workflow stack look like with gitlab instead of GitHub. I imagine this is in reference to bugbot. It's going to be the same so you can integrate directly with gitlab. So no worries. There one thing also to call out on bugbot that I dropped in chat, you can write bugbot rules. I think we mentioned this a little bit, but bugbot is going to optimize for depth instead of speed. And so we designed it specifically to be really not noisy. And so if you want to add in specific rules on what you want bugbot to flag versus not flag or just context that might live in your head but not within your repos, you can always set up a rule for. 
+
+38:58 | Ma
+Bugbot. And then. 
+
+39:01 | Brookey
+we also have a beta feature right now called autofix, where bugbot will like automatically surface a proposed solution for a bug that it catches. If Maya wants to be included. I'm happy to flag. 
+
+39:13 | Ma
+Bug the team. 
+
+39:14 | Brookey
+There. So maybe Daphne you and I can connect afterwards, dropped in the content for browser. And then I see one other question. Can bugbot also check code coverage for the unit tests in the PR? 
+
+39:28 | Ma
+Do you want to speak to? 
+
+39:28 | Brookey
+Like unit test coverage and etc generation general. Yeah. 
+
+39:34 | Ma
+So, 
+
+39:38 | Chris
+you could have bugbot check through that with like the custom rules. I think what I've found to be a really effective flow around that is to still rely on your tooling, like sonar, right? That's checking for unit test coverage because the thing, is bugbot is primarily focused on the PR itself whereas. 
+
+39:59 | Ma
+If you're using. 
+
+40:00 | Chris
+sonar is going to scan for… across the code base to make sure that test coverage matches some threshold. 
+
+40:07 | Ma
+Now, the cool thing. 
+
+40:09 | Chris
+that we can do, and we'll talk more about this with cloud agents. But cloud agents do have an API and, 
+
+40:18 | Ma
+so, 
+
+40:18 | Chris
+you could create… an action in your gitlab pipeline, so that you know, when sonar detects unit? 
+
+40:28 | Ma
+Tests? 
+
+40:28 | Chris
+Are below 80 percent it? 
+
+40:32 | Ma
+Kicks off a job? 
+
+40:34 | Chris
+Where cursor then automatically creates new unit tests to meet that threshold. And. 
+
+40:42 | Ma
+So, you can. 
+
+40:42 | Chris
+Use cloud, the API for the cloud agents to start handling some of this unplanned work, like fixing code smells or security vulnerabilities. That are found in your CI process. 
+
+41:01 | Brookey
+Another question we got was awesome. 
+
+41:03 | Ma
+Okay. Answer that question. 
+
+41:05 | Brookey
+Does cursor support agent client protocol, if we have a custom agent? 
+
+41:12 | Ma
+That we want to use? 
+
+41:13 | Brookey
+Inside the cursor IDE? 
+
+41:16 | Ma
+Or? 
+
+41:16 | Brookey
+Cli, that is custom workflow and accessibility to MCP tools. 
+
+41:19 | Ma
+Can we do that? Yes? 
+
+41:23 | Chris
+I don't yeah, that would be our. 
+
+41:25 | Ma
+Can we do that? 
+
+41:26 | Chris
+Sorry. Well, so that would be our sub agents. 
+
+41:30 | Ma
+It should. 
+
+41:32 | Chris
+Work? If you're referring to like Claude's sub agents mark, correct me if I'm wrong? 
+
+41:41 | Ma
+Support that through sub? 
+
+41:43 | Chris
+Agents, you can. 
+
+41:45 | Brookey
+Define an agent workflow, or an agent behavior and bring that in as essentially the sub agent system prompt. 
+
+42:06 | Brookey
+And what would be the recommended approach to review business logic aside from code smells and performance issues, yeah. 
+
+42:16 | Ma
+The. 
+
+42:16 | Chris
+person that asked this? Could you maybe come off mute and share a little bit more about, what you're looking for to solve there? 
+
+42:36 | Chris
+Yeah, Jerry. 
+
+42:37 | Ma
+Are you here, we want to expand on your question? Oh, it's typing? 
+
+42:48 | Ma
+Okay. Yeah. I think there's another one here, brookey and Chris, other than benchmarking models. Are there any use cases in which you want to run two… models to run the same prompt? Yeah. 
+
+43:03 | Brookey
+So, like other use cases for work trees? 
+
+43:09 | Chris
+For the same prompt, I. 
+
+43:11 | Ma
+don't. 
+
+43:12 | Chris
+usually, I like doing it like, so right now, gemini three point one came out just came out today. So I'll be using that a lot to compare it to some of the other high reasoning models. I do make use of work trees a lot just because I'll want agents to work on similar areas of the code base in parallel. But oftentimes running multiple models, it's fun for like having them dual and see which one does a better job. But if you come up with other use cases would love to hear them. I think the benchmarking is the most popular use case for that. 
+
+43:48 | Brookey
+Heard a lot of feedback from like just extreme power users that it was a capability they wanted to do for the same for the same prompt just to, so they didn't go too far down a path and then have to revert back because another agent could do it better. It's just, it's a more advanced use case. I don't think it's like, yeah, super necessary immediately, but definitely think that work trees will be really helpful when you don't want agents kind of bumping into each other. 
+
+44:14 | Brookey
+Jerry got back and said, for example, financial reports, calculations for days past due balances, stuff like that also want to check for how these calculations should be done correctly. So, maybe we could speak to like how to bring in other internal context aside from. 
+
+44:32 | Ma
+You know, just like rules. 
+
+44:35 | Brookey
+Or bug bot, and that kind of thing. 
+
+44:36 | Ma
+Yeah. I the. 
+
+44:40 | Chris
+first thing that comes to mind for me is using like different MCP servers to connect with where maybe some of this knowledge? 
+
+44:48 | Ma
+Is. 
+
+44:48 | Chris
+stored internally and, 
+
+44:51 | Ma
+then, so, 
+
+44:52 | Chris
+I think, a mature workflow would look something like having a custom sub agent that. 
+
+44:59 | Ma
+Uses. 
+
+44:59 | Chris
+MCP to get the documentation for like what the correct accounting process is, right? 
+
+45:08 | Ma
+Or whatever the, 
+
+45:10 | Chris
+correct calculations are. And so that sub agent's purpose is to be the specialist for reviewing this type of business logic. 
+
+45:24 | Brookey
+Recommend Jerry that you check out the MCP list dropped in above and yes to the last question from your, connect to our confluence page. Yeah, you would just do the one click ad with the atlassian MCP. And then you can bring in on all your confluence docs. We can show that in a workflow next week, if that'd be helpful. Basically just being able to write directly to confluence and say, great, we've done this work, go update. You know, you can even add it as a skill which is really common when you're done building a feature, make sure that the agent then goes back and updates all your product documentation with like either whatever you built or just an update on like status that could be helpful? So. 
+
+46:07 | Ma
+Yeah, definitely. 
+
+46:07 | Brookey
+Do so via the mcps and. 
+
+46:10 | Ma
+then, does. 
+
+46:11 | Brookey
+cursor have an integration with xcode? How the workflow look like for iOS development? 
+
+46:17 | Ma
+So, 
+
+46:18 | Brookey
+right now, Chris, do you want to cover this, right? Yeah, I can take that. 
+
+46:22 | Chris
+Real quick. Right now. We don't have an integration for xcode. I don't think xcode has a terminal. If xcode does have a terminal, you can use our cli tool in it, but we are working on building an iOS emulator. So stay tuned. We'll have we'll have some stuff coming shortly in cursor? 
+
+46:51 | Chris
+Jerry, if I can dive deeper into like creating custom sub agents next time too, that's a great topic. 
+
+47:01 | Chris
+Toronto. Yep. Same thing. Yeah, android, we're working on emulators. For within cursor. 
+
+47:14 | Brookey
+Cool. We can give a couple more minutes for a few more questions. Let me share my screen again and kind of walk through a couple of just the other tips to kind of wrap us up and bring us home. Based on what Chris had shared. A lot of this we'd already covered kind of like some of the core need to know tips upon getting into the tool. We, I think the main tip here is to be ambitious. You should be able to ask full questions about the code base and across your different microservices. I think was a question earlier because we use some search in addition to grep search. We're not only searching for keywords but also concepts. So, the model responses that you get, should be strong. I think the more context that you give an agent and point it in the right direction, the better always because it just eliminates any ambiguity but definitely be ambitious in what you're trying over the next couple weeks. The other thing like Chris mentioned, if you don't use plan mode, I will revoke the unknown. I love plan mode. I think it's definitely one of the biggest power user behaviors that we see off the bat. And the reason why is because, the responses are just going to be much stronger. So definitely use plan mode. You can just do shift tab to quickly transition there and across the other agents as well or the other agent modes as well. And then lastly, we talked a little bit about skills and sub agents today. We'll spend more time on that next week. But I think the main tip here is that you don't necessarily need to add in every skill and every sub agent that you think you might need. Our tip here is really, to build them as you go. And if you're finding yourself repeating a lot of workflows that's a good, you know, indicator that you might need a skill but you don't necessarily need to build them all up front. I think like if you have existing ones from other tools that you already know, you're running with, bring them in, but otherwise, you know, kind of notice your own patterns and then build it, build accordingly. We have create skill and create sub agent like slash, I guess their skills, not commands, but just like really easy prompts that you can build in, to do this work for you. Looking ahead to next week, what we'll cover is again skills and agent sub agents, deep dive. We'll talk a little bit more about MCP servers as well. I know we kind of showed off the Jira, MCP. Today we'll talk through a couple others and showcase like, and what that might mean for example, like updating confluence docs. And so if you have specific mcps or external tools that you use frequently, definitely keep me posted and let me know that way we can make sure that the content is relevant or even more relevant next time. And then on the code review piece, we'll talk a little bit about asynchronous agents, bug bot, a little bit more. And then the cli for people who aren't necessarily working within the editor that might be more relevant for maybe mobile developers, folks who are in, you know, other ids, that kind of thing. But for the most part, I hope this was helpful. I hope this was helpful. Any last questions before we jump off? I know we're 10 minutes early too, so we can walk through additional workflows or repeat stuff as well. How large of a code base slash confluence page can cursor read? Do you know, the limit Chris this big? No? 
+
+50:37 | Chris
+There is no limit, right? And so that's one of the advantages of cursor compared to other solutions. We're doing our indexing process in the cloud. And so we can handle code bases that are gigabytes of size, right? Hundreds of thousands, millions of files. This is, it's a big differentiator for us, our code based intelligence and context awareness… confluence, right? Confluence pages can also be large too that's going to be transported over MCP. So that we don't index the confluence pages, right? But we're pulling it over MCP. And so, I haven't heard of like a large confluence page, not being able to be pulled over. If it, if it is a really large like monster confluence page, you could always have more. You could always have like sub agents summarize it, right? To figure out like what the relevant context is. But a large code base is, I don't think it's necessarily going to increase the cost just because it's large, right? Again, like the way that we generate. 
+
+51:53 | Brookey
+the index. 
+
+51:53 | Chris
+And do the embedding search or the semantic search. We're going to find what's relevant still either way. 
+
+52:02 | Brookey
+Dynamic context retrieval and recovery so that we limit the amount of context that we're bringing into any given prompt. And so like the tokens used in a specific prompt aren't your entire code base indexed and, you know, like fed into an LM and, we do it dynamically and kind of up front, load the indexing process to Chris's point. 
+
+52:29 | Brookey
+Awesome. Thank you Daphne for sending that over. And then I will just send one more time the pre trial survey. I know we're like on day two, but again, would really appreciate it. Any and all feedback is helpful. That way we can kind of benchmark what would be more useful and also kind of what you're all focused on so that we can bring relevant content, to trainings moving forward as well. With that. I think that's really it from our side if there's any other questions you know, happy to stay on. But otherwise, thank you Chris for walking through the demo. Thanks everybody for bringing all the thoughtful questions and everything and input, but we're super excited to get started. Again, definitely encourage you to share this with your teams. We cover, we try to keep content pretty limited in one on ones and make sure that we're just covering, you know, like the core functionality that we have time to get into the tool, get settled. And so next week we'll be covering some pretty end to end workflows and more like advanced user workflows as well. So if you have any questions as you're getting into the tool, definitely send them our way and then, you know, we'll be in a great position coming next week to dive into more advanced topics. 
+
+53:38 | Brookey
+Well, thank you. Everybody hope you have a good rest of the day and yeah, really appreciate the time. Yeah, thank you guys. See you next week. Thank you. Thanks so much everyone. Thank you. Bye bye. 

@@ -69,7 +69,6 @@ public/css/*.min.css
 .vscode/
 !.vscode/launch.json
 .vs/
-.cursor/
 .devcontainer/
 .claude/
 
@@ -176,6 +175,7 @@ pkg/services/quota/quotaimpl/storage/storage.json
 
 # Ignore frontend build manifest
 manifest.json
+manifest-react19.json
 
 # Ignore go local build dependencies
 /scripts/go/bin/**

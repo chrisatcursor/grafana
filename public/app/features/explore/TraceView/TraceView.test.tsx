@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event';
 import { createRef } from 'react';
 import { Provider } from 'react-redux';
 
-import { DataFrame, MutableDataFrame } from '@grafana/data';
-import { mockTimeRange } from '@grafana/plugin-ui';
+import { DataFrame, MutableDataFrame, rangeUtil } from '@grafana/data';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 import { DataSourceSrv, setDataSourceSrv, setPluginLinksHook, setPluginComponentsHook } from '@grafana/runtime';
 
 import { configureStore } from '../../../store/configureStore';

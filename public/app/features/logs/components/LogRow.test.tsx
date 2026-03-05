@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event';
 import { ComponentProps } from 'react';
 import tinycolor from 'tinycolor2';
 
-import { CoreApp, createTheme, LogLevel, LogRowModel } from '@grafana/data';
-import { mockTimeRange } from '@grafana/plugin-ui';
+import { CoreApp, createTheme, LogLevel, LogRowModel, rangeUtil } from '@grafana/data';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 
 import { LogRow } from './LogRow';
 import { getLogRowStyles } from './getLogRowStyles';

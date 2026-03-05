@@ -1,0 +1,28 @@
+---
+description: Delegate work to specialist subagents instead of doing everything inline.
+alwaysApply: true
+---
+
+# Subagent Delegation
+
+When implementing features, fixing bugs, or making significant code changes, delegate specialist work to subagents in parallel rather than doing everything sequentially in the main agent.
+
+## When to delegate
+
+- **Reviewing a GitHub PR** → spin up the `pr-reviewer` subagent to analyze the diff and provide structured feedback
+- **New or modified code** → spin up the `test-writer` subagent to generate tests
+- **New feature development requiring a toggle** → spin up the `feature-flag-scaffolder` subagent to register a new LaunchDarkly-backed flag and generate scaffolding
+- **New or modified API endpoints, routes, or handlers** → spin up the `api-designer` subagent to review the endpoint design
+- **Code that touches auth, user input, or security boundaries** → spin up the `security-scanner` subagent to audit for vulnerabilities
+- **After implementation is complete** → spin up the `docs-updater` subagent to update affected documentation
+- **Exploring unfamiliar code or tracing architecture** → spin up the `code-explorer` subagent
+
+## How to delegate
+
+Launch multiple subagents concurrently whenever their tasks are independent. Do not wait for one to finish before starting the next.
+
+## When NOT to delegate
+
+- Simple single-file edits that don't add endpoints or change behavior
+- Answering questions (use the main agent directly)
+- Running a single command

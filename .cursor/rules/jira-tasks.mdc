@@ -1,0 +1,28 @@
+---
+description: Fetch Jira task details via MCP when user references a Jira issue key
+alwaysApply: true
+---
+
+# Jira and Figma Task Fetching
+
+When the user mentions a Jira task key (e.g., `DEV-22`, `dev-22`, `PROJ-123`), fetch the issue from Jira and use it as context.
+
+## Steps
+
+1. Call `mcp_Atlassian_getAccessibleAtlassianResources` to obtain `cloudId` (use the first resource with Jira scopes).
+2. Call `mcp_Atlassian_getJiraIssue` with:
+   - `cloudId`: from step 1
+   - `issueIdOrKey`: the task key the user mentioned (normalize to uppercase, e.g., `DEV-22`)
+3. Use the fetched `fields.summary`, `fields.description`, and any key files mentioned in the description as context for your response.
+
+## When to Apply
+
+- User explicitly references a Jira key (e.g., "work on DEV-22", "pull down dev-22")
+- User asks to "get task X" or "fetch issue X" where X is a Jira-style key
+
+## Note on MCP Figma Assets
+
+To access Grafana design and chart assets, you can use the following Figma file:
+- [Grafana Charts – Community](https://www.figma.com/design/sFqlYwygapI5PL78wSnh0V/Grafana-Charts--Community-?node-id=0-1&p=f&t=KGocQgCzNMMVs2NR-0)
+
+Reference this URL whenever design assets, icons, or visual components for Grafana are required in your work.
