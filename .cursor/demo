@@ -1,0 +1,124 @@
+# Demo Cheat Sheet
+
+## SLIDES
+
+5. **Delegation Framework** — Understand, Plan, Delegate, Verify, Ship
+6. **Plan Mode** — Review checklist (assumptions, scope, patterns, edge cases, testability)
+7. **Primitives** — Rules are standards, Commands are shortcuts, Skills are playbooks, Subagents are specialists
+8. **Anatomy of a Subagent** — Single responsibility, Clear trigger, Defined output, Tool awareness, Guardrails
+
+
+## THE PLAN PROMPT (Act 2 → Act 3)
+
+Pick one. All short enough to type or voice-to-text naturally.
+
+**If starting from scratch (status reporter not yet built):**
+
+> create a plan for adding an admin API endpoint to report unified storage migration status, delegating to subagents where possible
+
+**If building on top of existing work:**
+
+> plan out adding a frontend admin page that displays the unified storage migration status, use subagents to parallelize the work
+
+**If using Jira integration:**
+
+> pull down DEV-22 and plan it out, delegate to subagents where possible
+
+
+## MOMENTUM PROMPTS (fire in ask mode while agents run)
+
+Complete in under 15 seconds. Fill dead air, show semantic search, transition topics.
+
+### Codebase intelligence (while subagents work)
+
+> how does Wire dependency injection work in this repo?
+
+> what pattern do existing admin endpoints follow for authorization?
+
+> how does the dual writer mode work?
+
+> what resources are currently auto-migrated to unified storage?
+
+### Architecture (transitions or fill time)
+
+> trace the request flow from an admin API call to the database
+
+> how do the migration registry and migration definitions relate to each other?
+
+### Quick visual wins (fast, interesting output)
+
+> list all the unified storage migration definitions registered in this repo
+
+> show me the admin route group and every endpoint registered under it
+
+> what services does HTTPServer depend on?
+
+
+## REHEARSAL BEATS
+
+### Before you start
+- [ ] Reset repo: `git reset --hard fork/cdiaz/unified-migration-status-reporter`
+- [ ] Fresh agent panel (no prior conversations)
+- [ ] Agent-first layout active
+- [ ] Model set to your preference
+- [ ] Slides 5–8 ready
+
+### Act 1: Know (2 min)
+- **Slide 5** — Delegation Framework (show before prompting)
+- Talk track: "Today I'll walk through how Cursor lets you manage agents like an engineering team"
+
+> explore the unified storage migration system and what work is in progress — use subagents
+
+- While running → talk about indexing, semantic search, 20k files indexed
+- When subagents appear → "I just delegated exploration to a specialist"
+- Momentum fill if needed:
+
+> what resources are currently auto-migrated?
+
+### Act 2: Plan (3 min)
+- Switch to plan mode (shift+tab)
+- **Slide 6** — Plan Mode checklist (show while plan generates)
+
+> create a plan for adding an admin API endpoint to report unified storage migration status, delegating to subagents where possible
+
+- When plan appears → review aloud, call out 1 assumption to correct or confirm
+- Transition: "this plan is our contract — now watch what happens when we hand it off"
+
+### Act 3: Delegate — THE PEAK (4 min)
+- **Slide 8** — Anatomy of a Subagent (show briefly before hitting build)
+- Hit build
+- Watch for subagents to spawn (expect: test-writer, api-designer, security-scanner, docs-updater)
+- Click into 1-2 subagents to show their work
+- Momentum fill:
+
+> how is auth handled on admin routes?
+
+- Talk track: "one prompt, multiple specialists — the plan told it what to delegate"
+
+### Act 4: Verify (2 min)
+- Show review/find issues on the changes
+- Show bugbot on a sample PR (or talk through it)
+- Transition: "we don't ship without review"
+
+### Act 5: Ship (2 min)
+
+> /create-pr
+
+- Show CI watcher if time
+- Transition: "from idea to PR in one session"
+
+### Primitives tour (3 min, flex)
+- **Slide 7** — Primitives (Rules, Commands, Skills, Subagents)
+- Show .cursor/agents/ directory — "here's the team we built"
+- Show .cursor/rules/ — "these are always-on guidelines"
+- Show marketplace — "you don't have to build from scratch"
+- Talk track: "start with rules, graduate to skills, build subagents when you need autonomy"
+
+### Escape hatches
+- Agent takes too long → momentum prompt in ask mode, keep talking
+- Subagents don't auto-spawn → "let me invoke one directly":
+
+> /security-scanner review the changes on this branch
+
+- Plan looks off → "this is exactly why we use plan mode — catch it before it becomes code"
+- Build fails → "debug mode is designed for exactly this" → pivot to debug mode
