@@ -6,7 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -165,7 +165,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/EC2","LoadBalancer"} MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -187,7 +188,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/EC2","InstanceId","LoadBalancer"} MetricName="CPUUtilization" "InstanceId"=("i-123" OR "i-456" OR "i-789") "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -208,7 +210,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/EC2","LoadBalancer"} MetricName="CPUUtilization"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -230,7 +233,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/EC2","InstanceId","LoadBalancer"} MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -253,7 +257,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/EC2","InstanceId","LoadBalancer"} MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3") :aws.AccountId="some account id"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -274,7 +279,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"AWS/Kafka","Cluster Name"} MetricName="CpuUser" "Cluster Name"=("dev-cluster" OR "prod-cluster")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.Cluster Name')}", *mdq.Label)
@@ -296,7 +302,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"Test-API Cache by Minute","InstanceId","LoadBalancer"} MetricName="CpuUser" "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -319,7 +326,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('{"CPUUtilization","InstanceId","LoadBalancer"} MetricName="CpuUser" "LoadBalancer"="lb1"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "LB: ${PROP('Dim.LoadBalancer')|&|${PROP('Dim.InstanceId')}", *mdq.Label)
@@ -344,7 +352,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -366,7 +375,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "InstanceId"=("i-123" OR "i-456" OR "i-789") "LoadBalancer"=("lb1" OR "lb2" OR "lb3")', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -387,7 +397,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "LoadBalancer"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -409,7 +420,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3") "InstanceId"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -432,7 +444,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "LoadBalancer"=("lb1" OR "lb2" OR "lb3") "InstanceId" :aws.AccountId="some account id"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "${LABEL}|&|${PROP('Dim.InstanceId')}|&|${PROP('Dim.LoadBalancer')}", *mdq.Label)
@@ -455,7 +468,8 @@ func TestMetricDataQueryBuilder(t *testing.T) {
 				MetricEditorMode: models.MetricEditorModeBuilder,
 			}
 
-			mdq, err := ds.buildMetricDataQuery(contextWithFeaturesEnabled(features.FlagCloudWatchNewLabelParsing), query)
+			setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchNewLabelParsing)
+			mdq, err := ds.buildMetricDataQuery(context.Background(), query)
 			require.NoError(t, err)
 			assert.Equal(t, `REMOVE_EMPTY(SEARCH('Namespace="AWS/EC2" MetricName="CPUUtilization" "LoadBalancer"="lb1" "InstanceId"', 'Average', 300))`, *mdq.Expression)
 			assert.Equal(t, "LB: ${PROP('Dim.LoadBalancer')|&|${PROP('Dim.InstanceId')}", *mdq.Label)

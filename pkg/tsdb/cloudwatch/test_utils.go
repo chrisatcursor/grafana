@@ -3,6 +3,8 @@ package cloudwatch
 import (
 	"context"
 	"strings"
+	"sync"
+	"testing"
 
 	"github.com/aws/smithy-go"
 
@@ -14,11 +16,16 @@ import (
 	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/resourcegroupstaggingapi"
 	resourcegroupstaggingapitypes "github.com/aws/aws-sdk-go-v2/service/resourcegroupstaggingapi/types"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 type fakeCWLogsClient struct {
@@ -269,4 +276,33 @@ func contextWithFeaturesEnabled(enabled ...string) context.Context {
 	featureString := strings.Join(enabled, ",")
 	cfg := backend.NewGrafanaCfg(map[string]string{featuretoggles.EnabledFeatures: featureString})
 	return backend.WithGrafanaConfig(context.Background(), cfg)
+}
+
+var openFeatureTestMutex sync.Mutex
+
+// setupOpenFeatureForCloudWatchTests configures the global OpenFeature provider with the given flags enabled.
+// Use this in tests that exercise code migrated to OpenFeature. Call from the test body before invoking the code under test.
+func setupOpenFeatureForCloudWatchTests(t *testing.T, enabled ...string) {
+	t.Helper()
+	openFeatureTestMutex.Lock()
+
+	staticFlags := make(map[string]memprovider.InMemoryFlag, len(enabled))
+	for _, flag := range enabled {
+		staticFlags[flag] = memprovider.InMemoryFlag{
+			Key:           flag,
+			DefaultVariant: setting.DefaultVariantName,
+			Variants:      map[string]any{setting.DefaultVariantName: true},
+		}
+	}
+
+	err := featuremgmt.InitOpenFeature(featuremgmt.OpenFeatureConfig{
+		ProviderType: setting.StaticProviderType,
+		StaticFlags:  staticFlags,
+	})
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+		openFeatureTestMutex.Unlock()
+	})
 }
