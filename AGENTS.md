@@ -133,3 +133,26 @@ Build a specific plugin: `yarn workspace @grafana-plugins/<name> dev`
 - **Config**: Defaults in `conf/defaults.ini`, overrides in `conf/custom.ini`.
 - **Database migrations**: Live in `pkg/services/sqlstore/migrations/`. Test with `make devenv sources=postgres_tests,mysql_tests` then `make test-go-integration-postgres`.
 - **CI sharding**: Backend tests use `SHARD`/`SHARDS` env vars for parallelization.
+
+## Cursor Cloud specific instructions
+
+### Services
+
+| Service | Start command | Port | Notes |
+|---------|--------------|------|-------|
+| Go backend | `make run` | 3000 | Hot-reload via Air; uses embedded SQLite — no external DB needed. Default login: `admin`/`admin`. First build takes ~3 min. |
+| Frontend dev server | `yarn start` | served through backend | Webpack watch mode; initial compile ~1-2 min. TypeScript type-checking runs after compilation. |
+
+Both services must run simultaneously for full dev experience. The backend serves frontend assets built by `yarn start`.
+
+### Gotchas
+
+- **Node.js version**: `.nvmrc` pins **v24.11.0**. The VM snapshot has it pre-installed via nvm. If the version drifts, run `nvm install` then `corepack enable && corepack install` before `yarn install`.
+- **First Go build is slow**: `make run` compiles the entire backend (~3 min). Subsequent rebuilds via Air are incremental and much faster.
+- **yarn start plugin pre-builds**: `yarn start` first builds several built-in plugins (tempo, loki, etc.) before starting the main webpack watcher. This is normal.
+- **Frontend lint**: Use `yarn lint` (runs both `lint:ts` and `lint:sass`). For a single file: `yarn eslint --cache <path>`.
+- **Backend lint**: `go vet ./pkg/...` for quick checks; `make lint-go` for full golangci-lint (slow).
+- **Frontend tests**: `yarn jest --testPathPattern="<path>"` for a single file. The `yarn test` script starts in watch mode.
+- **Backend tests**: `go test -run TestName ./pkg/services/<pkg>/` for targeted tests.
+- **Config overrides**: Place in `conf/custom.ini` (not tracked by git). Defaults live in `conf/defaults.ini`.
+- **Pre-commit hooks are opt-in**: Run `make lefthook-install` to enable; not required for CI.
