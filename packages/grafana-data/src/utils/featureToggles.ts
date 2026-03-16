@@ -13,5 +13,6 @@ const GRAFANA_CORE_OPEN_FEATURE_DOMAIN = 'internal-grafana-core';
  * @returns featureToggle value or def.
  */
 export function getFeatureToggle(featureName: FeatureToggleName, def = false) {
-  return OpenFeature.getClient(GRAFANA_CORE_OPEN_FEATURE_DOMAIN).getBooleanValue(featureName, def);
+  const fallback = window.grafanaBootData?.settings.featureToggles[featureName] ?? def;
+  return OpenFeature.getClient(GRAFANA_CORE_OPEN_FEATURE_DOMAIN).getBooleanValue(featureName, fallback);
 }

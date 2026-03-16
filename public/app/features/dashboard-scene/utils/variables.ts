@@ -139,6 +139,15 @@ export function createSnapshotVariable(variable: TypedVariableModel): SceneVaria
 }
 
 export function createSceneVariableFromVariableModel(variable: TypedVariableModel): SceneVariable {
+  const legacyToggles = config.featureToggles ?? {};
+  const getOptionalFeatureToggle = (flag: keyof typeof legacyToggles) => {
+    if (!(flag in legacyToggles)) {
+      return undefined;
+    }
+
+    return config.isFeatureEnabled(flag);
+  };
+
   const commonProperties = {
     name: variable.name,
     label: variable.label,
@@ -162,9 +171,9 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       defaultKeys: variable.defaultKeys,
       allowCustomValue: variable.allowCustomValue,
       useQueriesAsFilterForOptions: true,
-      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
+      drilldownRecommendationsEnabled: getOptionalFeatureToggle('drilldownRecommendations'),
       layout: 'combobox',
-      collapsible: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
+      collapsible: getOptionalFeatureToggle('dashboardAdHocAndGroupByWrapper'),
       supportsMultiValueOperators: Boolean(
         getDataSourceSrv().getInstanceSettings({ type: variable.datasource?.type })?.meta.multiValueFilterOperators
       ),
@@ -291,12 +300,12 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       text: variable.current?.text || [],
       skipUrlSync: variable.skipUrlSync,
       hide: variable.hide,
-      wideInput: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
+      wideInput: getOptionalFeatureToggle('dashboardAdHocAndGroupByWrapper'),
       // @ts-expect-error
       defaultOptions: variable.options,
       defaultValue: variable.defaultValue,
       allowCustomValue: variable.allowCustomValue,
-      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
+      drilldownRecommendationsEnabled: getOptionalFeatureToggle('drilldownRecommendations'),
     });
     // Switch variable
     // In the old variable model we are storing the enabled and disabled values in the options:

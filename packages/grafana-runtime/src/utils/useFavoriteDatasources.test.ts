@@ -23,6 +23,9 @@ jest.mock('../config', () => {
       featureToggles: {
         favoriteDatasources: true,
       },
+      isFeatureEnabled(flag: string) {
+        return Boolean((this as { featureToggles?: Record<string, boolean> }).featureToggles?.[flag]);
+      },
     },
   };
 });
