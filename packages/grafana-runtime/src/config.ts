@@ -148,7 +148,11 @@ export class GrafanaBootConfig {
   theme2: GrafanaTheme2;
   featureToggles: FeatureToggles = {};
 
-  isFeatureEnabled = (featureFlag: keyof FeatureToggles, defaultValue = false): boolean => {
+  isFeatureEnabled = function (
+    this: GrafanaBootConfig,
+    featureFlag: keyof FeatureToggles,
+    defaultValue = false
+  ): boolean {
     const fromBootData = this.featureToggles?.[featureFlag];
     if (typeof fromBootData === 'boolean') {
       return fromBootData;
