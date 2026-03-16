@@ -339,7 +339,7 @@ func (s *service) starting(ctx context.Context) error {
 
 // registerServer creates the resource/search server and registers the gRPC services on the provided server.
 func (s *service) registerServer(provider grpcserver.Provider) error {
-	authzClient, err := authz.ProvideStandaloneAuthZClient(s.cfg, s.features, s.tracing, s.reg)
+	authzClient, err := authz.ProvideStandaloneAuthZClient(s.cfg, s.tracing, s.reg)
 	if err != nil {
 		return err
 	}
