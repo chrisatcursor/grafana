@@ -8,6 +8,7 @@ import (
 
 	"github.com/fullstorydev/grpchan/inprocgrpc"
 	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go.opentelemetry.io/otel/trace"
@@ -46,7 +47,6 @@ const AuthzServiceAudience = "authzService"
 // ProvideAuthZClient provides an AuthZ client and creates the AuthZ service.
 func ProvideAuthZClient(
 	cfg *setting.Cfg,
-	features featuremgmt.FeatureToggles,
 	grpcServer grpcserver.Provider,
 	tracer tracing.Tracer,
 	reg prometheus.Registerer,
@@ -55,29 +55,29 @@ func ProvideAuthZClient(
 	zanzanaClient zanzana.Client,
 	restConfig apiserver.RestConfigProvider,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	client := openfeature.NewDefaultClient()
+	zanzanaEnabled, _ := client.BooleanValue(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{})
+	authZGRPCEnabled, _ := client.BooleanValue(context.Background(), featuremgmt.FlagAuthZGRPCServer, false, openfeature.EvaluationContext{})
+	zanzanaNoLegacy, _ := client.BooleanValue(context.Background(), featuremgmt.FlagZanzanaNoLegacyClient, false, openfeature.EvaluationContext{})
+	provisioningEnabled, _ := client.BooleanValue(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{})
 
 	authCfg, err := readAuthzClientSettings(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) && authCfg.mode == clientModeCloud {
+	if !authZGRPCEnabled && authCfg.mode == clientModeCloud {
 		return nil, errors.New("authZGRPCServer feature toggle is required for cloud and grpc mode")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && zanzanaNoLegacy {
 		return zanzanaClient, nil
 	}
 
 	// Provisioning uses mode 4 (read+write only to unified storage)
 	// For G12 launch, we can disable caching for this and find a more scalable solution soon
 	// most likely this would involve passing the RV (timestamp!) in each check method
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if provisioningEnabled {
 		authCfg.cacheTTL = 0
 	}
 
@@ -158,23 +158,23 @@ func ProvideAuthZClient(
 // ProvideStandaloneAuthZClient provides a standalone AuthZ client, without registering the AuthZ service.
 // You need to provide a remote address in the configuration
 func ProvideStandaloneAuthZClient(
-	cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer, reg prometheus.Registerer,
+	cfg *setting.Cfg, tracer trace.Tracer, reg prometheus.Registerer,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) {
+	client := openfeature.NewDefaultClient()
+	authZGRPCEnabled, _ := client.BooleanValue(context.Background(), featuremgmt.FlagAuthZGRPCServer, false, openfeature.EvaluationContext{})
+	if !authZGRPCEnabled {
 		return nil, nil
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	zanzanaEnabled, _ := client.BooleanValue(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{})
+	zanzanaNoLegacy, _ := client.BooleanValue(context.Background(), featuremgmt.FlagZanzanaNoLegacyClient, false, openfeature.EvaluationContext{})
 
-	zanzanaClient, err := ProvideStandaloneZanzanaClient(cfg, features, reg)
+	zanzanaClient, err := ProvideStandaloneZanzanaClient(cfg, reg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && zanzanaNoLegacy {
 		return zanzanaClient, nil
 	}
 
