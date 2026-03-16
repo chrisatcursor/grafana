@@ -494,15 +494,15 @@ func Initialize(ctx context.Context, cfg *setting.Cfg, opts Options, apiOpts api
 		return nil, err
 	}
 	eventualRestConfigProvider := apiserver.ProvideEventualRestConfigProvider()
-	server, err := authz.ProvideEmbeddedZanzanaServer(cfg, sqlStore, tracingService, featureToggles, registerer, eventualRestConfigProvider)
+	server, err := authz.ProvideEmbeddedZanzanaServer(cfg, sqlStore, tracingService, registerer, eventualRestConfigProvider)
 	if err != nil {
 		return nil, err
 	}
-	zanzanaClient, err := authz.ProvideZanzanaClient(cfg, sqlStore, server, featureToggles, registerer)
+	zanzanaClient, err := authz.ProvideZanzanaClient(cfg, sqlStore, server, registerer)
 	if err != nil {
 		return nil, err
 	}
-	accessClient, err := authz.ProvideAuthZClient(cfg, featureToggles, grpcserverProvider, tracingService, registerer, sqlStore, acimplService, zanzanaClient, eventualRestConfigProvider)
+	accessClient, err := authz.ProvideAuthZClient(cfg, grpcserverProvider, tracingService, registerer, sqlStore, acimplService, zanzanaClient, eventualRestConfigProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -1185,15 +1185,15 @@ func InitializeForTest(ctx context.Context, t sqlutil.ITestDB, testingT interfac
 		return nil, err
 	}
 	eventualRestConfigProvider := apiserver.ProvideEventualRestConfigProvider()
-	server, err := authz.ProvideEmbeddedZanzanaServer(cfg, sqlStore, tracingService, featureToggles, registerer, eventualRestConfigProvider)
+	server, err := authz.ProvideEmbeddedZanzanaServer(cfg, sqlStore, tracingService, registerer, eventualRestConfigProvider)
 	if err != nil {
 		return nil, err
 	}
-	zanzanaClient, err := authz.ProvideZanzanaClient(cfg, sqlStore, server, featureToggles, registerer)
+	zanzanaClient, err := authz.ProvideZanzanaClient(cfg, sqlStore, server, registerer)
 	if err != nil {
 		return nil, err
 	}
-	accessClient, err := authz.ProvideAuthZClient(cfg, featureToggles, grpcserverProvider, tracingService, registerer, sqlStore, acimplService, zanzanaClient, eventualRestConfigProvider)
+	accessClient, err := authz.ProvideAuthZClient(cfg, grpcserverProvider, tracingService, registerer, sqlStore, acimplService, zanzanaClient, eventualRestConfigProvider)
 	if err != nil {
 		return nil, err
 	}
