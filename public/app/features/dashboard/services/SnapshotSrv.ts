@@ -159,7 +159,7 @@ class K8sAPI implements DashboardSnapshotSrv {
 }
 
 export function getDashboardSnapshotSrv(): DashboardSnapshotSrv {
-  if (config.featureToggles.kubernetesSnapshots) {
+  if (config.isFeatureEnabled('kubernetesSnapshots')) {
     return new K8sAPI();
   }
   return legacyDashboardSnapshotSrv;

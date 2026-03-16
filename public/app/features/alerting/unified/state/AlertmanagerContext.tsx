@@ -36,7 +36,7 @@ const AlertmanagerProvider = ({ children, accessType, alertmanagerSourceName }: 
   const queryParams = locationService.getSearch();
   const updateQueryParams = locationService.partial;
   const allAvailableAlertManagers = useAlertManagersByPermission(accessType);
-  const isExtraConfigEnabled = config.featureToggles.alertingImportAlertmanagerUI ?? false;
+  const isExtraConfigEnabled = config.isFeatureEnabled('alertingImportAlertmanagerUI') ?? false;
 
   const { data: grafanaConfig } = useAlertmanagerConfig(isExtraConfigEnabled ? GRAFANA_RULES_SOURCE_NAME : undefined, {
     refetchOnFocus: false,

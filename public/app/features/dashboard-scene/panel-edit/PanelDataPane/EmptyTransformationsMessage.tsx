@@ -109,7 +109,7 @@ export function NewEmptyTransformationsMessage(props: EmptyTransformationsProps)
   // Show the SQL Expression card if any datasource in the query set is a backend datasource.
   const showSqlCard =
     hasGoToQueries &&
-    config.featureToggles.sqlExpressions &&
+    config.isFeatureEnabled('sqlExpressions') &&
     hasBackendDatasource({ datasourceUid: props.datasourceUid, queries: props.queries });
 
   return (
@@ -175,7 +175,7 @@ export function NewEmptyTransformationsMessage(props: EmptyTransformationsProps)
 }
 
 export function EmptyTransformationsMessage(props: EmptyTransformationsProps) {
-  if (config.featureToggles.transformationsEmptyPlaceholder) {
+  if (config.isFeatureEnabled('transformationsEmptyPlaceholder')) {
     return <NewEmptyTransformationsMessage {...props} />;
   }
 

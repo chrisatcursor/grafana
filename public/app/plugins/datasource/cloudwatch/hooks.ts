@@ -132,7 +132,7 @@ export const useIsMonitoringAccount = (resources: ResourcesAPI, region: string) 
     region = resources.templateSrv.replace(region, {});
   }
   useEffect(() => {
-    if (config.featureToggles.cloudWatchCrossAccountQuerying) {
+    if (config.isFeatureEnabled('cloudWatchCrossAccountQuerying')) {
       resources.isMonitoringAccount(region).then((result) => setIsMonitoringAccount(result));
     }
   }, [region, resources]);
@@ -151,7 +151,7 @@ export const useAccountOptions = (
   }
 
   const fetchAccountOptions = async () => {
-    if (!config.featureToggles.cloudWatchCrossAccountQuerying) {
+    if (!config.isFeatureEnabled('cloudWatchCrossAccountQuerying')) {
       return Promise.resolve([]);
     }
     const accounts = (await resources?.getAccounts({ region })) ?? [];

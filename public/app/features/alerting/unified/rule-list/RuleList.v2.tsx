@@ -48,7 +48,7 @@ export function RuleListActions() {
 
   // Check if there are any data sources with manageAlerts enabled
   const hasAlertEnabledDataSources = useMemo(() => getRulesDataSources().length > 0, []);
-  const isDisableDMAinUIEnabled = config.featureToggles.alertingDisableDMAinUI ?? false;
+  const isDisableDMAinUIEnabled = config.isFeatureEnabled('alertingDisableDMAinUI') ?? false;
 
   const canCreateGrafanaRules = createGrafanaRuleSupported && createGrafanaRuleAllowed;
   const canCreateCloudRules =
@@ -58,11 +58,11 @@ export function RuleListActions() {
   const canCreateRules = canCreateGrafanaRules || canCreateCloudRules;
   // Align import UI permission with convert endpoint requirements: rule create + provisioning set status
   const canImportRulesToGMA =
-    config.featureToggles.alertingMigrationUI &&
+    config.isFeatureEnabled('alertingMigrationUI') &&
     contextSrv.hasPermission(AccessControlAction.AlertingRuleCreate) &&
     contextSrv.hasPermission(AccessControlAction.AlertingProvisioningSetStatus);
 
-  const canAccessMigrationWizardUI = config.featureToggles.alertingMigrationWizardUI && isAdmin();
+  const canAccessMigrationWizardUI = config.isFeatureEnabled('alertingMigrationWizardUI') && isAdmin();
 
   const [showExportDrawer, toggleShowExportDrawer] = useToggle(false);
 

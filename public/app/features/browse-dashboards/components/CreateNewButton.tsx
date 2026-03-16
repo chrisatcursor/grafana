@@ -61,7 +61,7 @@ export default function CreateNewButton({
   };
 
   let renderPreBuiltDashboardAction = false;
-  if (config.featureToggles.dashboardTemplates) {
+  if (config.isFeatureEnabled('dashboardTemplates')) {
     const testDataSources = getDataSourceSrv().getList({ type: 'grafana-testdata-datasource' });
     renderPreBuiltDashboardAction = testDataSources.length > 0;
   }

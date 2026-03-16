@@ -83,7 +83,7 @@ export class UnifiedSearcher implements GrafanaSearcher {
     }
     // get the starred dashboards
     let starsIds: string[] | undefined = [];
-    if (config.featureToggles.starsFromAPIServer) {
+    if (config.isFeatureEnabled('starsFromAPIServer')) {
       const name = `user-${contextSrv.user.uid}`;
       const result: { data: ListStarsApiResponse } = await dispatch(
         generatedAPI.endpoints.listStars.initiate({

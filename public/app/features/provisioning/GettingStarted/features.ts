@@ -9,8 +9,7 @@ export const requiredFeatureToggles: Array<keyof FeatureToggles> = ['kubernetesD
  * @returns true if all required feature toggles are enabled
  */
 export const checkRequiredFeatures = (): boolean => {
-  const featureToggles = config.featureToggles || {};
-  return requiredFeatureToggles.every((toggle) => featureToggles[toggle]);
+  return requiredFeatureToggles.every((toggle) => config.isFeatureEnabled(toggle));
 };
 
 /**

@@ -206,7 +206,7 @@ export const useEnrichmentAbilities = (): Abilities<EnrichmentAction> => {
   const hasWritePermission = ctx.hasPermission(AccessControlAction.AlertingEnrichmentsWrite);
 
   // Enrichments are only available when the feature toggle is enabled
-  const enrichmentsSupported = Boolean(config.featureToggles.alertEnrichment);
+  const enrichmentsSupported = Boolean(config.isFeatureEnabled('alertEnrichment'));
 
   return {
     [EnrichmentAction.Read]: [enrichmentsSupported, userIsAdmin || hasReadPermission],

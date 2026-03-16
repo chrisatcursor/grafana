@@ -65,7 +65,7 @@ export function AlertVersionHistory({ rule }: AlertVersionHistoryProps) {
   };
   const [restoreSupported, restoreAllowed] = useRulerRuleAbility(rule, groupIdentifier, AlertRuleAction.Restore);
   const canRestore =
-    restoreAllowed && restoreSupported && Boolean(config.featureToggles.alertingRuleVersionHistoryRestore);
+    restoreAllowed && restoreSupported && Boolean(config.isFeatureEnabled('alertingRuleVersionHistoryRestore'));
 
   //tracking functions for restore action
   const onRestoreSuccess = useCallback(

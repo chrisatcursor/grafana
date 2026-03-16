@@ -24,6 +24,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/star"
 	"github.com/grafana/grafana/pkg/services/supportbundles/supportbundlesimpl"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type ServiceImpl struct {
@@ -407,8 +408,7 @@ func (s *ServiceImpl) buildDashboardNavLinks(c *contextmodel.ReqContext) []*navt
 			})
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagRestoreDashboards) {
+		if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagRestoreDashboards, false, openfeature.TransactionContext(c.Req.Context())) {
 			dashboardChildNavs = append(dashboardChildNavs, &navtree.NavLink{
 				Text:     "Recently deleted",
 				SubTitle: "Any items listed here for more than 30 days will be automatically deleted.",
@@ -436,8 +436,7 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 	hasAccess := ac.HasAccess(s.accessControl, c)
 	var alertChildNavs []*navtree.NavLink
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingTriage) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingTriage, false, openfeature.TransactionContext(c.Req.Context())) {
 		if hasAccess(ac.EvalAny(ac.EvalPermission(ac.ActionAlertingRuleRead), ac.EvalPermission(ac.ActionAlertingRuleExternalRead))) {
 			alertChildNavs = append(alertChildNavs, &navtree.NavLink{
 				Text: "Alert activity", SubTitle: "Visualize active and pending alerts", Id: "alert-alerts", Url: s.cfg.AppSubURL + "/alerting/alerts", Icon: "bell", IsNew: true,
@@ -453,9 +452,8 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 			Icon:     "list-ul",
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		// Since we're changing the navigation structure we have to assign different nav IDs
-		if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2) {
+		if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2, false, openfeature.TransactionContext(c.Req.Context())) {
 			navLink.Id = "alert-rules" // New navigation: Alert rules (tabs managed on frontend)
 		} else {
 			navLink.Id = "alert-list" // Legacy navigation
@@ -490,8 +488,7 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 	hasContactPointsAccess := hasAccess(ac.EvalAny(contactPointsPerms...))
 	hasNotificationPoliciesAccess := hasAccess(ac.EvalAny(notificationPoliciesPerms...))
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2, false, openfeature.TransactionContext(c.Req.Context())) {
 		// V2 Navigation: Group notification config items under a single parent (tabs managed on frontend)
 		if hasContactPointsAccess || hasNotificationPoliciesAccess {
 			alertChildNavs = append(alertChildNavs, &navtree.NavLink{
@@ -528,8 +525,7 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 		alertChildNavs = append(alertChildNavs, &navtree.NavLink{Text: "Alert groups", SubTitle: "See grouped alerts with active notifications", Id: "groups", Url: s.cfg.AppSubURL + "/alerting/groups", Icon: "layer-group"})
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingCentralAlertHistory) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingCentralAlertHistory, false, openfeature.TransactionContext(c.Req.Context())) {
 		if hasAccess(ac.EvalAny(ac.EvalPermission(ac.ActionAlertingRuleRead))) {
 			alertChildNavs = append(alertChildNavs, &navtree.NavLink{
 				Text:     "History",
@@ -541,8 +537,7 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 		}
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingNotificationHistoryGlobal) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingNotificationHistoryGlobal, false, openfeature.TransactionContext(c.Req.Context())) {
 		alertChildNavs = append(alertChildNavs, &navtree.NavLink{
 			Text:     "Notifications",
 			SubTitle: "View a history of all notifications sent from your Grafana-managed alert rules",
@@ -551,11 +546,9 @@ func (s *ServiceImpl) buildAlertNavLinks(c *contextmodel.ReqContext) *navtree.Na
 			Icon:     "bell",
 		})
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if c.GetOrgRole() == org.RoleAdmin && s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertRuleRestore) && s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingRuleRecoverDeleted) {
+	if c.GetOrgRole() == org.RoleAdmin && openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertRuleRestore, false, openfeature.TransactionContext(c.Req.Context())) && openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingRuleRecoverDeleted, false, openfeature.TransactionContext(c.Req.Context())) {
 		// Only show as standalone item in legacy navigation (V2 shows it as a tab under Alert rules)
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !s.features.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2) {
+		if !openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagAlertingNavigationV2, false, openfeature.TransactionContext(c.Req.Context())) {
 			alertChildNavs = append(alertChildNavs, &navtree.NavLink{
 				Text:     "Recently deleted",
 				SubTitle: "Any items listed here for more than 30 days will be automatically deleted.",

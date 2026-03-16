@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -21,12 +22,12 @@ import (
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/util/errhttp"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // r.Post("/api/snapshots/"
 func (hs *HTTPServer) getCreatedSnapshotHandler() web.Handler {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabledGlobally(featuremgmt.FlagKubernetesSnapshots) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesSnapshots, false, openfeature.EvaluationContext{}) {
 		namespaceMapper := request.GetNamespaceMapper(hs.Cfg)
 		return func(w http.ResponseWriter, r *http.Request) {
 			user, err := identity.GetRequester(r.Context())

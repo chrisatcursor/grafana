@@ -63,7 +63,7 @@ export const plugin = new PanelPlugin<Options>(TextPanel)
   })
   .setMigrationHandler(textPanelMigrationHandler)
   .setSuggestionsSupplier((ds) =>
-    ds.fieldCount === 0 && !config.featureToggles.newVizSuggestions
+    ds.fieldCount === 0 && !config.isFeatureEnabled('newVizSuggestions')
       ? [{ cardOptions: { imgSrc: icnTextPanelSvg } }]
       : []
   );

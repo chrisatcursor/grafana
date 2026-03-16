@@ -76,7 +76,7 @@ export function getAppRoutes(): RouteDescriptor[] {
         () => import(/* webpackChunkName: "DashboardPage" */ '../features/dashboard/containers/NewDashboardWithDS')
       ),
     },
-    (config.featureToggles.suggestedDashboards || config.featureToggles.dashboardLibrary) && {
+    (config.isFeatureEnabled('suggestedDashboards') || config.isFeatureEnabled('dashboardLibrary')) && {
       path: DASHBOARD_LIBRARY_ROUTES.Template,
       roles: () => contextSrv.evaluatePermission([AccessControlAction.DashboardsCreate]),
       pageClass: 'page-dashboard',
@@ -238,7 +238,7 @@ export function getAppRoutes(): RouteDescriptor[] {
       roles: () =>
         contextSrv.evaluatePermission([AccessControlAction.PluginsInstall, AccessControlAction.PluginsWrite]),
       component:
-        isDevEnv || config.featureToggles.enableExtensionsAdminPage
+        isDevEnv || config.isFeatureEnabled('enableExtensionsAdminPage')
           ? SafeDynamicImport(
               () =>
                 import(/* webpackChunkName: "PluginExtensionsLog" */ 'app/features/plugins/extensions/logs/LogViewer')
@@ -542,7 +542,7 @@ export function getAppRoutes(): RouteDescriptor[] {
         () => import(/* webpackChunkName: "ThemePlayground"*/ 'app/features/theme-playground/ThemePlayground')
       ),
     },
-    config.featureToggles.restoreDashboards && {
+    config.isFeatureEnabled('restoreDashboards') && {
       path: '/dashboard/recently-deleted',
       component: SafeDynamicImport(
         () => import(/* webpackChunkName: "RecentlyDeletedPage" */ 'app/features/browse-dashboards/RecentlyDeletedPage')

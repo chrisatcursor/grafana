@@ -8,7 +8,7 @@ export function AppChromeExtensionPoint(): JSX.Element | null {
   const { chrome } = useGrafana();
   const state = chrome.useState();
 
-  if (config.featureToggles.enableAppChromeExtensions !== true) {
+  if (config.isFeatureEnabled('enableAppChromeExtensions') !== true) {
     return null;
   }
 

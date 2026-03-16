@@ -26,6 +26,7 @@ import (
 	"github.com/grafana/grafana/pkg/server"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/tools/cache"
 )
@@ -115,7 +116,7 @@ func RunJobController(deps server.OperatorDependencies) error {
 		return fmt.Errorf("create API client job store: %w", err)
 	}
 
-	workers, err := setupWorkers(deps.Config, controllerCfg, deps.Registerer, tracer)
+	workers, err := setupWorkers(controllerCfg, deps.Registerer, tracer)
 	if err != nil {
 		return fmt.Errorf("setup workers: %w", err)
 	}
@@ -209,16 +210,8 @@ func setupJobsControllerFromConfig(cfg *setting.Cfg, registry prometheus.Registe
 	}, nil
 }
 
-func setupWorkers(
-	cfg *setting.Cfg, controllerCfg *jobsControllerConfig, registry prometheus.Registerer, tracer tracing.Tracer,
-) ([]jobs.Worker, error) {
-	// Initialize feature toggles from config
-	featureManager, err := featuremgmt.ProvideManagerService(cfg)
-	if err != nil {
-		return nil, fmt.Errorf("failed to provide feature manager: %w", err)
-	}
-	features := featuremgmt.ProvideToggles(featureManager)
-	exportEnabled := features.IsEnabledGlobally(featuremgmt.FlagProvisioningExport) //nolint:staticcheck
+func setupWorkers(controllerCfg *jobsControllerConfig, registry prometheus.Registerer, tracer tracing.Tracer) ([]jobs.Worker, error) {
+	exportEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioningExport, false, openfeature.EvaluationContext{})
 
 	clients, err := controllerCfg.Clients()
 	if err != nil {

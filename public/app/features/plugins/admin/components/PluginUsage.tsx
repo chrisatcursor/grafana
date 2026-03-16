@@ -75,7 +75,7 @@ export function PluginUsage({ plugin }: Props) {
     return <Spinner />;
   }
 
-  if (!config.featureToggles.unifiedStorageSearchUI) {
+  if (!config.isFeatureEnabled('unifiedStorageSearchUI')) {
     return (
       <Alert
         title={t(

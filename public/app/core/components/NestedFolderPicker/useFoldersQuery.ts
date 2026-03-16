@@ -32,5 +32,5 @@ export function useFoldersQuery({
 
   // Running the hooks themselves don't have any side effects, so we can just conditionally use one or the other
   // requestNextPage function from the result
-  return config.featureToggles.foldersAppPlatformAPI ? resultAppPlatform : resultLegacy;
+  return config.isFeatureEnabled('foldersAppPlatformAPI') ? resultAppPlatform : resultLegacy;
 }

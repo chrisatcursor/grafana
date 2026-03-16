@@ -33,7 +33,7 @@ export const CanvasContextMenu = ({ scene, panel, onVisibilityChange }: Props) =
   const rootLayer: FrameState | undefined = panel.context?.instanceState?.layer;
 
   useEffect(() => {
-    if (config.featureToggles.canvasPanelPanZoom) {
+    if (config.isFeatureEnabled('canvasPanelPanZoom')) {
       scene.openContextMenu = (position: AnchorPoint) => {
         setAnchorPoint(position);
         setIsMenuVisible(true);
@@ -55,7 +55,7 @@ export const CanvasContextMenu = ({ scene, panel, onVisibilityChange }: Props) =
       event.preventDefault();
       panel.setActivePanel();
 
-      const shouldSelectElement = config.featureToggles.canvasPanelPanZoom
+      const shouldSelectElement = config.isFeatureEnabled('canvasPanelPanZoom')
         ? event.currentTarget !== scene.viewportDiv
         : event.currentTarget !== scene.div;
       if (

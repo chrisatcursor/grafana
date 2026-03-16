@@ -1,10 +1,12 @@
 package pluginconfig
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/grafana/grafana-azure-sdk-go/v2/azsettings"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/plugins/config"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
@@ -28,10 +30,9 @@ func ProvidePluginManagementConfig(cfg *setting.Cfg, settingProvider setting.Pro
 		allowedUnsigned,
 		cfg.PluginsCDNURLTemplate,
 		cfg.AppURL,
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		config.Features{
-			SriChecksEnabled:     features.IsEnabledGlobally(featuremgmt.FlagPluginsSriChecks),
-			TempoAlertingEnabled: features.IsEnabledGlobally(featuremgmt.FlagTempoAlerting),
+			SriChecksEnabled:     openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginsSriChecks, false, openfeature.EvaluationContext{}),
+			TempoAlertingEnabled: openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagTempoAlerting, false, openfeature.EvaluationContext{}),
 		},
 		cfg.GrafanaComAPIURL,
 		cfg.DisablePlugins,

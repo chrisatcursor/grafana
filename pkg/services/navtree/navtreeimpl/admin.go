@@ -1,6 +1,8 @@
 package navtreeimpl
 
 import (
+	"context"
+
 	"github.com/grafana/grafana/pkg/apimachinery/identity"
 	"github.com/grafana/grafana/pkg/login/social"
 	ac "github.com/grafana/grafana/pkg/services/accesscontrol"
@@ -13,6 +15,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/pluginsintegration/pluginaccesscontrol"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // nolint: gocyclo
@@ -52,9 +55,8 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 			Url:      s.cfg.AppSubURL + "/admin/migrate-to-cloud",
 		})
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if c.HasRole(identity.RoleAdmin) &&
-		s.features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) {
 		generalNodeLinks = append(generalNodeLinks, &navtree.NavLink{
 			Text:     "Provisioning",
 			Id:       "provisioning",
@@ -98,8 +100,7 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		})
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if (s.cfg.Env == setting.Dev) || s.features.IsEnabled(ctx, featuremgmt.FlagEnableExtensionsAdminPage) && hasAccess(pluginaccesscontrol.AdminAccessEvaluator) {
+	if (s.cfg.Env == setting.Dev) || openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagEnableExtensionsAdminPage, false, openfeature.TransactionContext(ctx)) && hasAccess(pluginaccesscontrol.AdminAccessEvaluator) {
 		pluginsNodeLinks = append(pluginsNodeLinks, &navtree.NavLink{
 			Text:     "Extensions",
 			Icon:     "plug",
@@ -147,9 +148,8 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		})
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if s.license.FeatureEnabled("groupsync") &&
-		s.features.IsEnabled(ctx, featuremgmt.FlagGroupAttributeSync) &&
+		openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagGroupAttributeSync, false, openfeature.TransactionContext(ctx)) &&
 		hasAccess(ac.EvalAny(
 			ac.EvalPermission("groupsync.mappings:read"),
 			ac.EvalPermission("groupsync.mappings:write"),

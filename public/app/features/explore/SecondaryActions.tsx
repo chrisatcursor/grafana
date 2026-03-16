@@ -46,7 +46,7 @@ export function SecondaryActions({
   const styles = getStyles(theme);
   const { queryLibraryEnabled, openDrawer: openQueryLibraryDrawer } = useQueryLibraryContext();
   const { drawerOpened, setDrawerOpened } = useQueriesDrawerContext();
-  const canReadQueries = config.featureToggles.savedQueriesRBAC
+  const canReadQueries = config.isFeatureEnabled('savedQueriesRBAC')
     ? contextSrv.hasPermission(AccessControlAction.QueriesRead)
     : contextSrv.isSignedIn;
 

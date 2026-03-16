@@ -14,6 +14,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts/extsvcaccounts"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var _ extsvcauth.ExternalServiceRegistry = &Registry{}
@@ -40,8 +41,7 @@ type Registry struct {
 }
 
 func ProvideExtSvcRegistry(cfg *setting.Cfg, saSvc *extsvcaccounts.ExtSvcAccountsService, serverLock *serverlock.ServerLockService, features featuremgmt.FeatureToggles) *Registry {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts) && cfg.ManagedServiceAccountsEnabled
+	enabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.EvaluationContext{}) && cfg.ManagedServiceAccountsEnabled
 	return &Registry{
 		extSvcProviders: map[string]extsvcauth.AuthProvider{},
 		enabled:         enabled,

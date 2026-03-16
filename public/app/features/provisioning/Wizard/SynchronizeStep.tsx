@@ -212,7 +212,7 @@ export const SynchronizeStep = memo(function SynchronizeStep({
         </Alert>
       )}
       {/* Migration/export functionality is experimental and gated behind the provisioningExport feature flag */}
-      {config.featureToggles.provisioningExport && (
+      {config.isFeatureEnabled('provisioningExport') && (
         <>
           <Text element="h3">
             <Trans i18nKey="provisioning.synchronize-step.options">Options</Trans>

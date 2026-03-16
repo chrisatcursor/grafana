@@ -15,7 +15,9 @@ const OPERATORS = [
   { value: '>=', description: 'Greater than or equal to' },
 ] as const;
 
-export const MULTI_OPERATOR_VALUES = new Set(OPERATORS.filter((op) => op.isMulti).map((op) => op.value));
+export const MULTI_OPERATOR_VALUES = new Set<string>(
+  OPERATORS.filter((op) => 'isMulti' in op && op.isMulti).map((op) => op.value)
+);
 export { OPERATORS };
 
 export interface OverviewInitState {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/grafana/alerting/definition"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
@@ -442,14 +443,12 @@ func (nps *Service) managedRoutesEnabled() bool {
 	if nps.FeatureToggles == nil {
 		return false
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies)
+	return openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingMultiplePolicies, false, openfeature.EvaluationContext{})
 }
 
 func (nps *Service) includeImported() bool {
 	if nps.FeatureToggles == nil {
 		return false
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI)
+	return openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingImportAlertmanagerAPI, false, openfeature.EvaluationContext{})
 }

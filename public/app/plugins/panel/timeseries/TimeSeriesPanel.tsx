@@ -177,7 +177,7 @@ export const TimeSeriesPanel = ({
                   };
 
                   const groupingFilters =
-                    seriesIdx !== null && config.featureToggles.perPanelFiltering && getFiltersBasedOnGrouping
+                    seriesIdx !== null && config.isFeatureEnabled('perPanelFiltering') && getFiltersBasedOnGrouping
                       ? getGroupedFilters(alignedFrame, seriesIdx, getFiltersBasedOnGrouping)
                       : [];
 
@@ -196,7 +196,7 @@ export const TimeSeriesPanel = ({
                       replaceVariables={replaceVariables}
                       dataLinks={dataLinks}
                       filterByGroupedLabels={
-                        config.featureToggles.perPanelFiltering && groupingFilters.length && onAddAdHocFilters
+                        config.isFeatureEnabled('perPanelFiltering') && groupingFilters.length && onAddAdHocFilters
                           ? {
                               onFilterForGroupedLabels: () => onAddAdHocFilters(groupingFilters),
                               onFilterOutGroupedLabels: () =>

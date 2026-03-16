@@ -149,7 +149,7 @@ export class GrafanaApp {
         }
       }
 
-      const regionalFormat = config.featureToggles.localeFormatPreference
+      const regionalFormat = config.isFeatureEnabled('localeFormatPreference')
         ? config.regionalFormat
         : contextSrv.user.language;
 
@@ -240,7 +240,7 @@ export class GrafanaApp {
         getVariablesUrlParams: getVariablesUrlParams,
       });
 
-      if (config.featureToggles.useSessionStorageForRedirection) {
+      if (config.isFeatureEnabled('useSessionStorageForRedirection')) {
         handleRedirectTo();
       }
 
@@ -255,7 +255,7 @@ export class GrafanaApp {
 
       // Do not pre-load apps if rendererDisableAppPluginsPreload is true and the request comes from the image renderer
       const skipAppPluginsPreload =
-        config.featureToggles.rendererDisableAppPluginsPreload && contextSrv.user.authenticatedBy === 'render';
+        config.isFeatureEnabled('rendererDisableAppPluginsPreload') && contextSrv.user.authenticatedBy === 'render';
       if (contextSrv.user.orgRole !== '' && !skipAppPluginsPreload) {
         preloadPlugins(await getAppPluginsToPreload());
       }
@@ -300,11 +300,11 @@ export class GrafanaApp {
       setMegaMenuOpenHook(useMegaMenuOpenInternal);
       setChromeHeaderHeightHook(useChromeHeaderHeight);
 
-      if (config.featureToggles.crashDetection) {
+      if (config.isFeatureEnabled('crashDetection')) {
         initializeCrashDetection();
       }
 
-      if (config.featureToggles.dashboardLevelTimeMacros) {
+      if (config.isFeatureEnabled('dashboardLevelTimeMacros')) {
         sceneUtils.registerVariableMacro('__from', DashboardLevelTimeMacro, true);
         sceneUtils.registerVariableMacro('__to', DashboardLevelTimeMacro, true);
       }

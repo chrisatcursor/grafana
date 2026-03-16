@@ -16,7 +16,7 @@ export function DashboardDataLayerControls({ dashboard }: { dashboard: Dashboard
   const dataLayerSet = sceneGraph.getData(dashboard);
   const state = dataLayerSet.useState();
   const { isEditing } = dashboard.useState();
-  const isEditingNewLayouts = isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = isEditing && config.isFeatureEnabled('dashboardNewLayouts');
   const styles = useStyles2(getStyles);
 
   const visibleLayers = useMemo(() => {

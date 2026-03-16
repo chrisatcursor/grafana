@@ -58,7 +58,7 @@ function ExportAsCodeRenderer({ model }: SceneComponentProps<ExportAsCode>) {
 
   return (
     <div data-testid={selector.container} className={styles.container}>
-      {config.featureToggles.kubernetesDashboards ? (
+      {config.isFeatureEnabled('kubernetesDashboards') ? (
         <ResourceExport
           dashboardJson={dashboardJson}
           isSharingExternally={isSharingExternally ?? false}

@@ -22,6 +22,7 @@ import (
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/util/proxyutil"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type PluginProxy struct {
@@ -81,8 +82,7 @@ func (proxy *PluginProxy) HandleRequest() {
 			hasSlash := strings.HasSuffix(proxy.proxyPath, "/")
 			proxy.proxyPath = path
 
-			//nolint:staticcheck // not yet migrated to OpenFeature
-			if hasSlash && !strings.HasSuffix(path, "/") && proxy.features.IsEnabled(proxy.ctx.Req.Context(), featuremgmt.FlagPluginProxyPreserveTrailingSlash) {
+			if hasSlash && !strings.HasSuffix(path, "/") && openfeature.NewDefaultClient().Boolean(proxy.ctx.Req.Context(), featuremgmt.FlagPluginProxyPreserveTrailingSlash, false, openfeature.TransactionContext(proxy.ctx.Req.Context())) {
 				proxy.proxyPath += "/"
 			}
 		} else {

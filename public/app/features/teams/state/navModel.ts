@@ -82,7 +82,7 @@ export function buildNavModel(team: Team): NavModelItem {
     if (isLoadingTeam || contextSrv.hasPermissionInMetadata(AccessControlAction.ActionTeamsPermissionsRead, team)) {
       navModel.children!.push(teamGroupSync);
     }
-  } else if (config.featureToggles.featureHighlights) {
+  } else if (config.isFeatureEnabled('featureHighlights')) {
     navModel.children!.push({
       ...teamGroupSync,
       tabSuffix: () => ProBadge({ experimentId: isLoadingTeam ? '' : 'feature-highlights-team-sync-badge' }),

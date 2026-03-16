@@ -20,7 +20,7 @@ import { AddVariableButton } from './VariableControlsAddButton';
 export function VariableControls({ dashboard }: { dashboard: DashboardScene }) {
   const { variables } = sceneGraph.getVariables(dashboard)!.useState();
   const { isEditing } = dashboard.useState();
-  const isEditingNewLayouts = isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = isEditing && config.isFeatureEnabled('dashboardNewLayouts');
 
   // Get visible variables for drilldown layout
   const visibleVariables = variables.filter((v) => v.state.hide !== VariableHide.inControlsMenu);
@@ -28,7 +28,7 @@ export function VariableControls({ dashboard }: { dashboard: DashboardScene }) {
   const adHocVar = visibleVariables.find((v) => sceneUtils.isAdHocVariable(v));
   const groupByVar = visibleVariables.find((v) => sceneUtils.isGroupByVariable(v));
 
-  const hasDrilldownControls = config.featureToggles.dashboardAdHocAndGroupByWrapper && adHocVar && groupByVar;
+  const hasDrilldownControls = config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper') && adHocVar && groupByVar;
 
   const restVariables = visibleVariables.filter(
     (v) => v.state.name !== adHocVar?.state.name && v.state.name !== groupByVar?.state.name
@@ -53,7 +53,7 @@ export function VariableControls({ dashboard }: { dashboard: DashboardScene }) {
           />
         ))}
 
-      {config.featureToggles.dashboardNewLayouts ? <AddVariableButton dashboard={dashboard} /> : null}
+      {config.isFeatureEnabled('dashboardNewLayouts') ? <AddVariableButton dashboard={dashboard} /> : null}
     </>
   );
 }

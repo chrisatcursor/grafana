@@ -125,7 +125,7 @@ interface Props {
 
 export default function GettingStarted({ items }: Props) {
   const styles = useStyles2(getStyles);
-  const settingsArg = config.featureToggles.provisioning ? undefined : skipToken;
+  const settingsArg = config.isFeatureEnabled('provisioning') ? undefined : skipToken;
   const settingsQuery = useGetFrontendSettingsQuery(settingsArg, {
     refetchOnMountOrArgChange: true,
   });

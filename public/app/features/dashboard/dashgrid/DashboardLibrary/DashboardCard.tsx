@@ -60,7 +60,7 @@ function DashboardCardComponent({
   showAssistantButton,
 }: Props) {
   const styles = useStyles2(getStyles);
-  const isCompatibilityAppEnabled = config.featureToggles.dashboardValidatorApp;
+  const isCompatibilityAppEnabled = config.isFeatureEnabled('dashboardValidatorApp');
 
   const detailsButton = details && (
     <Tooltip interactive={true} content={<DetailsTooltipContent details={details} />} placement="right">

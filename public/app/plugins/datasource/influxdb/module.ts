@@ -8,7 +8,7 @@ import { InfluxStartPage } from './components/editor/query/influxql/InfluxStartP
 import InfluxDatasource from './datasource';
 
 // ConfigEditorV2 is the new design for the InfluxDB configuration page
-const configEditor = config.featureToggles.newInfluxDSConfigPageDesign ? ConfigEditorV2 : ConfigEditorV1;
+const configEditor = config.isFeatureEnabled('newInfluxDSConfigPageDesign') ? ConfigEditorV2 : ConfigEditorV1;
 
 export const plugin = new DataSourcePlugin(InfluxDatasource)
   .setConfigEditor(configEditor)

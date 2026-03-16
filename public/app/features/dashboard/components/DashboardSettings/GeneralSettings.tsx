@@ -139,7 +139,7 @@ export function GeneralSettingsUnconnected({
                   <Trans i18nKey="dashboard-settings.general.title-label">Title</Trans>
                 </Label>
 
-                {config.featureToggles.dashgpt && <GenAIDashTitleButton onGenerate={onTitleChange} />}
+                {config.isFeatureEnabled('dashgpt') && <GenAIDashTitleButton onGenerate={onTitleChange} />}
               </Stack>
             }
           >
@@ -157,7 +157,7 @@ export function GeneralSettingsUnconnected({
                   {t('dashboard-settings.general.description-label', 'Description')}
                 </Label>
 
-                {config.featureToggles.dashgpt && <GenAIDashDescriptionButton onGenerate={onDescriptionChange} />}
+                {config.isFeatureEnabled('dashgpt') && <GenAIDashDescriptionButton onGenerate={onDescriptionChange} />}
               </Stack>
             }
           >

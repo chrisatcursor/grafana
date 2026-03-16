@@ -90,7 +90,7 @@ export async function getPluginCode(meta: SandboxPluginMeta): Promise<string> {
 }
 
 async function verifySRI(pluginCode: string, moduleHash?: string): Promise<boolean> {
-  if (!config.featureToggles.pluginsSriChecks) {
+  if (!config.isFeatureEnabled('pluginsSriChecks')) {
     return true;
   }
 

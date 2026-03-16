@@ -319,7 +319,7 @@ export const cloudNotifierTypes: Array<NotifierDTO<CloudNotifierType>> = [
       httpConfigOption,
     ],
   },
-  ...(config.featureToggles?.alertingJiraIntegration ? [jiraNotifier] : []),
+  ...(config.isFeatureEnabled('alertingJiraIntegration') ? [jiraNotifier] : []),
   {
     name: 'OpsGenie',
     description: 'Send notifications to OpsGenie',

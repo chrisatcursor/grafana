@@ -143,7 +143,7 @@ const importPlugin = <M extends PluginMeta, P extends PanelPlugin | GenericDataS
       pluginVersion: meta.info?.version ?? '',
       expectedHash: meta.moduleHash ?? '',
       loadingStrategy: meta.loadingStrategy ?? PluginLoadingStrategy.fetch,
-      sriChecksEnabled: String(Boolean(config.featureToggles.pluginsSriChecks)),
+      sriChecksEnabled: String(Boolean(config.isFeatureEnabled('pluginsSriChecks'))),
     });
     return Promise.resolve(cached);
   }
@@ -155,7 +155,7 @@ const importPlugin = <M extends PluginMeta, P extends PanelPlugin | GenericDataS
       pluginVersion: meta.info?.version ?? '',
       expectedHash: meta.moduleHash ?? '',
       loadingStrategy: meta.loadingStrategy ?? PluginLoadingStrategy.fetch,
-      sriChecksEnabled: String(Boolean(config.featureToggles.pluginsSriChecks)),
+      sriChecksEnabled: String(Boolean(config.isFeatureEnabled('pluginsSriChecks'))),
     });
     return getPromiseFromCache(meta);
   }

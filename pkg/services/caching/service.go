@@ -14,6 +14,7 @@ import (
 
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana/pkg/infra/log"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana/pkg/services/contexthandler"
@@ -210,8 +211,7 @@ func (c *CachingServiceClient) WithQueryDataCaching(ctx context.Context, req *ba
 	// Update the query cache with the result for this metrics request
 	if err == nil && cr.UpdateCacheFn != nil {
 		// If AWS async caching is not enabled, use the old code path
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if c.features == nil || !c.features.IsEnabled(ctx, featuremgmt.FlagAwsAsyncQueryCaching) {
+		if c.features == nil || !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAwsAsyncQueryCaching, false, openfeature.TransactionContext(ctx)) {
 			cr.UpdateCacheFn(ctx, resp)
 		} else if reqCtx != nil {
 			// time how long shouldCacheQuery takes

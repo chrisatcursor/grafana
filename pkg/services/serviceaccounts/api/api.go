@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -18,6 +19,7 @@ import (
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type ServiceAccountsAPI struct {
@@ -40,8 +42,7 @@ func NewServiceAccountsAPI(
 	permissionService accesscontrol.ServiceAccountPermissionsService,
 	features featuremgmt.FeatureToggles,
 ) *ServiceAccountsAPI {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts) && cfg.ManagedServiceAccountsEnabled
+	enabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.EvaluationContext{}) && cfg.ManagedServiceAccountsEnabled
 	return &ServiceAccountsAPI{
 		cfg:                  cfg,
 		service:              service,

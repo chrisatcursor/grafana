@@ -4,8 +4,6 @@ import { createRef } from 'react';
 import { Provider } from 'react-redux';
 
 import { DataFrame, MutableDataFrame, rangeUtil } from '@grafana/data';
-
-const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 import { DataSourceSrv, setDataSourceSrv, setPluginLinksHook, setPluginComponentsHook } from '@grafana/runtime';
 
 import { configureStore } from '../../../store/configureStore';
@@ -13,6 +11,8 @@ import { configureStore } from '../../../store/configureStore';
 import { TraceView } from './TraceView';
 import { TraceData, TraceSpanData } from './components/types/trace';
 import { transformDataFrames } from './utils/transform';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 
 function getTraceView(frames: DataFrame[]) {
   const store = configureStore();

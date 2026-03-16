@@ -98,8 +98,8 @@ export const initMoveable = (destroySelecto = false, allowChanges = true, scene:
   }
 
   scene.selecto = new Selecto({
-    rootContainer: config.featureToggles.canvasPanelPanZoom ? scene.viewerDiv : scene.div,
-    dragContainer: config.featureToggles.canvasPanelPanZoom ? scene.viewerDiv : scene.div,
+    rootContainer: config.isFeatureEnabled('canvasPanelPanZoom') ? scene.viewerDiv : scene.div,
+    dragContainer: config.isFeatureEnabled('canvasPanelPanZoom') ? scene.viewerDiv : scene.div,
     selectableTargets: targetElements,
     toggleContinueSelect: 'shift',
     selectFromInside: false,
@@ -109,7 +109,7 @@ export const initMoveable = (destroySelecto = false, allowChanges = true, scene:
   const snapDirections = { top: true, left: true, bottom: true, right: true, center: true, middle: true };
   const elementSnapDirections = { top: true, left: true, bottom: true, right: true, center: true, middle: true };
 
-  scene.moveable = new Moveable(config.featureToggles.canvasPanelPanZoom ? scene.viewerDiv! : scene.div!, {
+  scene.moveable = new Moveable(config.isFeatureEnabled('canvasPanelPanZoom') ? scene.viewerDiv! : scene.div!, {
     draggable: allowChanges && !scene.editModeEnabled.getValue(),
     resizable: allowChanges,
 
@@ -141,7 +141,7 @@ export const initMoveable = (destroySelecto = false, allowChanges = true, scene:
       if (targetedElement) {
         targetedElement.applyRotate(event);
 
-        if (config.featureToggles.canvasPanelPanZoom) {
+        if (config.isFeatureEnabled('canvasPanelPanZoom')) {
           if (scene.connections.connectionsNeedUpdate(targetedElement) && scene.moveableActionCallback) {
             scene.moveableActionCallback(true);
           }
@@ -428,7 +428,7 @@ export const initMoveable = (destroySelecto = false, allowChanges = true, scene:
       clearTimeout(event.data.timer);
     });
 
-  if (config.featureToggles.canvasPanelPanZoom) {
+  if (config.isFeatureEnabled('canvasPanelPanZoom')) {
     /******************/
     /* infiniteViewer */
     /******************/

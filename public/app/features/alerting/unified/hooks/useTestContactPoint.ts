@@ -27,7 +27,7 @@ export function useTestContactPoint({ contactPoint, defaultChannelValues }: UseT
   const [testOldApi, oldApiState] = useTestIntegrationMutation();
   const [testNewApi, newApiState] = useCreateReceiverTestMutation();
 
-  const useK8sApi = Boolean(config.featureToggles.alertingImportAlertmanagerAPI);
+  const useK8sApi = Boolean(config.isFeatureEnabled('alertingImportAlertmanagerAPI'));
 
   const canTest = useMemo(() => {
     if (!contactPoint) {

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/grafana/dskit/services"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
@@ -48,8 +49,7 @@ func (l *FixedRolesLoader) running(ctx context.Context) error {
 }
 
 func (l *FixedRolesLoader) IsDisabled() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return !l.features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading)
+	return !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginStoreServiceLoading, false, openfeature.EvaluationContext{})
 }
 
 func (l *FixedRolesLoader) Run(ctx context.Context) error {

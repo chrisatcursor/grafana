@@ -1,10 +1,12 @@
 package schedule
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	ngmodels "github.com/grafana/grafana/pkg/services/ngalert/models"
@@ -33,8 +35,7 @@ func JitterStrategyFrom(cfg setting.UnifiedAlertingSettings, toggles featuremgmt
 	if toggles == nil {
 		return strategy
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if toggles.IsEnabledGlobally(featuremgmt.FlagJitterAlertRulesWithinGroups) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagJitterAlertRulesWithinGroups, false, openfeature.EvaluationContext{}) {
 		strategy = JitterByRule
 	}
 	return strategy

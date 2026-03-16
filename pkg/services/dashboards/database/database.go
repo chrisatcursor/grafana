@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/otel"
 
 	claims "github.com/grafana/authlib/types"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/infra/log"
@@ -67,8 +68,7 @@ func ProvideDashboardStore(sqlStore db.DB, cfg *setting.Cfg, features featuremgm
 }
 
 func (d *dashboardStore) emitEntityEvent() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return d.features != nil && d.features.IsEnabledGlobally(featuremgmt.FlagPanelTitleSearch)
+	return d.features != nil && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPanelTitleSearch, false, openfeature.EvaluationContext{})
 }
 
 func (d *dashboardStore) GetDashboardsByLibraryPanelUID(ctx context.Context, libraryPanelUID string, orgID int64) ([]*dashboards.DashboardRef, error) {

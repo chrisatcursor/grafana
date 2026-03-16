@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/api/dtos"
 	"github.com/grafana/grafana/pkg/api/response"
@@ -34,8 +35,7 @@ func (hs *HTTPServer) handleQueryMetricsError(err error) *response.NormalRespons
 
 // metrics.go
 func (hs *HTTPServer) getDSQueryEndpoint() web.Handler {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryServiceRewrite) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryServiceRewrite, false, openfeature.EvaluationContext{}) {
 		// rewrite requests from /ds/query to the new query service
 		namespaceMapper := request.GetNamespaceMapper(hs.Cfg)
 		return func(w http.ResponseWriter, r *http.Request) {

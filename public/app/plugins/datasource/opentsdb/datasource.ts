@@ -99,7 +99,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
       return merge(...streams);
     }
 
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       const hasValidTargets = options.targets.some((target) => target.metric && !target.hide);
       if (!hasValidTargets) {
         return of({ data: [] });
@@ -180,7 +180,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
   }
 
   annotationEvent(options: DataQueryRequest, annotation: OpenTsdbQuery): Promise<AnnotationEvent[]> {
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       const query: OpenTsdbQuery = {
         refId: annotation.refId ?? 'Anno',
         metric: annotation.target,
@@ -333,7 +333,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
   }
 
   _performSuggestQuery(query: string, type: string) {
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       return from(this.getResource('api/suggest', { type, q: query, max: this.lookupLimit }));
     }
 
@@ -349,7 +349,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
       return of([]);
     }
 
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       return from(this.getResource('api/search/lookup', { type: 'keyvalue', metric, keys }));
     }
 
@@ -384,7 +384,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
       return of([]);
     }
 
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       return from(this.getResource('api/search/lookup', { type: 'key', metric }));
     }
 
@@ -483,7 +483,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
   }
 
   async testDatasource() {
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       return await super.testDatasource();
     }
 
@@ -501,7 +501,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
       return this.aggregatorsPromise;
     }
 
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       this.aggregatorsPromise = this.getResource('api/aggregators');
       return this.aggregatorsPromise;
     }
@@ -524,7 +524,7 @@ export default class OpenTsDatasource extends DataSourceWithBackend<OpenTsdbQuer
       return this.filterTypesPromise;
     }
 
-    if (config.featureToggles.opentsdbBackendMigration) {
+    if (config.isFeatureEnabled('opentsdbBackendMigration')) {
       this.filterTypesPromise = this.getResource('api/config/filters');
       return this.filterTypesPromise;
     }

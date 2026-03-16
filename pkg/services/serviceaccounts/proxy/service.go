@@ -14,6 +14,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/serviceaccounts/extsvcaccounts"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts/manager"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // ServiceAccountsProxy is a proxy for the serviceaccounts.Service interface
@@ -38,8 +39,7 @@ func ProvideServiceAccountsProxy(
 	s := &ServiceAccountsProxy{
 		log:            log.New("serviceaccounts.proxy"),
 		proxiedService: proxiedService,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		isProxyEnabled: cfg.ManagedServiceAccountsEnabled && features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts),
+		isProxyEnabled: cfg.ManagedServiceAccountsEnabled && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.EvaluationContext{}),
 	}
 
 	serviceaccountsAPI := api.NewServiceAccountsAPI(cfg, s, ac, accesscontrolService, routeRegister, permissionService, features)

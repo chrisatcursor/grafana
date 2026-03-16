@@ -7,6 +7,7 @@ import (
 	"github.com/grafana/dskit/services"
 	"github.com/grafana/grafana-app-sdk/logging"
 	"github.com/grafana/grafana-app-sdk/resource"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	pluginsv0alpha1 "github.com/grafana/grafana/apps/plugins/pkg/apis/plugins/v0alpha1"
 	"github.com/grafana/grafana/apps/plugins/pkg/app/install"
@@ -114,10 +115,8 @@ func ProvideSyncer(
 }
 
 func (s *syncer) IsDisabled() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	syncEnabled := s.featureToggles.IsEnabled(context.Background(), featuremgmt.FlagPluginInstallAPISync)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	serviceLoadingEnabled := s.featureToggles.IsEnabled(context.Background(), featuremgmt.FlagPluginStoreServiceLoading)
+	syncEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginInstallAPISync, false, openfeature.TransactionContext(context.Background()))
+	serviceLoadingEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginStoreServiceLoading, false, openfeature.TransactionContext(context.Background()))
 	return !syncEnabled || !serviceLoadingEnabled
 }
 

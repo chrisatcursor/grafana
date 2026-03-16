@@ -17,6 +17,7 @@ import (
 	v2beta1 "github.com/grafana/grafana/apps/dashboard/pkg/apis/dashboard/v2beta1"
 	"github.com/grafana/grafana/pkg/apimachinery/utils"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // ValidateDashboardSpec validates the dashboard spec and throws a detailed error if there are validation errors.
@@ -33,12 +34,10 @@ func (b *DashboardsAPIBuilder) ValidateDashboardSpec(ctx context.Context, obj ru
 		case *v0.Dashboard:
 			errorOnSchemaMismatches = false // Never error for v0
 		case *v1.Dashboard:
-			//nolint:staticcheck // not yet migrated to OpenFeature
-			errorOnSchemaMismatches = !b.features.IsEnabled(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV1)
+			errorOnSchemaMismatches = !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV1, false, openfeature.TransactionContext(ctx))
 		case *v2alpha1.Dashboard:
 		case *v2beta1.Dashboard:
-			//nolint:staticcheck // not yet migrated to OpenFeature
-			errorOnSchemaMismatches = !b.features.IsEnabled(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV2)
+			errorOnSchemaMismatches = !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV2, false, openfeature.TransactionContext(ctx))
 		default:
 			return nil, fmt.Errorf("invalid dashboard type: %T", obj)
 		}
@@ -47,8 +46,7 @@ func (b *DashboardsAPIBuilder) ValidateDashboardSpec(ctx context.Context, obj ru
 		return nil, apierrors.NewBadRequest("Not supported: FieldValidationMode: Warn")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	alwaysLogSchemaValidationErrors := b.features.IsEnabled(ctx, featuremgmt.FlagDashboardSchemaValidationLogging)
+	alwaysLogSchemaValidationErrors := openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDashboardSchemaValidationLogging, false, openfeature.TransactionContext(ctx))
 
 	var errors field.ErrorList
 	var schemaVersionError field.ErrorList

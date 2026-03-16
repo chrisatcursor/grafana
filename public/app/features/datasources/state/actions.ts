@@ -252,7 +252,7 @@ export function addDataSource(
 
     let uid,
       version = '';
-    if (config.featureToggles.useNewAPIsForDatasourceCRUD) {
+    if (config.isFeatureEnabled('useNewAPIsForDatasourceCRUD')) {
       const result = await api.createDataSourceWithK8sAPI(newInstance);
       uid = result.metadata.name;
     } else {
@@ -294,7 +294,7 @@ export function updateDataSource(dataSource: DataSourceSettings) {
     ) => DataSourceSettings
   ) => {
     try {
-      if (config.featureToggles.grafanaAPIServerWithExperimentalAPIs) {
+      if (config.isFeatureEnabled('grafanaAPIServerWithExperimentalAPIs')) {
         dataSource.apiVersion = await dsApiVersions.get(dataSource.type);
       }
       await api.updateDataSource(dataSource);

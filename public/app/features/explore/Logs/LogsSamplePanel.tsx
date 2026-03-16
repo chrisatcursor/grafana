@@ -111,7 +111,7 @@ export function LogsSamplePanel(props: Props) {
   } else {
     const logs = dataFrameToLogsModel(queryResponse.data);
     LogsSamplePanelContent =
-      config.featureToggles.newLogsPanel && logsContainerRef.current ? (
+      config.isFeatureEnabled('newLogsPanel') && logsContainerRef.current ? (
         <LogList
           app={CoreApp.Explore}
           containerElement={logsContainerRef.current}
@@ -174,7 +174,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       right: theme.spacing(1),
     }),
     logContainer: css({
-      overflow: config.featureToggles.newLogsPanel ? 'visible' : 'scroll',
+      overflow: config.isFeatureEnabled('newLogsPanel') ? 'visible' : 'scroll',
     }),
     infoTooltip: css({
       marginLeft: theme.spacing(1),

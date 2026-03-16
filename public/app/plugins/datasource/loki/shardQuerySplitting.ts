@@ -85,7 +85,7 @@ function splitQueriesByStreamShard(
   let queryIndex = 0;
 
   const runNextRequest = (subscriber: Subscriber<DataQueryResponse>, group: number, groups: ShardedQueryGroup[]) => {
-    if (config.featureToggles.lokiQueryLimitsContext) {
+    if (config.isFeatureEnabled('lokiQueryLimitsContext')) {
       groups = addLimitsToShardGroups(queryIndex, groups, request);
     }
     queryIndex++;

@@ -36,7 +36,7 @@ export function addNewRowTo(layout: DashboardLayoutManager): RowItem | SceneGrid
   /**
    * If new layouts feature is disabled we add old school rows to the custom grid layout
    */
-  if (!config.featureToggles.dashboardNewLayouts) {
+  if (!config.isFeatureEnabled('dashboardNewLayouts')) {
     if (layout instanceof DefaultGridLayoutManager) {
       return layout.addNewRow();
     } else {

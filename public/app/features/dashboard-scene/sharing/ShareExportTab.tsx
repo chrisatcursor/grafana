@@ -58,7 +58,7 @@ export class ShareExportTab extends SceneObjectBase<ShareExportTabState> impleme
       ...state,
       isSharingExternally: false,
       isViewingJSON: false,
-      exportFormat: config.featureToggles.kubernetesDashboards ? ExportFormat.Classic : undefined,
+      exportFormat: config.isFeatureEnabled('kubernetesDashboards') ? ExportFormat.Classic : undefined,
     });
   }
 
@@ -415,7 +415,7 @@ function ShareExportTabRenderer({ model }: SceneComponentProps<ShareExportTab>) 
           <p>
             <Trans i18nKey="share-modal.export.info-text">Export this dashboard.</Trans>
           </p>
-          {config.featureToggles.kubernetesDashboards ? (
+          {config.isFeatureEnabled('kubernetesDashboards') ? (
             <ResourceExport
               dashboardJson={dashboardJson}
               isSharingExternally={isSharingExternally ?? false}

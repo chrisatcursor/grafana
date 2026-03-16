@@ -19,8 +19,8 @@ export function isV0V1StoredVersion(version: string | undefined): boolean {
 }
 
 export function getDashboardsApiVersion(responseFormat?: 'v1' | 'v2') {
-  const isKubernetesDashboardsEnabled = config.featureToggles.kubernetesDashboards;
-  const isDashboardNewLayoutsEnabled = config.featureToggles.dashboardNewLayouts;
+  const isKubernetesDashboardsEnabled = config.isFeatureEnabled('kubernetesDashboards');
+  const isDashboardNewLayoutsEnabled = config.isFeatureEnabled('dashboardNewLayouts');
 
   const forcingOldDashboardArch = locationService.getSearch().get('scenes') === 'false';
 

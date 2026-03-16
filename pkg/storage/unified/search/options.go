@@ -1,10 +1,12 @@
 package search
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 
 	"github.com/Masterminds/semver"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
@@ -18,8 +20,7 @@ func NewSearchOptions(
 	indexMetrics *resource.BleveIndexMetrics,
 	ownsIndexFn func(key resource.NamespacedResource) (bool, error),
 ) (resource.SearchOptions, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if cfg.EnableSearch || features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if cfg.EnableSearch || openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) {
 		root := cfg.IndexPath
 		if root == "" {
 			root = filepath.Join(cfg.DataPath, "unified-search", "bleve")

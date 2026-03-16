@@ -10,6 +10,7 @@ import (
 	"github.com/grafana/dskit/middleware"
 	"github.com/grafana/dskit/services"
 	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel/trace"
@@ -51,10 +52,9 @@ func ProvideService(cfg *setting.Cfg, features featuremgmt.FeatureToggles, authe
 
 func provideService(cfg *setting.Cfg, features featuremgmt.FeatureToggles, authenticator interceptors.Authenticator, tracer trace.Tracer, registerer prometheus.Registerer, separateShutdown bool) (*gPRCServerService, error) {
 	s := &gPRCServerService{
-		cfg:    cfg.GRPCServer,
-		logger: log.New("grpc-server"),
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		enabled:          features.IsEnabledGlobally(featuremgmt.FlagGrpcServer), // TODO: replace with cfg.GRPCServer.Enabled when we remove feature toggle.
+		cfg:              cfg.GRPCServer,
+		logger:           log.New("grpc-server"),
+		enabled:          openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagGrpcServer, false, openfeature.EvaluationContext{}), // TODO: replace with cfg.GRPCServer.Enabled when we remove feature toggle.
 		startedChan:      make(chan struct{}),
 		separateShutdown: separateShutdown,
 	}

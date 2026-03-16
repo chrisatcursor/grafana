@@ -126,7 +126,7 @@ export function WelcomeHeader({ className }: { className?: string }) {
   return (
     <Stack gap={2} direction="column">
       <ContentBox className={cx(styles.ctaContainer, className)}>
-        {config.featureToggles.alertingTriage && (
+        {config.isFeatureEnabled('alertingTriage') && (
           <>
             <WelcomeCTABox
               title={t('alerting.welcome-header.title-alert-activity', 'Alert activity')}

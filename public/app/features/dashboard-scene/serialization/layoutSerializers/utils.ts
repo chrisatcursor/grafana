@@ -86,10 +86,10 @@ export function buildVizPanel(panel: PanelKind, id?: number): VizPanel {
     $data: createPanelDataProvider(panel),
     titleItems,
     headerActions: new VizPanelHeaderActions({
-      hideGroupByAction: !config.featureToggles.panelGroupBy,
+      hideGroupByAction: !config.isFeatureEnabled('panelGroupBy'),
     }),
     subHeader: new VizPanelSubHeader({
-      hideNonApplicableDrilldowns: !config.featureToggles.perPanelNonApplicableDrilldowns,
+      hideNonApplicableDrilldowns: !config.isFeatureEnabled('perPanelNonApplicableDrilldowns'),
     }),
     $behaviors: [],
     extendPanelContext: setDashboardPanelContext,
@@ -134,7 +134,7 @@ export function buildLibraryPanel(panel: LibraryPanelKind, id?: number): VizPane
     key: getVizPanelKeyForPanelId(id ?? panel.spec.id),
     titleItems,
     subHeader: new VizPanelSubHeader({
-      hideNonApplicableDrilldowns: !config.featureToggles.perPanelNonApplicableDrilldowns,
+      hideNonApplicableDrilldowns: !config.isFeatureEnabled('perPanelNonApplicableDrilldowns'),
     }),
     seriesLimit: config.panelSeriesLimit,
     $behaviors: [
@@ -145,7 +145,7 @@ export function buildLibraryPanel(panel: LibraryPanelKind, id?: number): VizPane
     ],
     extendPanelContext: setDashboardPanelContext,
     headerActions: new VizPanelHeaderActions({
-      hideGroupByAction: !config.featureToggles.panelGroupBy,
+      hideGroupByAction: !config.isFeatureEnabled('panelGroupBy'),
     }),
     pluginId: LibraryPanelBehavior.LOADING_VIZ_PANEL_PLUGIN_ID,
     title: panel.spec.title,

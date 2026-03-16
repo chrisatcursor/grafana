@@ -15,6 +15,7 @@ import (
 	"github.com/grafana/grafana/pkg/apimachinery/utils"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/util"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // K8S docs say "Almost nobody should use this hook" about the "begin" hooks, but we do because we only need to
@@ -83,8 +84,7 @@ func (b *FolderAPIBuilder) afterDelete(obj runtime.Object, _ *metav1.DeleteOptio
 		return
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if b.features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{}) {
 		log.Info("Propagating deleted folder to Zanzana", "folder", meta.GetName(), "parent", meta.GetFolder())
 		err = b.permissionStore.DeleteFolderParents(ctx, meta.GetNamespace(), meta.GetName())
 		if err != nil {

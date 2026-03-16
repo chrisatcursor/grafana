@@ -27,6 +27,7 @@ import (
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/tsdb/grafanads"
 	"github.com/grafana/grafana/pkg/util"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // GetBootdataAPI returns the same data we currently have rendered into index.html
@@ -152,8 +153,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 			continue
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if panel.ID == "datagrid" && !hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagEnableDatagridEditing) {
+		if panel.ID == "datagrid" && !openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagEnableDatagridEditing, false, openfeature.TransactionContext(c.Req.Context())) {
 			continue
 		}
 
@@ -416,8 +416,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 		DisableSignoutMenu:            hs.Cfg.DisableSignoutMenu,
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
+	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagPasswordlessMagicLinkAuthentication, false, openfeature.TransactionContext(c.Req.Context())) {
 		hasEnabledProviders := hs.samlEnabled() || hs.authnService.IsClientEnabled(authn.ClientLDAP)
 
 		if !hasEnabledProviders {
@@ -455,8 +454,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 	frontendSettings.Namespace = hs.namespacer(c.OrgID)
 
 	// experimental scope features
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagScopeFilters) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagScopeFilters, false, openfeature.TransactionContext(c.Req.Context())) {
 		frontendSettings.ListScopesEndpoint = hs.Cfg.ScopesListScopesURL
 		frontendSettings.ListDashboardScopesEndpoint = hs.Cfg.ScopesListDashboardsURL
 	}

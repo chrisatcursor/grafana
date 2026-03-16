@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -27,8 +30,7 @@ func NewServiceAPIBuilder() *ServiceAPIBuilder {
 }
 
 func RegisterAPIService(features featuremgmt.FeatureToggles, apiregistration builder.APIRegistrar, registerer prometheus.Registerer) *ServiceAPIBuilder {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagKubernetesAggregator) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAggregator, false, openfeature.EvaluationContext{}) {
 		return nil // skip registration unless opting into aggregator mode
 	}
 

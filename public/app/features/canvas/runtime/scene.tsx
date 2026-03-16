@@ -128,7 +128,7 @@ export class Scene {
     });
 
     this.panel = panel;
-    this.connections = config.featureToggles.canvasPanelPanZoom ? new Connections2(this) : new Connections(this);
+    this.connections = config.isFeatureEnabled('canvasPanelPanZoom') ? new Connections2(this) : new Connections(this);
   }
 
   getNextElementName = (isFrame = false) => {
@@ -172,7 +172,7 @@ export class Scene {
     this.tooltipDisableForOneClick = tooltipDisableForOneClick;
 
     setTimeout(() => {
-      if (config.featureToggles.canvasPanelPanZoom) {
+      if (config.isFeatureEnabled('canvasPanelPanZoom')) {
         if (this.viewportDiv && this.viewerDiv) {
           if (!this.shouldPanZoom) {
             this.scale = 1;
@@ -226,7 +226,7 @@ export class Scene {
     this.height = height;
     this.style = { width, height };
 
-    if (config.featureToggles.canvasPanelPanZoom) {
+    if (config.isFeatureEnabled('canvasPanelPanZoom')) {
       this.updateConnectionsSize();
       this.fitContent(this, this.zoomToContent!);
 
@@ -267,7 +267,7 @@ export class Scene {
   clearCurrentSelection(skipNextSelectionBroadcast = false) {
     this.skipNextSelectionBroadcast = skipNextSelectionBroadcast;
     let event: MouseEvent = new MouseEvent('click');
-    if (config.featureToggles.canvasPanelPanZoom) {
+    if (config.isFeatureEnabled('canvasPanelPanZoom')) {
       this.selecto?.clickTarget(event, this.viewportDiv);
     } else {
       this.selecto?.clickTarget(event, this.div);
@@ -279,7 +279,7 @@ export class Scene {
 
     if (updateMoveable) {
       setTimeout(() => {
-        if (config.featureToggles.canvasPanelPanZoom) {
+        if (config.isFeatureEnabled('canvasPanelPanZoom')) {
           if (this.viewportDiv && this.viewerDiv) {
             initMoveable(true, this.isEditingEnabled, this);
             this.updateConnectionsSize();
@@ -406,7 +406,7 @@ export class Scene {
       </>
     );
 
-    return config.featureToggles.canvasPanelPanZoom ? (
+    return config.isFeatureEnabled('canvasPanelPanZoom') ? (
       <div className={this.styles.viewer} ref={this.setViewerRef} key={this.revId} data-testid="canvas-scene-wrapper">
         <div
           className={this.styles.viewport}

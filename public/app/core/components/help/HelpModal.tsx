@@ -108,7 +108,7 @@ export const useShortcuts = () => {
       {
         category: t('help-modal.shortcuts-category.time-range', 'Time range'),
         shortcuts: [
-          ...(config.featureToggles.newTimeRangeZoomShortcuts
+          ...(config.isFeatureEnabled('newTimeRangeZoomShortcuts')
             ? [
                 {
                   keys: ['t', '+'],

@@ -97,7 +97,7 @@ describe('PanelDataErrorView', () => {
   it('should show "Run a query..." message when no query is configured and feature toggle is enabled in panel editor', () => {
     mockUsePanelContext.mockReturnValue(panelContextEditor);
 
-    const originalFeatureToggle = config.featureToggles.newVizSuggestions;
+    const originalFeatureToggle = config.isFeatureEnabled('newVizSuggestions');
     config.featureToggles.newVizSuggestions = true;
 
     const { container } = renderWithProps({
@@ -119,7 +119,7 @@ describe('PanelDataErrorView', () => {
   it('should show "No data" message when feature toggle is disabled even without queries', () => {
     mockUsePanelContext.mockReturnValue(panelContextEditor);
 
-    const originalFeatureToggle = config.featureToggles.newVizSuggestions;
+    const originalFeatureToggle = config.isFeatureEnabled('newVizSuggestions');
     config.featureToggles.newVizSuggestions = false;
 
     renderWithProps({
@@ -139,7 +139,7 @@ describe('PanelDataErrorView', () => {
   it('should show "No data" message when feature toggle is enabled but not in panel editor', () => {
     mockUsePanelContext.mockReturnValue(panelContextRoot);
 
-    const originalFeatureToggle = config.featureToggles.newVizSuggestions;
+    const originalFeatureToggle = config.isFeatureEnabled('newVizSuggestions');
     config.featureToggles.newVizSuggestions = true;
 
     renderWithProps({
@@ -159,7 +159,7 @@ describe('PanelDataErrorView', () => {
   it('should show "No data" message when feature toggle is enabled in panel editor and query is configured', () => {
     mockUsePanelContext.mockReturnValue(panelContextEditor);
 
-    const originalFeatureToggle = config.featureToggles.newVizSuggestions;
+    const originalFeatureToggle = config.isFeatureEnabled('newVizSuggestions');
     config.featureToggles.newVizSuggestions = true;
 
     renderWithProps({

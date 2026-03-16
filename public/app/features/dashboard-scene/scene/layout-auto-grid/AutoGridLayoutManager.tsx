@@ -136,7 +136,7 @@ export class AutoGridLayoutManager
 
   public pastePanel() {
     const panel = getAutoGridItemFromClipboard(getDashboardSceneFor(this));
-    if (config.featureToggles.dashboardNewLayouts) {
+    if (config.isFeatureEnabled('dashboardNewLayouts')) {
       dashboardEditActions.edit({
         description: t('dashboard.edit-actions.paste-panel', 'Paste panel'),
         addedObject: panel.state.body,

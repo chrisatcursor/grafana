@@ -49,7 +49,7 @@ export const NotificationsStep = ({ alertUid }: NotificationsStepProps) => {
 
   const dataSourceName = watch('dataSourceName') ?? GRAFANA_RULES_SOURCE_NAME;
   const isGrafanaManaged = isGrafanaManagedRuleByType(type);
-  const simplifiedModeInNotificationsStepEnabled = config.featureToggles.alertingNotificationsStepMode ?? false;
+  const simplifiedModeInNotificationsStepEnabled = config.isFeatureEnabled('alertingNotificationsStepMode') ?? false;
   const shouldRenderpreview = type === RuleFormType.grafana;
   const hasInternalAlertmanagerEnabled = useHasInternalAlertmanagerEnabled();
 
@@ -240,7 +240,7 @@ function AutomaticRooting({ alertUid }: AutomaticRootingProps) {
     'manualRouting',
   ]);
 
-  const multiplePoliciesEnabled = config.featureToggles.alertingMultiplePolicies ?? false;
+  const multiplePoliciesEnabled = config.isFeatureEnabled('alertingMultiplePolicies') ?? false;
 
   return (
     <Stack direction="column" gap={2}>

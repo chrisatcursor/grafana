@@ -28,7 +28,7 @@ interface Props {
 }
 
 export function DashboardEditPaneSplitter(props: Props) {
-  if (config.featureToggles.dashboardNewLayouts) {
+  if (config.isFeatureEnabled('dashboardNewLayouts')) {
     return <DashboardEditPaneSplitterNewLayouts {...props} />;
   } else {
     return <DashboardEditPaneSplitterLegacy {...props} />;

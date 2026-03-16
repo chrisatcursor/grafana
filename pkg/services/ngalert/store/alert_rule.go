@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/alertmanager/pkg/labels"
 	"golang.org/x/exp/maps"
 
@@ -77,8 +78,7 @@ func (st DBstore) DeleteAlertRulesByUID(ctx context.Context, orgID int64, user *
 		logger.Debug("Deleted alert rule state", "count", rows)
 
 		var versions []alertRuleVersion
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if st.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertRuleRestore) && st.Cfg.DeletedRuleRetention > 0 && !permanently { // save deleted version only if retention is greater than 0
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertRuleRestore, false, openfeature.EvaluationContext{}) && st.Cfg.DeletedRuleRetention > 0 && !permanently { // save deleted version only if retention is greater than 0
 			versions, err = st.getLatestVersionOfRulesByUID(ctx, orgID, ruleUID)
 			if err != nil {
 				logger.Error("Failed to get latest version of deleted alert rules. The recovery will not be possible", "error", err)
@@ -1203,8 +1203,7 @@ func (st DBstore) GetAlertRulesForScheduling(ctx context.Context, query *ngmodel
 					continue
 				}
 			}
-			//nolint:staticcheck // not yet migrated to OpenFeature
-			if st.FeatureToggles.IsEnabled(ctx, featuremgmt.FlagAlertingQueryOptimization) {
+			if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAlertingQueryOptimization, false, openfeature.TransactionContext(ctx)) {
 				if optimizations, err := OptimizeAlertQueries(converted.Data); err != nil {
 					st.Logger.Error("Could not migrate rule from range to instant query", "rule", rule.UID, "err", err)
 				} else if len(optimizations) > 0 {

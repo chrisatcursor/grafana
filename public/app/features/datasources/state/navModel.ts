@@ -15,7 +15,7 @@ const loadingDSType = 'Loading';
 
 export function buildNavModel(dataSource: DataSourceSettings, plugin: GenericDataSourcePlugin): NavModelItem {
   const pluginMeta = plugin.meta;
-  const highlightsEnabled = config.featureToggles.featureHighlights;
+  const highlightsEnabled = config.isFeatureEnabled('featureHighlights');
   const navModel: NavModelItem = {
     img: pluginMeta.info.logos.large,
     id: 'datasource-' + dataSource.uid,

@@ -596,7 +596,7 @@ const uiMultiRoute = {
 };
 
 describe('alertingMultiplePolicies Feature Flag', () => {
-  const originalFeatureToggle = config.featureToggles.alertingMultiplePolicies;
+  const originalFeatureToggle = config.isFeatureEnabled('alertingMultiplePolicies');
 
   afterAll(() => {
     config.featureToggles.alertingMultiplePolicies = originalFeatureToggle;

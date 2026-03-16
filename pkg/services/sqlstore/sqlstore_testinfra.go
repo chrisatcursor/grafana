@@ -12,6 +12,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/open-feature/go-sdk/openfeature"
+
 	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/infra/tracing"
 	"github.com/grafana/grafana/pkg/registry"
@@ -157,7 +159,7 @@ func NewTestStore(tb TestingTB, opts ...TestOption) *SQLStore {
 		panic("unreachable")
 	}
 
-	cfg, err := newTestCfg(options.Cfg, features, testDB)
+	cfg, err := newTestCfg(options.Cfg, testDB)
 	if err != nil {
 		tb.Fatalf("failed to create a test cfg: %v", err)
 		panic("unreachable")
@@ -220,14 +222,14 @@ func newFeatureToggles(toggles map[string]bool) featuremgmt.FeatureToggles {
 
 func newTestCfg(
 	cfg *setting.Cfg,
-	features featuremgmt.FeatureToggles,
 	testDB *testDB,
 ) (*setting.Cfg, error) {
 	if cfg == nil {
 		cfg = setting.NewCfg()
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	cfg.IsFeatureToggleEnabled = features.IsEnabledGlobally
+	cfg.IsFeatureToggleEnabled = func(flag string) bool {
+		return openfeature.NewDefaultClient().Boolean(context.Background(), flag, false, openfeature.EvaluationContext{})
+	}
 
 	sec, err := cfg.Raw.NewSection("database")
 	if err != nil {

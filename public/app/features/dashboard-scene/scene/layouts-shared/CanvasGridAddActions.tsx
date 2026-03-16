@@ -27,7 +27,7 @@ export function CanvasGridAddActions({ layoutManager }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { disableGrouping, disableTabs } = useMemo(() => {
-    if (config.featureToggles.unlimitedLayoutsNesting) {
+    if (config.isFeatureEnabled('unlimitedLayoutsNesting')) {
       return { disableGrouping: false, disableTabs: false };
     }
 

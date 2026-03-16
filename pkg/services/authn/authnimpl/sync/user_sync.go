@@ -10,6 +10,7 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	claims "github.com/grafana/authlib/types"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"golang.org/x/sync/singleflight"
@@ -457,8 +458,7 @@ func (s *UserSync) upsertAuthConnection(ctx context.Context, usr *user.User, ide
 			AuthId:     identity.AuthID,
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+		if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagImprovedExternalSessionHandling, false, openfeature.EvaluationContext{}) {
 			setAuthInfoCmd.OAuthToken = identity.OAuthToken
 		}
 		return s.authInfoService.SetAuthInfo(ctx, setAuthInfoCmd)
@@ -470,8 +470,7 @@ func (s *UserSync) upsertAuthConnection(ctx context.Context, usr *user.User, ide
 		AuthModule: identity.AuthenticatedBy,
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagImprovedExternalSessionHandling, false, openfeature.EvaluationContext{}) {
 		updateAuthInfoCmd.OAuthToken = identity.OAuthToken
 	}
 

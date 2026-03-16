@@ -48,7 +48,7 @@ interface Props {
 }
 
 export const NavToolbarActions = memo<Props>(({ dashboard }) => {
-  const hasNewToolbar = config.featureToggles.dashboardNewLayouts;
+  const hasNewToolbar = config.isFeatureEnabled('dashboardNewLayouts');
 
   return hasNewToolbar ? (
     <AppChromeUpdate

@@ -18,6 +18,7 @@ import (
 	"github.com/grafana/grafana/pkg/expr/mathexp"
 	"github.com/grafana/grafana/pkg/expr/sql"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // NodeType is the type of a DPNode. Currently either a expression command or datasource query.
@@ -68,8 +69,7 @@ type DataPipeline []Node
 // map of the refId of the of each command
 func (dp *DataPipeline) execute(c context.Context, now time.Time, s *Service) (mathexp.Vars, error) {
 	vars := make(mathexp.Vars)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	groupByDSFlag := s.features.IsEnabled(c, featuremgmt.FlagSseGroupByDatasource)
+	groupByDSFlag := openfeature.NewDefaultClient().Boolean(c, featuremgmt.FlagSseGroupByDatasource, false, openfeature.TransactionContext(c))
 	// Execute datasource nodes first, and grouped by datasource.
 	if groupByDSFlag {
 		dsNodes := []*DSNode{}
@@ -333,8 +333,7 @@ func (s *Service) buildGraph(ctx context.Context, req *Request) (*simple.Directe
 		case TypeCMDNode:
 			node, err = buildCMDNode(ctx, rn, s.features, s.cfg)
 		case TypeMLNode:
-			//nolint:staticcheck // not yet migrated to OpenFeature
-			if s.features.IsEnabledGlobally(featuremgmt.FlagMlExpressions) {
+			if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagMlExpressions, false, openfeature.EvaluationContext{}) {
 				node, err = s.buildMLNode(dp, rn, req)
 				if err != nil {
 					err = fmt.Errorf("fail to parse expression with refID %v: %w", rn.RefID, err)

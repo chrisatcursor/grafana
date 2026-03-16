@@ -125,7 +125,7 @@ export function transformSaveModelToScene(
   const scene = createDashboardSceneFromDashboardModel(oldModel, rsp.dashboard, options, sceneOptions);
   // TODO: refactor createDashboardSceneFromDashboardModel to work on Dashboard schema model
 
-  const apiVersion = config.featureToggles.kubernetesDashboards
+  const apiVersion = config.isFeatureEnabled('kubernetesDashboards')
     ? `${K8S_V1_DASHBOARD_API_CONFIG.group}/${K8S_V1_DASHBOARD_API_CONFIG.version}`
     : undefined;
 
@@ -345,7 +345,7 @@ export function createDashboardSceneFromDashboardModel(
   }
 
   const scopeMeta =
-    config.featureToggles.scopeFilters && oldModel.scopeMeta
+    config.isFeatureEnabled('scopeFilters') && oldModel.scopeMeta
       ? {
           trait: oldModel.scopeMeta.trait,
           groups: oldModel.scopeMeta.groups,
@@ -383,7 +383,8 @@ export function createDashboardSceneFromDashboardModel(
     new behaviors.LiveNowTimer({ enabled: oldModel.liveNow }),
     addPanelsOnLoadBehavior,
     new DashboardReloadBehavior({
-      reloadOnParamsChange: config.featureToggles.reloadDashboardsOnParamsChange && oldModel.meta.reloadOnParamsChange,
+      reloadOnParamsChange:
+        config.isFeatureEnabled('reloadDashboardsOnParamsChange') && oldModel.meta.reloadOnParamsChange,
       uid,
     }),
   ];
@@ -493,10 +494,10 @@ export function buildGridItemForPanel(panel: PanelModel): DashboardGridItem {
     $data: createPanelDataProvider(panel),
     titleItems,
     headerActions: new VizPanelHeaderActions({
-      hideGroupByAction: !config.featureToggles.panelGroupBy,
+      hideGroupByAction: !config.isFeatureEnabled('panelGroupBy'),
     }),
     subHeader: new VizPanelSubHeader({
-      hideNonApplicableDrilldowns: !config.featureToggles.perPanelNonApplicableDrilldowns,
+      hideNonApplicableDrilldowns: !config.isFeatureEnabled('perPanelNonApplicableDrilldowns'),
     }),
     $behaviors: [],
     extendPanelContext: setDashboardPanelContext,

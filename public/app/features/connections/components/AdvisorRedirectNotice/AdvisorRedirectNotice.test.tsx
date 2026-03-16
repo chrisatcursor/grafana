@@ -6,7 +6,7 @@ import { contextSrv } from 'app/core/services/context_srv';
 
 import { AdvisorRedirectNotice } from './AdvisorRedirectNotice';
 
-const originalFeatureToggleValue = config.featureToggles.grafanaAdvisor;
+const originalFeatureToggleValue = config.isFeatureEnabled('grafanaAdvisor');
 jest.mock('@grafana/runtime/internal', () => ({
   UserStorage: jest.fn().mockImplementation(() => ({
     getItem: jest.fn().mockResolvedValue('true'),

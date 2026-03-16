@@ -25,7 +25,7 @@ export function DashboardControlsMenu({
   dashboardUID,
   isEditing,
 }: DashboardControlsMenuProps) {
-  const isEditingNewLayouts = isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = isEditing && config.isFeatureEnabled('dashboardNewLayouts');
   return (
     <Box
       minWidth={32}

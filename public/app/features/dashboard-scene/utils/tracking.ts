@@ -100,9 +100,9 @@ export function trackDropItemCrossLayout(gridItem: SceneGridItemLike) {
 
 function getDashboardLibraryTrackingProperties(dashboard: DashboardScene) {
   const isDashboardLibraryEnabled =
-    config.featureToggles.dashboardLibrary ||
-    config.featureToggles.dashboardTemplates ||
-    config.featureToggles.suggestedDashboards;
+    config.isFeatureEnabled('dashboardLibrary') ||
+    config.isFeatureEnabled('dashboardTemplates') ||
+    config.isFeatureEnabled('suggestedDashboards');
 
   if (!isDashboardLibraryEnabled) {
     return {};
@@ -129,7 +129,7 @@ function getDashboardLibraryTrackingProperties(dashboard: DashboardScene) {
   );
 
   return {
-    isDashboardTemplatesEnabled: config.featureToggles.dashboardTemplates ?? false,
+    isDashboardTemplatesEnabled: config.isFeatureEnabled('dashboardTemplates') ?? false,
     isDashboardTemplatesAssistantEnabled:
       isDashboardTemplatesAssistantButtonEnabled && isDashboardTemplatesAssistantToolEnabled,
     datasourceTypes,

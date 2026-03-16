@@ -23,6 +23,7 @@ import (
 	alertingModels "github.com/grafana/alerting/models"
 	alertingNotify "github.com/grafana/alerting/notify"
 	"github.com/grafana/alerting/utils/hash"
+	"github.com/open-feature/go-sdk/openfeature"
 	amalert "github.com/prometheus/alertmanager/api/v2/client/alert"
 	amalertgroup "github.com/prometheus/alertmanager/api/v2/client/alertgroup"
 	amgeneral "github.com/prometheus/alertmanager/api/v2/client/general"
@@ -342,8 +343,7 @@ func (am *Alertmanager) buildConfiguration(ctx context.Context, raw []byte, crea
 	// Add managed routes and extra route as managed route to the configuration.
 	// Also add extra inhibition rules to the configuration if extra route exists and doesn't conflict with existing
 	// route
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if am.features.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingMultiplePolicies, false, openfeature.EvaluationContext{}) {
 		managedRoutes := maps.Clone(c.ManagedRoutes)
 		if managedRoutes == nil {
 			managedRoutes = make(map[string]*apimodels.Route)

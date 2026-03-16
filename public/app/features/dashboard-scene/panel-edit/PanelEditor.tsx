@@ -98,7 +98,7 @@ export class PanelEditor extends SceneObjectBase<PanelEditorState> {
     dashboard.state.editPane.clearSelection();
 
     // this will be deleted when suggestions is fully rolled out.
-    if (panel.state.pluginId === UNCONFIGURED_PANEL_PLUGIN_ID && !config.featureToggles.newVizSuggestions) {
+    if (panel.state.pluginId === UNCONFIGURED_PANEL_PLUGIN_ID && !config.isFeatureEnabled('newVizSuggestions')) {
       panel.changePluginType('timeseries');
     }
 
@@ -133,7 +133,7 @@ export class PanelEditor extends SceneObjectBase<PanelEditorState> {
     const originalState = this._layoutItemState!;
 
     // Temp fix for old edit mode
-    if (this._layoutItem instanceof DashboardGridItem && !config.featureToggles.dashboardNewLayouts) {
+    if (this._layoutItem instanceof DashboardGridItem && !config.isFeatureEnabled('dashboardNewLayouts')) {
       this._layoutItem.handleEditChange();
       return;
     }
@@ -413,7 +413,7 @@ export class PanelEditor extends SceneObjectBase<PanelEditorState> {
 
 export function buildPanelEditScene(panel: VizPanel, isNewPanel = false): PanelEditor {
   return new PanelEditor({
-    useQueryExperienceNext: config.featureToggles.queryEditorNext,
+    useQueryExperienceNext: config.isFeatureEnabled('queryEditorNext'),
     isInitializing: true,
     panelRef: panel.getRef(),
     isNewPanel,

@@ -66,7 +66,7 @@ export class LibraryPanelBehavior extends SceneObjectBase<LibraryPanelBehaviorSt
     titleItems.push(new PanelNotices());
 
     let title;
-    if (config.featureToggles.preferLibraryPanelTitle) {
+    if (config.isFeatureEnabled('preferLibraryPanelTitle')) {
       title = libPanelModel.title ?? vizPanel.state.title;
     } else {
       title = vizPanel.state.title ?? libPanelModel.title;
@@ -108,7 +108,7 @@ export class LibraryPanelBehavior extends SceneObjectBase<LibraryPanelBehaviorSt
     const isPublicDashboard = dashboard.state.meta.publicDashboardEnabled === true;
     const isScriptedDashboard = dashboard.state.meta.fromScript === true;
     const shouldSkipRepeatMigration =
-      config.featureToggles.dashboardNewLayouts && !isPublicDashboard && !isScriptedDashboard;
+      config.isFeatureEnabled('dashboardNewLayouts') && !isPublicDashboard && !isScriptedDashboard;
 
     // Migrate repeat options to layout element (only for legacy dashboards, or public/scripted dashboards)
     if (!shouldSkipRepeatMigration && libPanelModel.repeat && layoutElement instanceof DashboardGridItem) {

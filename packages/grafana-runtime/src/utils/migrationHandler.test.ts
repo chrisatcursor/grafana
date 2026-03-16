@@ -42,7 +42,7 @@ jest.mock('../services', () => ({
 }));
 
 describe('query migration', () => {
-  // Configure config.featureToggles.grafanaAPIServerWithExperimentalAPIs
+  // Configure config.isFeatureEnabled('grafanaAPIServerWithExperimentalAPIs')
   const originalFeatureToggles = config.featureToggles;
   beforeEach(() => {
     config.featureToggles = { ...originalFeatureToggles, grafanaAPIServerWithExperimentalAPIs: true };

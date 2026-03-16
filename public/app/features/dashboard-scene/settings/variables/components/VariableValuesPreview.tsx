@@ -66,7 +66,8 @@ export const VariableValuesPreview = ({ options, staticOptions }: VariableValues
   const styles = useStyles2(getStyles);
   const properties = useGetPropertiesFromOptions(options, staticOptions);
   const hasOptions = options.length > 0;
-  const displayMultiPropsPreview = config.featureToggles.multiPropsVariables && hasOptions && properties.length > 2;
+  const displayMultiPropsPreview =
+    config.isFeatureEnabled('multiPropsVariables') && hasOptions && properties.length > 2;
 
   return (
     <div className={styles.previewContainer} style={{ gap: '8px' }}>

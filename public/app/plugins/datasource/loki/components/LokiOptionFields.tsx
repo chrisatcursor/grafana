@@ -34,7 +34,7 @@ export const queryDirections: Array<SelectableValue<LokiQueryDirection>> = [
   },
 ];
 
-if (config.featureToggles.lokiShardSplitting) {
+if (config.isFeatureEnabled('lokiShardSplitting')) {
   queryDirections.push({
     value: LokiQueryDirection.Scan,
     label: 'Scan',
@@ -43,7 +43,7 @@ if (config.featureToggles.lokiShardSplitting) {
   });
 }
 
-if (config.featureToggles.lokiExperimentalStreaming) {
+if (config.isFeatureEnabled('lokiExperimentalStreaming')) {
   queryTypeOptions.push({
     value: LokiQueryType.Stream,
     label: 'Stream',

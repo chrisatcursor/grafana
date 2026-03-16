@@ -276,7 +276,7 @@ const LogsQueryEditor = ({
         </EditorRow>
         <Space />
         {query.azureLogAnalytics?.mode === LogsEditorMode.Builder &&
-        !!config.featureToggles.azureMonitorLogsBuilderEditor ? (
+        !!config.isFeatureEnabled('azureMonitorLogsBuilderEditor') ? (
           <LogsQueryBuilder
             query={query}
             schema={schema}

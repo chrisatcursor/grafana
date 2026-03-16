@@ -384,7 +384,7 @@ export class UnthemedQueryEditor extends React.PureComponent<Props, State> {
           </InlineField>
         </InlineFieldRow>
         {queryType === GrafanaQueryType.RandomWalk &&
-          config.featureToggles.dashboardTemplates &&
+          config.isFeatureEnabled('dashboardTemplates') &&
           this.renderRandomWalkQuery()}
         {queryType === GrafanaQueryType.LiveMeasurements && this.renderMeasurementsQuery()}
         {queryType === GrafanaQueryType.List && this.renderListPublicFiles()}

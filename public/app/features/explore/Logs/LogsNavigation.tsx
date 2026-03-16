@@ -46,7 +46,7 @@ const getStyles = (theme: GrafanaTheme2, oldestLogsFirst: boolean) => {
   return {
     navContainer: css({
       maxHeight: navContainerHeight,
-      width: oldestLogsFirst && !config.featureToggles.newLogsPanel ? '58px' : 'auto',
+      width: oldestLogsFirst && !config.isFeatureEnabled('newLogsPanel') ? '58px' : 'auto',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-end',

@@ -11,6 +11,7 @@ import (
 	"golang.org/x/sync/singleflight"
 
 	claims "github.com/grafana/authlib/types"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/infra/localcache"
 	"github.com/grafana/grafana/pkg/infra/log"
@@ -78,8 +79,7 @@ func (s *OAuthTokenSync) SyncOauthTokenHook(ctx context.Context, id *authn.Ident
 	ctxLogger := s.log.FromContext(ctx).New("userID", userID)
 
 	cacheKey := fmt.Sprintf("token-check-%s", id.GetID())
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagImprovedExternalSessionHandling, false, openfeature.EvaluationContext{}) {
 		cacheKey = fmt.Sprintf("token-check-%s-%d", id.GetID(), id.SessionToken.Id)
 	}
 

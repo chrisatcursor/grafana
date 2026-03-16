@@ -10,10 +10,7 @@ export const getConfig = () => {
 };
 
 export const updateConfig = (update: Partial<GrafanaBootConfig>) => {
-  grafanaConfig = {
-    ...grafanaConfig,
-    ...update,
-  };
+  Object.assign(grafanaConfig, update);
 };
 
 // The `enable_alpha` flag is not exposed directly, this is equivalent

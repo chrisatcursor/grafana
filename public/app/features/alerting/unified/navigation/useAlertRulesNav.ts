@@ -12,7 +12,7 @@ import { shouldAllowRecoveringDeletedRules } from '../featureToggles';
  * Use this for pages that need to reference the Alert rules navigation.
  */
 export function getAlertRulesNavId(): string {
-  return config.featureToggles.alertingNavigationV2 ? 'alert-rules' : 'alert-list';
+  return config.isFeatureEnabled('alertingNavigationV2') ? 'alert-rules' : 'alert-list';
 }
 
 export function useAlertRulesNav() {
@@ -20,7 +20,7 @@ export function useAlertRulesNav() {
   const navIndex = useSelector((state) => state.navIndex);
 
   // Check if V2 navigation is enabled
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
   if (!useV2Nav) {
     // Legacy navigation: return simple navId

@@ -230,7 +230,7 @@ export function transformSaveModelSchemaV2ToScene(dto: DashboardWithAccessInfo<D
         new behaviors.LiveNowTimer({ enabled: dashboard.liveNow }),
         addPanelsOnLoadBehavior,
         new DashboardReloadBehavior({
-          reloadOnParamsChange: config.featureToggles.reloadDashboardsOnParamsChange && false,
+          reloadOnParamsChange: config.isFeatureEnabled('reloadDashboardsOnParamsChange') && false,
           uid: metadata.name,
         }),
         ...(enableProfiling ? [dashboardAnalyticsInitializer] : []),
@@ -290,7 +290,7 @@ function createVariablesForDashboard(dashboard: DashboardV2Spec) {
     .filter((v): v is SceneVariable => Boolean(v));
 
   // Explicitly disable scopes for public dashboards
-  if (config.featureToggles.scopeFilters && !config.publicDashboardAccessToken) {
+  if (config.isFeatureEnabled('scopeFilters') && !config.publicDashboardAccessToken) {
     variableObjects.push(new ScopesVariable({ enable: true }));
   }
 
@@ -332,12 +332,12 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       baseFilters: variable.spec.baseFilters ?? [],
       defaultKeys: variable.spec.defaultKeys.length ? variable.spec.defaultKeys : undefined,
       useQueriesAsFilterForOptions: true,
-      drilldownRecommendationsEnabled: config.featureToggles.drilldownRecommendations,
+      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
       layout: 'combobox',
       supportsMultiValueOperators: Boolean(
         getDataSourceSrv().getInstanceSettings({ type: ds?.type })?.meta.multiValueFilterOperators
       ),
-      collapsible: config.featureToggles.dashboardAdHocAndGroupByWrapper,
+      collapsible: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
     };
     if (variable.spec.allowCustomValue !== undefined) {
       adhocVariableState.allowCustomValue = variable.spec.allowCustomValue;
@@ -456,7 +456,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       skipUrlSync: variable.spec.skipUrlSync,
       hide: transformVariableHideToEnumV1(variable.spec.hide),
     });
-  } else if (config.featureToggles.groupByVariable && variable.kind === defaultGroupByVariableKind().kind) {
+  } else if (config.isFeatureEnabled('groupByVariable') && variable.kind === defaultGroupByVariableKind().kind) {
     const ds = getDataSourceForQuery(
       {
         type: variable.group,
@@ -473,8 +473,8 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       skipUrlSync: variable.spec.skipUrlSync,
       isMulti: variable.spec.multi,
       hide: transformVariableHideToEnumV1(variable.spec.hide),
-      wideInput: config.featureToggles.dashboardAdHocAndGroupByWrapper,
-      drilldownRecommendationsEnabled: config.featureToggles.drilldownRecommendations,
+      wideInput: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
+      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
       // @ts-expect-error
       defaultOptions: variable.options,
       defaultValue: variable.spec.defaultValue

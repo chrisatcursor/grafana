@@ -117,7 +117,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     });
 
     it('shows the "Recently deleted" button when restore is enabled', async () => {
-      const previousFlag = config.featureToggles.restoreDashboards;
+      const previousFlag = config.isFeatureEnabled('restoreDashboards');
       config.featureToggles.restoreDashboards = true;
 
       render(<BrowseDashboardsPage queryParams={{}} />);

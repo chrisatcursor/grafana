@@ -82,7 +82,7 @@ const TeamPages = memo(() => {
           if (canReadTeamPermissions) {
             return <TeamGroupSync isReadOnly={!canWriteTeamPermissions} teamUid={teamUid} />;
           }
-        } else if (config.featureToggles.featureHighlights) {
+        } else if (config.isFeatureEnabled('featureHighlights')) {
           return (
             <>
               <UpgradeBox featureName={'team sync'} featureId={'team-sync'} />

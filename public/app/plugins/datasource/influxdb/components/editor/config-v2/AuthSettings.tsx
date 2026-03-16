@@ -245,7 +245,7 @@ export const AuthSettings = (props: Props) => {
                       onChange={(e) => authProps.TLS?.TLSClientAuth.onClientCertificateChange(e.currentTarget.value)}
                       hasCert={!!authProps.TLS?.TLSClientAuth.clientCertificateConfigured}
                       onClick={() => authProps.TLS?.TLSClientAuth.onClientCertificateReset()}
-                      useGrow={config.featureToggles.newInfluxDSConfigPageDesign}
+                      useGrow={config.isFeatureEnabled('newInfluxDSConfigPageDesign')}
                     />
                     <CertificationKey
                       label="Client Key"
@@ -253,7 +253,7 @@ export const AuthSettings = (props: Props) => {
                       onChange={(e) => authProps.TLS?.TLSClientAuth.onClientKeyChange(e.currentTarget.value)}
                       hasCert={!!authProps.TLS?.TLSClientAuth.clientKeyConfigured}
                       onClick={() => authProps.TLS?.TLSClientAuth.onClientKeyReset()}
-                      useGrow={config.featureToggles.newInfluxDSConfigPageDesign}
+                      useGrow={config.isFeatureEnabled('newInfluxDSConfigPageDesign')}
                     />
                   </Box>
                 )}
@@ -281,7 +281,7 @@ export const AuthSettings = (props: Props) => {
                       onChange={(e) => authProps.TLS?.selfSignedCertificate.onCertificateChange(e.currentTarget.value)}
                       hasCert={!!authProps.TLS?.selfSignedCertificate.certificateConfigured}
                       onClick={() => authProps.TLS?.selfSignedCertificate.onCertificateReset()}
-                      useGrow={config.featureToggles.newInfluxDSConfigPageDesign}
+                      useGrow={config.isFeatureEnabled('newInfluxDSConfigPageDesign')}
                     />
                   </Box>
                 )}

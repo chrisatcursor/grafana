@@ -60,42 +60,34 @@ func ProvideAppInstallers(
 	if featureClient.Boolean(context.Background(), featuremgmt.FlagKubernetesUnifiedStorageQuotas, false, openfeature.TransactionContext(context.Background())) {
 		installers = append(installers, quotasAppInstaller)
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesShortURLs) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesShortURLs, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, shorturlAppInstaller)
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesAlertingRules) && rulesAppInstaller != nil {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAlertingRules, false, openfeature.EvaluationContext{}) && rulesAppInstaller != nil {
 		installers = append(installers, rulesAppInstaller)
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesCorrelations) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesCorrelations, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, correlationsAppInstaller)
 	}
 	if alertingNotificationAppInstaller != nil {
 		installers = append(installers, alertingNotificationAppInstaller)
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesLogsDrilldown) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesLogsDrilldown, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, logsdrilldownAppInstaller)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagGrafanaAdvisor) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagGrafanaAdvisor, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, advisorAppInstaller)
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesAlertingHistorian) && alertingHistorianAppInstaller != nil {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAlertingHistorian, false, openfeature.EvaluationContext{}) && alertingHistorianAppInstaller != nil {
 		installers = append(installers, alertingHistorianAppInstaller)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagLiveAPIServer) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagLiveAPIServer, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, liveAppInstaller)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagDashboardValidatorApp) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDashboardValidatorApp, false, openfeature.EvaluationContext{}) {
 		installers = append(installers, dashvalidatorAppInstaller)
 	}
 

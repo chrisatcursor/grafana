@@ -47,7 +47,7 @@ export const SettingsProvider = (props: PropsWithChildren) => {
   // this will be used to infer the correct "delivery mode" and update the correct list of datasources with "wantsAlertsReceived"
   const interestedAlertmanagers: string[] = [];
 
-  const forwardingDisabled = config.featureToggles.alertingDisableSendAlertsExternal === true;
+  const forwardingDisabled = config.isFeatureEnabled('alertingDisableSendAlertsExternal') === true;
 
   const { currentData: configuration, isLoading: isLoadingConfiguration } =
     alertmanagerApi.endpoints.getGrafanaAlertingConfiguration.useQuery();

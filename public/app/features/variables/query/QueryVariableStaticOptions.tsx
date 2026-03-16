@@ -32,7 +32,7 @@ export function QueryVariableStaticOptions(props: QueryVariableStaticOptionsProp
   const { options, staticOptions, onStaticOptionsChange, staticOptionsOrder, onStaticOptionsOrderChange } = props;
   const value = SORT_OPTIONS.find((o) => o.value === staticOptionsOrder) ?? SORT_OPTIONS[0];
   const [areStaticOptionsEnabled, setAreStaticOptionsEnabled] = useState(!!staticOptions?.length);
-  const displayMultiPropsEditor = areStaticOptionsEnabled && config.featureToggles.multiPropsVariables;
+  const displayMultiPropsEditor = areStaticOptionsEnabled && config.isFeatureEnabled('multiPropsVariables');
   const properties = useGetPropertiesFromOptions(options, staticOptions);
 
   return (

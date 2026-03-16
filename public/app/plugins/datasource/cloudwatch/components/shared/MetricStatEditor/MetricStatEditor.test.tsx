@@ -10,7 +10,7 @@ import { validMetricSearchBuilderQuery } from '../../../mocks/queries';
 
 import { MetricStatEditor } from './MetricStatEditor';
 
-const originalFeatureToggleValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+const originalFeatureToggleValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 const ds = setupMockedDataSource({
   variables: [statisticVariable],
 });

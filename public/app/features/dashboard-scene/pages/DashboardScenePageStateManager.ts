@@ -365,7 +365,7 @@ abstract class DashboardScenePageStateManagerBase<T>
         return;
       }
 
-      if (config.featureToggles.preserveDashboardStateWhenNavigating && Boolean(options.uid)) {
+      if (config.isFeatureEnabled('preserveDashboardStateWhenNavigating') && Boolean(options.uid)) {
         restoreDashboardStateFromLocalStorage(dashboard);
       }
 
@@ -510,9 +510,9 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
 
       // Special handling for Template route - set up edit mode and dirty state
       if (
-        (config.featureToggles.dashboardLibrary ||
-          config.featureToggles.suggestedDashboards ||
-          config.featureToggles.dashboardTemplates) &&
+        (config.isFeatureEnabled('dashboardLibrary') ||
+          config.isFeatureEnabled('suggestedDashboards') ||
+          config.isFeatureEnabled('dashboardTemplates')) &&
         options.route === DashboardRoutes.Template
       ) {
         scene.setInitialSaveModel(rsp.dashboard, rsp.meta);
@@ -738,7 +738,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
         default:
           // If reloadDashboardsOnParamsChange is on, we need to process query params for dashboard load
           // Since the scene is not yet there, we need to process whatever came through URL
-          if (config.featureToggles.reloadDashboardsOnParamsChange) {
+          if (config.isFeatureEnabled('reloadDashboardsOnParamsChange')) {
             const queryParamsObject = processQueryParamsForDashboardLoad();
             rsp = await dashboardLoaderSrv.loadDashboard(type || 'db', slug || '', uid, queryParamsObject);
           } else {
@@ -836,7 +836,7 @@ export class DashboardScenePageStateManager extends DashboardScenePageStateManag
       const scene = transformSaveModelToScene(rsp, undefined, sceneCreationOptions);
 
       // we need to call and restore dashboard state on every reload that pulls a new dashboard version
-      if (config.featureToggles.preserveDashboardStateWhenNavigating && Boolean(uid)) {
+      if (config.isFeatureEnabled('preserveDashboardStateWhenNavigating') && Boolean(uid)) {
         restoreDashboardStateFromLocalStorage(scene);
       }
 
@@ -1036,7 +1036,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
       const scene = transformSaveModelSchemaV2ToScene(rsp);
 
       // we need to call and restore dashboard state on every reload that pulls a new dashboard version
-      if (config.featureToggles.preserveDashboardStateWhenNavigating && Boolean(uid)) {
+      if (config.isFeatureEnabled('preserveDashboardStateWhenNavigating') && Boolean(uid)) {
         restoreDashboardStateFromLocalStorage(scene);
       }
 
@@ -1061,7 +1061,7 @@ export class DashboardScenePageStateManagerV2 extends DashboardScenePageStateMan
 }
 
 export function shouldForceV2API(): boolean {
-  return Boolean(config.featureToggles.dashboardNewLayouts);
+  return Boolean(config.isFeatureEnabled('dashboardNewLayouts'));
 }
 
 export class UnifiedDashboardScenePageStateManager extends DashboardScenePageStateManagerBase<

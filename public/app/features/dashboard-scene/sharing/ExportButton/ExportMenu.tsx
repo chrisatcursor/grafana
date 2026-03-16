@@ -40,7 +40,7 @@ export default function ExportMenu({ dashboard }: { dashboard: DashboardScene })
 
     customShareDrawerItem.forEach((d) => menuItems.push(d));
 
-    const label = config.featureToggles.kubernetesDashboards
+    const label = config.isFeatureEnabled('kubernetesDashboards')
       ? t('dashboard.toolbar.new.export.tooltip.as-code', 'Export as code')
       : t('share-dashboard.menu.export-json-title', 'Export as JSON');
 
@@ -58,7 +58,7 @@ export default function ExportMenu({ dashboard }: { dashboard: DashboardScene })
       testId: newExportButtonSelector.exportAsImage,
       icon: 'camera',
       label: t('share-dashboard.menu.export-image-title', 'Export as image'),
-      renderCondition: Boolean(config.featureToggles.sharingDashboardImage),
+      renderCondition: Boolean(config.isFeatureEnabled('sharingDashboardImage')),
       onClick: () => onMenuItemClick(shareDashboardType.image),
     });
 

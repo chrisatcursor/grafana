@@ -366,7 +366,7 @@ const getLineStyle = (lineStyle?: LineStyle) => {
 };
 
 export const getParentBoundingClientRect = (scene: Scene) => {
-  if (config.featureToggles.canvasPanelPanZoom) {
+  if (config.isFeatureEnabled('canvasPanelPanZoom')) {
     return scene.viewportDiv?.getBoundingClientRect();
   }
 

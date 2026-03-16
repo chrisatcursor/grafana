@@ -1,3 +1,4 @@
+import { OpenFeature } from '@openfeature/react-sdk';
 import { merge } from 'lodash';
 
 import {
@@ -27,6 +28,8 @@ import {
   GrafanaConfig,
   CurrentUserDTO,
 } from '@grafana/data';
+
+const GRAFANA_CORE_OPEN_FEATURE_DOMAIN = 'internal-grafana-core';
 
 /**
  * @deprecated Use the type from `@grafana/data`
@@ -144,6 +147,15 @@ export class GrafanaBootConfig {
   theme: GrafanaTheme;
   theme2: GrafanaTheme2;
   featureToggles: FeatureToggles = {};
+
+  isFeatureEnabled = (featureFlag: keyof FeatureToggles, defaultValue = false): boolean => {
+    const fromBootData = this.featureToggles?.[featureFlag];
+    if (typeof fromBootData === 'boolean') {
+      return fromBootData;
+    }
+
+    return OpenFeature.getClient(GRAFANA_CORE_OPEN_FEATURE_DOMAIN).getBooleanValue(featureFlag, defaultValue);
+  };
   anonymousEnabled = false;
   anonymousDeviceLimit?: number;
   licenseInfo: LicenseInfo = {} as LicenseInfo;

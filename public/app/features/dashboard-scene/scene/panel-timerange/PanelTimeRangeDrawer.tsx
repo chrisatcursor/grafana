@@ -142,7 +142,7 @@ export class PanelTimeRangeDrawer extends SceneObjectBase<PanelTimeRangeDrawerSt
             />
           </Field>
 
-          {config.featureToggles.timeComparison && (
+          {config.isFeatureEnabled('timeComparison') && (
             <Field
               noMargin
               label={

@@ -119,7 +119,7 @@ function getDefaultEditorSettings(ruleType?: RuleFormType) {
     return undefined;
   }
 
-  const editorSettingsEnabled = config.featureToggles.alertingQueryAndExpressionsStepMode ?? false;
+  const editorSettingsEnabled = config.isFeatureEnabled('alertingQueryAndExpressionsStepMode') ?? false;
   if (!editorSettingsEnabled) {
     return undefined;
   }

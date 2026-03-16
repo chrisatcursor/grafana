@@ -4,7 +4,7 @@ import { PreviewBannerViewPR } from 'app/features/provisioning/components/Shared
 import { usePullRequestParam } from 'app/features/provisioning/hooks/usePullRequestParam';
 
 export function ProvisionedFolderPreviewBanner({ queryParams }: CommonBannerProps) {
-  const provisioningEnabled = config.featureToggles.provisioning;
+  const provisioningEnabled = config.isFeatureEnabled('provisioning');
   const { prURL, newPrURL, repoURL } = usePullRequestParam();
 
   if (!provisioningEnabled || 'kiosk' in queryParams) {

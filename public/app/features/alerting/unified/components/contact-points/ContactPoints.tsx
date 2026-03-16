@@ -211,7 +211,7 @@ export const ContactPointsPageContents = () => {
 
   // When V2 navigation is enabled, Templates has its own dedicated tab in the navigation,
   // so we don't show local tabs here - just show the contact points content directly
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
   // Depending on permissions, user may not have access to all tabs,
   // but we can default to picking the first one that they definitely _do_ have access to

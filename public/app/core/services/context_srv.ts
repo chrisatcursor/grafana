@@ -128,7 +128,7 @@ export class ContextSrv {
   }
 
   setRedirectToUrl() {
-    if (config.featureToggles.useSessionStorageForRedirection) {
+    if (config.isFeatureEnabled('useSessionStorageForRedirection')) {
       window.sessionStorage.setItem(
         RedirectToUrlKey,
         encodeURIComponent(window.location.href.substring(window.location.origin.length))

@@ -127,7 +127,7 @@ export const LogsVolumePanelList = ({
   });
 
   const canShowPartialData =
-    config.featureToggles.lokiShardSplitting && logsVolumeData && logsVolumeData.data.length > 0;
+    config.isFeatureEnabled('lokiShardSplitting') && logsVolumeData && logsVolumeData.data.length > 0;
   const timeoutError = isTimeoutErrorResponse(logsVolumeData);
   const maxBytesError = isMaxBytesErrorResponse(logsVolumeData);
   const queryTooLargeError = timeoutError || maxBytesError;

@@ -47,7 +47,7 @@ export const CommunityDashboardSection = ({ onShowMapping, datasourceType }: Pro
   const datasourceUid = searchParams.get('dashboardLibraryDatasourceUid');
   const [searchQuery, setSearchQuery] = useState('');
   const hasTrackedLoaded = useRef(false);
-  const isCompatibilityAppEnabled = config.featureToggles.dashboardValidatorApp;
+  const isCompatibilityAppEnabled = config.isFeatureEnabled('dashboardValidatorApp');
 
   // New state for compatibility badge feature
   const [compatibilityMap, setCompatibilityMap] = useState<Map<number, CompatibilityState>>(new Map());

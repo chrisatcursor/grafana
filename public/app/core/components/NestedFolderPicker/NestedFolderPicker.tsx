@@ -379,7 +379,9 @@ function useTeamFolders(
   value?: string,
   onChange?: (folderUID: string | undefined, folderName: string | undefined) => void
 ) {
-  const { foldersByTeam } = useGetTeamFolders({ skip: !config.featureToggles.teamFolders });
+  const { foldersByTeam } = useGetTeamFolders({
+    skip: !config.isFeatureEnabled('teamFolders'),
+  });
   const teamFolders = useMemo(() => foldersByTeam.flatMap(({ folders }) => folders), [foldersByTeam]);
   const firstTeamFolder = teamFolders[0];
 

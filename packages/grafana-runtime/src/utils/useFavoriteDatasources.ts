@@ -42,7 +42,7 @@ export function useFavoriteDatasources(): FavoriteDatasources {
 
   // Load favorites from storage on mount
   useEffect(() => {
-    if (!config.featureToggles.favoriteDatasources) {
+    if (!config.isFeatureEnabled('favoriteDatasources')) {
       return;
     }
 
@@ -100,7 +100,7 @@ export function useFavoriteDatasources(): FavoriteDatasources {
     [favoriteDatasources]
   );
 
-  if (!config.featureToggles.favoriteDatasources) {
+  if (!config.isFeatureEnabled('favoriteDatasources')) {
     return {
       enabled: false,
       isLoading: false,

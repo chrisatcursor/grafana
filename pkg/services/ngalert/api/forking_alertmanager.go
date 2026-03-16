@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	amv2 "github.com/prometheus/alertmanager/api/v2/models"
 
 	"github.com/grafana/grafana/pkg/api/response"
@@ -58,8 +60,7 @@ func (f *AlertmanagerApiHandler) getService(ctx *contextmodel.ReqContext) (*Lote
 // Extra configs are the alertmanager configurations that were saved using the Prometheus conversion API.
 func (f *AlertmanagerApiHandler) isExtraConfig(ctx *contextmodel.ReqContext) bool {
 	// Only enabled if feature flag is on
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !f.FeatureManager.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerUI) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingImportAlertmanagerUI, false, openfeature.EvaluationContext{}) {
 		return false
 	}
 

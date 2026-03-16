@@ -1,10 +1,12 @@
 package query
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/open-feature/go-sdk/openfeature"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/kube-openapi/pkg/spec3"
 	"k8s.io/kube-openapi/pkg/validation/spec"
@@ -65,8 +67,7 @@ func (b *QueryAPIBuilder) GetAPIRoutes(gv schema.GroupVersion) *builder.APIRoute
 	}
 
 	// Get a list of all datasource instances
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !b.features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryServiceWithConnections, false, openfeature.EvaluationContext{}) {
 		return routes
 	}
 

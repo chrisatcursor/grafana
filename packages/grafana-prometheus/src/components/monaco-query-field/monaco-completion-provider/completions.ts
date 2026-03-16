@@ -246,7 +246,7 @@ async function getLabelValuesForMetricCompletions(
 }
 
 function formatLabelValueForCompletion(value: string, betweenQuotes: boolean): string {
-  const text = config.featureToggles.prometheusSpecialCharsInLabelValues ? prometheusRegularEscape(value) : value;
+  const text = config.isFeatureEnabled('prometheusSpecialCharsInLabelValues') ? prometheusRegularEscape(value) : value;
   return betweenQuotes ? text : `"${text}"`;
 }
 

@@ -18,7 +18,7 @@ interface DrilldownControlsProps {
  */
 export function DrilldownControls({ adHocVar, groupByVar, isEditing }: DrilldownControlsProps) {
   const styles = useStyles2(getStyles);
-  const isEditingNewLayouts = isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = isEditing && config.isFeatureEnabled('dashboardNewLayouts');
 
   return (
     <div className={styles.drilldownRow}>

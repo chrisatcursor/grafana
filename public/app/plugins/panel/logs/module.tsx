@@ -24,7 +24,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
         description: '',
       });
 
-    if (!config.featureToggles.newLogsPanel) {
+    if (!config.isFeatureEnabled('newLogsPanel')) {
       builder.addBooleanSwitch({
         path: 'showCommonLabels',
         name: t('logs.name-common-labels', 'Common labels'),
@@ -69,7 +69,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
     });
 
     // In the old panel this is an independent option, in the new panel is linked to wrapLogMessage
-    if (!config.featureToggles.newLogsPanel || context.options?.wrapLogMessage) {
+    if (!config.isFeatureEnabled('newLogsPanel') || context.options?.wrapLogMessage) {
       builder.addBooleanSwitch({
         path: 'prettifyLogMessage',
         name: t('logs.name-prettify-json', 'Prettify JSON'),
@@ -79,7 +79,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
       });
     }
 
-    if (config.featureToggles.newLogsPanel) {
+    if (config.isFeatureEnabled('newLogsPanel')) {
       builder.addBooleanSwitch({
         path: 'syntaxHighlighting',
         name: t('logs.name-enable-logs-highlighting', 'Enable logs highlighting'),
@@ -99,7 +99,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
       defaultValue: true,
     });
 
-    if (config.featureToggles.newLogsPanel && context.options?.enableLogDetails) {
+    if (config.isFeatureEnabled('newLogsPanel') && context.options?.enableLogDetails) {
       builder.addRadio({
         path: 'detailsMode',
         name: t('logs.name-details-mode', 'Log details panel mode'),
@@ -117,7 +117,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
       });
     }
 
-    if (config.featureToggles.newLogsPanel) {
+    if (config.isFeatureEnabled('newLogsPanel')) {
       builder.addBooleanSwitch({
         path: 'showFieldSelector',
         name: t('logs.name-enable-field-selector', 'Enable field selector'),
@@ -141,7 +141,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
       defaultValue: false,
     });
 
-    if (config.featureToggles.otelLogsFormatting) {
+    if (config.isFeatureEnabled('otelLogsFormatting')) {
       builder.addBooleanSwitch({
         path: 'showLogAttributes',
         name: t('logs.show-log-attributes', 'Display log attributes for OTel logs'),
@@ -154,7 +154,7 @@ export const plugin = new PanelPlugin<Options>(LogsPanel)
       });
     }
 
-    if (config.featureToggles.newLogsPanel) {
+    if (config.isFeatureEnabled('newLogsPanel')) {
       builder
         .addBooleanSwitch({
           path: 'showControls',

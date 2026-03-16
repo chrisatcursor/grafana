@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/star"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type API struct {
@@ -27,8 +29,7 @@ func ProvideApi(
 	starService star.Service,
 	configProvider apiserver.DirectRestConfigProvider,
 ) *API {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagKubernetesStars) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesStars, false, openfeature.EvaluationContext{}) {
 		starService = nil // don't use it
 	}
 	return &API{

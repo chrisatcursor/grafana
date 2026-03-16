@@ -27,14 +27,14 @@ export function VisualizationSuggestionCard({
   const styles = useStyles2(getStyles);
   const { innerStyles, outerStyles, renderWidth, renderHeight } = getPreviewDimensionsAndStyles(width);
   const cardOptions = suggestion.cardOptions ?? {};
-  const isNewVizSuggestionsEnabled = config.featureToggles.newVizSuggestions;
+  const isNewVizSuggestionsEnabled = config.isFeatureEnabled('newVizSuggestions');
 
   const commonButtonProps = {
     'aria-label': suggestion.name,
     className: cx(
       className,
       styles.vizBox,
-      config.featureToggles.newVizSuggestions && isSelected && styles.selectedBox
+      config.isFeatureEnabled('newVizSuggestions') && isSelected && styles.selectedBox
     ),
     'data-testid': selectors.components.VisualizationPreview.card(suggestion.name),
     style: outerStyles,

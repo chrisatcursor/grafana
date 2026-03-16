@@ -17,8 +17,8 @@ jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('uuid'),
 }));
 
-const originalShardingFlagState = config.featureToggles.lokiShardSplitting;
-const originalLokiQueryLimitsContextState = config.featureToggles.lokiQueryLimitsContext;
+const originalShardingFlagState = config.isFeatureEnabled('lokiShardSplitting');
+const originalLokiQueryLimitsContextState = config.isFeatureEnabled('lokiQueryLimitsContext');
 const originalErr = console.error;
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});

@@ -53,7 +53,7 @@ export function restoreDashboardStateFromLocalStorage(dashboard: DashboardScene)
  * Scenes behavior that will capture currently selected variables and time range and save them to local storage, so that they can be applied when the next dashboard is loaded.
  */
 export function preserveDashboardSceneStateInLocalStorage(search: URLSearchParams, uid?: string) {
-  if (!config.featureToggles.preserveDashboardStateWhenNavigating) {
+  if (!config.isFeatureEnabled('preserveDashboardStateWhenNavigating')) {
     return;
   }
 

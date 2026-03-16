@@ -192,7 +192,7 @@ export function sceneVariablesSetToVariables(set: SceneVariables, keepQueryOptio
         options: [{ ...current, selected: true }],
         query: variable.state.value,
       });
-    } else if (sceneUtils.isGroupByVariable(variable) && config.featureToggles.groupByVariable) {
+    } else if (sceneUtils.isGroupByVariable(variable) && config.isFeatureEnabled('groupByVariable')) {
       // @ts-expect-error
       const defaultVariableOption: VariableOption | undefined = variable.state.defaultValue
         ? {
@@ -503,7 +503,7 @@ export function sceneVariablesSetToSchemaV2Variables(
       variables.push(textBoxVariable);
 
       // Groupby variable
-    } else if (sceneUtils.isGroupByVariable(variable) && config.featureToggles.groupByVariable) {
+    } else if (sceneUtils.isGroupByVariable(variable) && config.isFeatureEnabled('groupByVariable')) {
       options = variableValueOptionsToVariableOptions(variable.state);
 
       // @ts-expect-error

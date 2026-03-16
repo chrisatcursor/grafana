@@ -44,11 +44,11 @@ const InternalDashboardEmpty = ({
         <div
           className={cx(styles.wrapper, {
             [styles.wrapperMaxWidth]:
-              !(config.featureToggles.dashboardLibrary || config.featureToggles.suggestedDashboards) ||
+              !(config.isFeatureEnabled('dashboardLibrary') || config.isFeatureEnabled('suggestedDashboards')) ||
               !dashboardLibraryDatasourceUid,
           })}
         >
-          {config.featureToggles.dashboardNewLayouts && dashboard instanceof DashboardScene ? (
+          {config.isFeatureEnabled('dashboardNewLayouts') && dashboard instanceof DashboardScene ? (
             <NewLayoutEmpty
               dashboard={dashboard}
               styles={styles}
@@ -75,13 +75,13 @@ const DashboardExtensionsComponents = ({
 }) => (
   <>
     {/* Suggested Dashboards Section */}
-    {config.featureToggles.suggestedDashboards &&
-      config.featureToggles.dashboardLibrary &&
+    {config.isFeatureEnabled('suggestedDashboards') &&
+      config.isFeatureEnabled('dashboardLibrary') &&
       dashboardLibraryDatasourceUid && <SuggestedDashboards datasourceUid={dashboardLibraryDatasourceUid} />}
 
     {/* Basic Provisioned Dashboards Section that don't include community dashboards */}
-    {config.featureToggles.dashboardLibrary &&
-      !config.featureToggles.suggestedDashboards &&
+    {config.isFeatureEnabled('dashboardLibrary') &&
+      !config.isFeatureEnabled('suggestedDashboards') &&
       dashboardLibraryDatasourceUid && (
         <BasicProvisionedDashboardsEmptyPage datasourceUid={dashboardLibraryDatasourceUid} />
       )}

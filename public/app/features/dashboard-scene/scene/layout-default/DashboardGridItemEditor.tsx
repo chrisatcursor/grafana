@@ -75,7 +75,7 @@ export function getDashboardGridItemOptions(gridItem: DashboardGridItem): Option
 
   const options = [repeatCategory];
 
-  if (config.featureToggles.dashboardNewLayouts) {
+  if (config.isFeatureEnabled('dashboardNewLayouts')) {
     options.push(conditionalRenderingCategory);
   }
 

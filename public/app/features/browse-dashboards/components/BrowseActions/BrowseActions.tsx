@@ -41,7 +41,7 @@ export function BrowseActions({ folderDTO }: Props) {
   const [moveFolders] = useMoveMultipleFoldersMutationFacade();
   const [moveDashboards] = useMoveDashboardsMutation();
   const [, stateManager] = useSearchStateManager();
-  const provisioningEnabled = config.featureToggles.provisioning;
+  const provisioningEnabled = config.isFeatureEnabled('provisioning');
 
   const { hasProvisioned, hasNonProvisioned } = useSelectionProvisioningStatus(
     selectedItems,
@@ -211,6 +211,6 @@ function trackAction(action: keyof typeof actionMap, selectedItems: Omit<Dashboa
       dashboard: selectedDashboards.length,
     },
     source: 'tree_actions',
-    restore_enabled: Boolean(config.featureToggles.restoreDashboards),
+    restore_enabled: Boolean(config.isFeatureEnabled('restoreDashboards')),
   });
 }

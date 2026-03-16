@@ -246,7 +246,7 @@ function PanelTimeRangeRenderer({ model }: SceneComponentProps<PanelTimeRange>) 
     return null;
   }
 
-  const onClick = config.featureToggles.panelTimeSettings ? model.onOpenSettings : undefined;
+  const onClick = config.isFeatureEnabled('panelTimeSettings') ? model.onOpenSettings : undefined;
 
   return (
     <Tooltip content={<TimePickerTooltip timeRange={model.state.value} timeZone={model.getTimeZone()} />}>

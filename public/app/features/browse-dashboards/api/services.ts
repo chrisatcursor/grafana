@@ -68,7 +68,7 @@ export async function listFolders(
 ): Promise<DashboardViewItem[]> {
   let folders: NestedFolderDTO[] = [];
   if (contextSrv.hasPermission(AccessControlAction.FoldersRead)) {
-    if (config.featureToggles.foldersAppPlatformAPI) {
+    if (config.isFeatureEnabled('foldersAppPlatformAPI')) {
       folders = await searchNewAPI(parentUID, page, pageSize);
     } else {
       folders = await searchOldAPI(parentUID, page, pageSize);

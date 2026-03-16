@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -22,6 +23,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/datasources"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // getK8sDataSourceByUIDHandler returns a handler that redirects GET /api/datasources/uid/:uid
@@ -29,15 +31,13 @@ import (
 //
 // Optional access control metadata is still fetched from the legacy accesscontrol service for now.
 func (hs *HTTPServer) getK8sDataSourceByUIDHandler() web.Handler {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !hs.Features.IsEnabledGlobally(featuremgmt.FlagDatasourcesRerouteLegacyCRUDAPIs) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDatasourcesRerouteLegacyCRUDAPIs, false, openfeature.EvaluationContext{}) {
 		return routing.Wrap(hs.GetDataSourceByUID)
 	}
 
 	// datasourcesRerouteLegacyCRUDAPIs requires these flags to be enabled
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryService) ||
-		!hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryService, false, openfeature.EvaluationContext{}) ||
+		!openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryServiceWithConnections, false, openfeature.EvaluationContext{}) {
 		return routing.Wrap(func(c *contextmodel.ReqContext) response.Response {
 			return response.Error(http.StatusInternalServerError,
 				"datasourcesRerouteLegacyCRUDAPIs requires queryService and queryServiceWithConnections feature flags",

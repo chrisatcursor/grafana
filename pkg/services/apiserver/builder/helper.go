@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"context"
 	"encoding/csv"
 	"encoding/json"
 	"errors"
@@ -10,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -383,8 +385,7 @@ func installAPIGroupsForBuilder(g *genericapiserver.APIGroupInfo, group string, 
 	}
 
 	// if grafanaAPIServerWithExperimentalAPIs is not enabled, remove v0alpha1 resources unless explicitly allowed
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs, false, openfeature.EvaluationContext{}) {
 		if resources, ok := g.VersionedResourcesStorageMap["v0alpha1"]; ok {
 			for name := range resources {
 				if !allowRegisteringResourceByInfo(b.AllowedV0Alpha1Resources(), name) {

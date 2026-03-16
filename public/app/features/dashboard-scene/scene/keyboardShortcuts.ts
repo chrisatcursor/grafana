@@ -134,7 +134,7 @@ export function setupKeyboardShortcuts(scene: DashboardScene) {
     onTrigger: () => sceneGraph.getTimeRange(scene).onRefresh(),
   });
 
-  if (config.featureToggles.newTimeRangeZoomShortcuts) {
+  if (config.isFeatureEnabled('newTimeRangeZoomShortcuts')) {
     keybindings.addBinding({
       key: 't +',
       onTrigger: () => {

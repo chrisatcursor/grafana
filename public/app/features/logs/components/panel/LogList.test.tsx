@@ -58,7 +58,7 @@ jest.mock('../../utils', () => ({
   enablePopoverMenu: jest.fn(),
 }));
 
-const originalFlagValue = config.featureToggles.newLogsPanel;
+const originalFlagValue = config.isFeatureEnabled('newLogsPanel');
 beforeAll(() => {
   config.featureToggles.newLogsPanel = true;
 });
@@ -184,7 +184,7 @@ describe('LogList', () => {
   });
 
   describe('OTel log lines', () => {
-    const originalState = config.featureToggles.otelLogsFormatting;
+    const originalState = config.isFeatureEnabled('otelLogsFormatting');
 
     test('Does not perform OTel-related actions when the flag is disabled', () => {
       config.featureToggles.otelLogsFormatting = false;
@@ -484,7 +484,7 @@ describe('LogList', () => {
     });
 
     test('Applies OTel default displayed fields and suggested fields', () => {
-      const originalState = config.featureToggles.otelLogsFormatting;
+      const originalState = config.isFeatureEnabled('otelLogsFormatting');
       config.featureToggles.otelLogsFormatting = true;
 
       const logs = [

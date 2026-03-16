@@ -22,7 +22,7 @@ export function getDashboardControlsAnnotations(dataState: SceneDataState, isEdi
 export function getDashboardControls(dashboard: DashboardScene) {
   const variables = getDashboardControlsVariables(sceneGraph.getVariables(dashboard)?.state.variables);
   const links = getDashboardControlsLinks(dashboard.state.links);
-  const isEditingNewLayouts = dashboard.state.isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = dashboard.state.isEditing && config.isFeatureEnabled('dashboardNewLayouts');
   const annotations = getDashboardControlsAnnotations(sceneGraph.getData(dashboard).state, isEditingNewLayouts);
 
   return {
@@ -41,7 +41,7 @@ export function useDashboardControls(dashboard: DashboardScene) {
   const dataState = sceneGraph.getData(dashboard).useState();
   const links = getDashboardControlsLinks(dashboardState.links);
 
-  const isEditingNewLayouts = dashboardState.isEditing && config.featureToggles.dashboardNewLayouts;
+  const isEditingNewLayouts = dashboardState.isEditing && config.isFeatureEnabled('dashboardNewLayouts');
   const annotations = getDashboardControlsAnnotations(dataState, isEditingNewLayouts);
 
   return {

@@ -7,6 +7,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/expr/mathexp"
 	"github.com/grafana/grafana/pkg/infra/log"
@@ -29,8 +30,7 @@ func (c *ResultConverter) Convert(ctx context.Context,
 	}
 
 	var dt data.FrameType
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	dt, useDataplane, _ := shouldUseDataplane(frames, logger, c.Features.IsEnabled(ctx, featuremgmt.FlagDisableSSEDataplane))
+	dt, useDataplane, _ := shouldUseDataplane(frames, logger, openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDisableSSEDataplane, false, openfeature.TransactionContext(ctx)))
 	if useDataplane {
 		logger.Debug("Handling SSE data source query through dataplane", "datatype", dt)
 		result, err := handleDataplaneFrames(ctx, c.Tracer, c.Features, dt, frames)

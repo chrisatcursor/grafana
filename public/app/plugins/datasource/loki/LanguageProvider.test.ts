@@ -506,7 +506,7 @@ describe('Language completion provider', () => {
     });
 
     describe('without labelNames feature toggle', () => {
-      const lokiLabelNamesQueryApi = config.featureToggles.lokiLabelNamesQueryApi;
+      const lokiLabelNamesQueryApi = config.isFeatureEnabled('lokiLabelNamesQueryApi');
       beforeAll(() => {
         config.featureToggles.lokiLabelNamesQueryApi = false;
       });
@@ -530,7 +530,7 @@ describe('Language completion provider', () => {
     });
 
     describe('with labelNames feature toggle', () => {
-      const lokiLabelNamesQueryApi = config.featureToggles.lokiLabelNamesQueryApi;
+      const lokiLabelNamesQueryApi = config.isFeatureEnabled('lokiLabelNamesQueryApi');
       beforeAll(() => {
         config.featureToggles.lokiLabelNamesQueryApi = true;
       });

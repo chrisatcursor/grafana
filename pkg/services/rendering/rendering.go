@@ -28,6 +28,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var _ Service = (*RenderingService)(nil)
@@ -111,8 +112,7 @@ func ProvideService(cfg *setting.Cfg, features featuremgmt.FeatureToggles, remot
 	}
 
 	var renderKeyProvider renderKeyProvider
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagRenderAuthJWT) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagRenderAuthJWT, false, openfeature.EvaluationContext{}) {
 		renderKeyProvider = &jwtRenderKeyProvider{
 			log:       logger,
 			authToken: []byte(cfg.RendererAuthToken),

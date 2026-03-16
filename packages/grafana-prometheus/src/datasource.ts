@@ -435,7 +435,7 @@ export class PrometheusDatasource
       }));
     }
 
-    if (config.featureToggles.groupByVariable) {
+    if (config.isFeatureEnabled('groupByVariable')) {
       processedTarget.groupByKeys = request.groupByKeys;
     }
 

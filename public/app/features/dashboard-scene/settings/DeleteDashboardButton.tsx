@@ -35,7 +35,7 @@ export function DeleteDashboardButton({ dashboard }: ButtonProps) {
         dashboard: 1,
       },
       source: 'dashboard_scene_settings',
-      restore_enabled: Boolean(config.featureToggles.restoreDashboards),
+      restore_enabled: Boolean(config.isFeatureEnabled('restoreDashboards')),
     });
     toggleModal();
     if (dashboard.state.uid) {
@@ -77,7 +77,7 @@ export function DeleteDashboardModal({ dashboardTitle, onConfirm, onClose }: Del
       isOpen={true}
       body={
         <>
-          {config.featureToggles.restoreDashboards && (
+          {config.isFeatureEnabled('restoreDashboards') && (
             <>
               <DeletedDashboardsInfo target="dashboard" />
               <Space v={1} />

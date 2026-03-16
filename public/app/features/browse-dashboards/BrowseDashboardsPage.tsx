@@ -202,7 +202,7 @@ const BrowseDashboardsPage = memo(({ queryParams }: { queryParams: Record<string
             }
           </AutoSizer>
         </div>
-        {config.featureToggles.dashboardTemplates && <TemplateDashboardModal />}
+        {config.isFeatureEnabled('dashboardTemplates') && <TemplateDashboardModal />}
       </Page.Contents>
     </Page>
   );

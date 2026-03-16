@@ -23,6 +23,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/team"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var _ pluginaccesscontrol.ActionSetRegistry = (ActionSetService)(nil)
@@ -364,8 +365,7 @@ func (s *Service) mapPermission(permission string) ([]string, error) {
 		actions = append(actions, GetActionSetName(s.options.Resource, permission))
 
 		// If we only want to store action sets, return now
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if s.features.IsEnabledGlobally(featuremgmt.FlagOnlyStoreActionSets) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagOnlyStoreActionSets, false, openfeature.EvaluationContext{}) {
 			return actions, nil
 		}
 	}

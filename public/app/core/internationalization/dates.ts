@@ -6,7 +6,7 @@ import { config } from '@grafana/runtime';
 
 const deepMemoize: typeof memoize = (fn) => memoize(fn, { isEqual: deepEqual });
 
-const isLocaleEnabled = config.featureToggles.localeFormatPreference;
+const isLocaleEnabled = config.isFeatureEnabled('localeFormatPreference');
 
 const createDateTimeFormatter = deepMemoize((locale: string, options: Intl.DateTimeFormatOptions) => {
   try {

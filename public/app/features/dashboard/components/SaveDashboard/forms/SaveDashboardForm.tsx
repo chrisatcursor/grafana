@@ -97,7 +97,7 @@ export const SaveDashboardForm = ({
           />
         )}
         <div className={styles.message}>
-          {config.featureToggles.aiGeneratedDashboardChanges && (
+          {config.isFeatureEnabled('aiGeneratedDashboardChanges') && (
             <GenAIDashboardChangesButton
               dashboard={dashboard}
               onGenerate={(text) => {

@@ -29,7 +29,7 @@ export const useStarItem = (group: string, kind: string) => {
 
   const updateStarred = useUpdateNavStarredItems();
 
-  if (config.featureToggles.starsFromAPIServer) {
+  if (config.isFeatureEnabled('starsFromAPIServer')) {
     return async ({ id, title }: StarItemArgs, newStarredState: boolean) => {
       const name = `user-${contextSrv.user.uid}`;
       const mutationArgs = { id, name, group, kind };
@@ -59,7 +59,7 @@ export const useStarItem = (group: string, kind: string) => {
  */
 export const useStarredItems = (group: string, kind: string) => {
   const name = `user-${contextSrv.user.uid}`;
-  const appPlatform = config.featureToggles.starsFromAPIServer;
+  const appPlatform = config.isFeatureEnabled('starsFromAPIServer');
   const legacyResponse = useLegacyGetStarsQuery(appPlatform ? skipToken : undefined);
   const queryArgs = !appPlatform ? skipToken : { fieldSelector: `metadata.name=${name}` };
   const appPlatformResponse = useListStarsQuery(queryArgs);

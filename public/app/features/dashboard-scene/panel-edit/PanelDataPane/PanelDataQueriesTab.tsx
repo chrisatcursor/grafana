@@ -352,7 +352,7 @@ export function PanelDataQueriesTabRendered({ model }: SceneComponentProps<Panel
   const { datasource, dsSettings } = model.useState();
   const { data, queries, datasource: datasourceState } = model.queryRunner.useState();
   const { openDrawer: openQueryLibraryDrawer, queryLibraryEnabled } = useQueryLibraryContext();
-  const canReadQueries = config.featureToggles.savedQueriesRBAC
+  const canReadQueries = config.isFeatureEnabled('savedQueriesRBAC')
     ? contextSrv.hasPermission(AccessControlAction.QueriesRead)
     : contextSrv.isSignedIn;
 

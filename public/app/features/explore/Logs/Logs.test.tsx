@@ -464,10 +464,10 @@ describe('Logs', () => {
   });
 
   describe('with table visualisation', () => {
-    let originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
+    let originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
 
     beforeAll(() => {
-      originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
+      originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
       config.featureToggles.logsExploreTableVisualisation = true;
     });
 

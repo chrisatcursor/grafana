@@ -151,7 +151,7 @@ async function initRudderstackBackend() {
   const hasOldSdkUrl = Boolean(config.rudderstackSdkUrl);
   const hasNewSdkUrl = Boolean(config.rudderstackV3SdkUrl);
   const onlyOneSdkUrlSet = hasOldSdkUrl !== hasNewSdkUrl;
-  const useNewRudderstack = onlyOneSdkUrlSet ? hasNewSdkUrl : config.featureToggles.rudderstackUpgrade;
+  const useNewRudderstack = onlyOneSdkUrlSet ? hasNewSdkUrl : config.isFeatureEnabled('rudderstackUpgrade');
 
   const sdkUrl = useNewRudderstack ? config.rudderstackV3SdkUrl : config.rudderstackSdkUrl;
 

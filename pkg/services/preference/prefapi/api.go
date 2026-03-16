@@ -11,6 +11,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	pref "github.com/grafana/grafana/pkg/services/preference"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 func UpdatePreferencesFor(ctx context.Context,
@@ -64,8 +65,7 @@ func UpdatePreferencesFor(ctx context.Context,
 		Navbar:           dtoCmd.Navbar,
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabled(ctx, featuremgmt.FlagLocaleFormatPreference) {
+	if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagLocaleFormatPreference, false, openfeature.TransactionContext(ctx)) {
 		saveCmd.RegionalFormat = dtoCmd.RegionalFormat
 	}
 
@@ -105,8 +105,7 @@ func GetPreferencesFor(ctx context.Context,
 			dto.Language = &preference.JSONData.Language
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if features.IsEnabled(ctx, featuremgmt.FlagLocaleFormatPreference) {
+		if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagLocaleFormatPreference, false, openfeature.TransactionContext(ctx)) {
 			if preference.JSONData.RegionalFormat != "" {
 				dto.RegionalFormat = &preference.JSONData.RegionalFormat
 			}

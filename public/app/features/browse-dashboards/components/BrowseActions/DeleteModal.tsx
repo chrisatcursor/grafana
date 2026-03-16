@@ -39,7 +39,7 @@ export const DeleteModal = ({ onConfirm, onDismiss, selectedItems, ...props }: P
         folder: Object.keys(selectedItems.folder).length,
       },
       source: 'browse_dashboards',
-      restore_enabled: Boolean(config.featureToggles.restoreDashboards),
+      restore_enabled: Boolean(config.isFeatureEnabled('restoreDashboards')),
     });
     setIsDeleting(true);
     try {
@@ -55,7 +55,7 @@ export const DeleteModal = ({ onConfirm, onDismiss, selectedItems, ...props }: P
     <ConfirmModal
       body={
         <>
-          {config.featureToggles.restoreDashboards && (
+          {config.isFeatureEnabled('restoreDashboards') && (
             <>
               <DeletedDashboardsInfo target="folder" />
               <Space v={2} />

@@ -37,7 +37,7 @@ export function createVariablesForDashboard(oldModel: DashboardModel) {
     .filter((v): v is SceneVariable => Boolean(v));
 
   // Explicitly disable scopes for public dashboards
-  if (config.featureToggles.scopeFilters && !config.publicDashboardAccessToken) {
+  if (config.isFeatureEnabled('scopeFilters') && !config.publicDashboardAccessToken) {
     variableObjects.push(new ScopesVariable({ enable: true }));
   }
 
@@ -162,9 +162,9 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       defaultKeys: variable.defaultKeys,
       allowCustomValue: variable.allowCustomValue,
       useQueriesAsFilterForOptions: true,
-      drilldownRecommendationsEnabled: config.featureToggles.drilldownRecommendations,
+      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
       layout: 'combobox',
-      collapsible: config.featureToggles.dashboardAdHocAndGroupByWrapper,
+      collapsible: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
       supportsMultiValueOperators: Boolean(
         getDataSourceSrv().getInstanceSettings({ type: variable.datasource?.type })?.meta.multiValueFilterOperators
       ),
@@ -283,7 +283,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       hide: variable.hide,
     });
     // Groupby variable
-  } else if (config.featureToggles.groupByVariable && variable.type === 'groupby') {
+  } else if (config.isFeatureEnabled('groupByVariable') && variable.type === 'groupby') {
     return new GroupByVariable({
       ...commonProperties,
       datasource: variable.datasource,
@@ -291,12 +291,12 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode
       text: variable.current?.text || [],
       skipUrlSync: variable.skipUrlSync,
       hide: variable.hide,
-      wideInput: config.featureToggles.dashboardAdHocAndGroupByWrapper,
+      wideInput: config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper'),
       // @ts-expect-error
       defaultOptions: variable.options,
       defaultValue: variable.defaultValue,
       allowCustomValue: variable.allowCustomValue,
-      drilldownRecommendationsEnabled: config.featureToggles.drilldownRecommendations,
+      drilldownRecommendationsEnabled: config.isFeatureEnabled('drilldownRecommendations'),
     });
     // Switch variable
     // In the old variable model we are storing the enabled and disabled values in the options:

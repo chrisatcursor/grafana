@@ -1,6 +1,4 @@
 import { DataFrameType, Field, FieldType, LogRowModel, MutableDataFrame, rangeUtil } from '@grafana/data';
-
-const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 import { setTemplateSrv } from '@grafana/runtime';
 import { ExploreFieldLinkModel, getFieldLinksForExplore } from 'app/features/explore/utils/links';
 import { TemplateSrv } from 'app/features/templating/template_srv';
@@ -8,6 +6,8 @@ import { GetFieldLinksFn } from 'app/plugins/panel/logs/types';
 
 import { getAllFields, createLogLineLinks, FieldDef, getDataframeFields } from './logParser';
 import { createLogRow } from './mocks/logRow';
+
+const mockTimeRange = () => rangeUtil.convertRawToRange({ from: 'now-6h', to: 'now' });
 
 describe('logParser', () => {
   describe('getAllFields', () => {

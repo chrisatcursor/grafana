@@ -120,7 +120,7 @@ const combineFolderResponses = (
 
 export async function getFolderByUidFacade(uid: string) {
   const isVirtualFolder = uid && [GENERAL_FOLDER_UID, config.sharedWithMeFolderUID].includes(uid);
-  const shouldUseAppPlatformAPI = Boolean(config.featureToggles.foldersAppPlatformAPI);
+  const shouldUseAppPlatformAPI = Boolean(config.isFeatureEnabled('foldersAppPlatformAPI'));
 
   // We need the legacy API call regardless, for now
   const legacyApiCall = dispatch(
@@ -182,7 +182,7 @@ export async function getFolderByUidFacade(uid: string) {
  * @param uid
  */
 export function useGetFolderQueryFacade(uid?: string) {
-  const shouldUseAppPlatformAPI = Boolean(config.featureToggles.foldersAppPlatformAPI);
+  const shouldUseAppPlatformAPI = Boolean(config.isFeatureEnabled('foldersAppPlatformAPI'));
   const isVirtualFolder = uid && [GENERAL_FOLDER_UID, config.sharedWithMeFolderUID].includes(uid);
   const params = !uid ? skipToken : { name: uid };
 
@@ -267,7 +267,7 @@ export function useDeleteFolderMutationFacade() {
 
   // TODO right now the app platform backend does not support cascading delete of children so we cannot use it.
   const isBackendSupport = false;
-  if (!(config.featureToggles.foldersAppPlatformAPI && isBackendSupport)) {
+  if (!(config.isFeatureEnabled('foldersAppPlatformAPI') && isBackendSupport)) {
     return deleteFolderLegacy;
   }
 
@@ -293,7 +293,7 @@ export function useDeleteMultipleFoldersMutationFacade() {
 
   // TODO right now the app platform backend does not support cascading delete of children so we cannot use it.
   const isBackendSupport = false;
-  if (!(config.featureToggles.foldersAppPlatformAPI && isBackendSupport)) {
+  if (!(config.isFeatureEnabled('foldersAppPlatformAPI') && isBackendSupport)) {
     return deleteFoldersLegacy;
   }
 
@@ -330,7 +330,7 @@ export function useMoveMultipleFoldersMutationFacade() {
   const dispatch = useDispatch();
   const refetch = useRefreshFolders();
 
-  if (!config.featureToggles.foldersAppPlatformAPI) {
+  if (!config.isFeatureEnabled('foldersAppPlatformAPI')) {
     return moveFoldersLegacyResult;
   }
 
@@ -372,7 +372,7 @@ export function useCreateFolder() {
   const legacyHook = useLegacyNewFolderMutation();
   const refresh = useRefreshFolders();
 
-  if (!config.featureToggles.foldersAppPlatformAPI) {
+  if (!config.isFeatureEnabled('foldersAppPlatformAPI')) {
     return legacyHook;
   }
 
@@ -440,7 +440,7 @@ export function useUpdateFolder() {
   const legacyHook = useLegacySaveFolderMutation();
   const refresh = useRefreshFolders();
 
-  if (!config.featureToggles.foldersAppPlatformAPI) {
+  if (!config.isFeatureEnabled('foldersAppPlatformAPI')) {
     return legacyHook;
   }
 
@@ -476,7 +476,7 @@ export function useMoveFolderMutationFacade() {
   const refresh = useRefreshFolders();
   const notify = useAppNotification();
 
-  if (!config.featureToggles.foldersAppPlatformAPI) {
+  if (!config.isFeatureEnabled('foldersAppPlatformAPI')) {
     return moveFolderResult;
   }
 
@@ -526,7 +526,7 @@ export function useGetAffectedItems({ folder, dashboard }: Pick<DashboardTreeSel
 
   // TODO: Remove constant condition here once we have a solution for the app platform counts
   // As of now, the counts are not calculated recursively, so we need to use the legacy API
-  const shouldUseAppPlatformAPI = false && Boolean(config.featureToggles.foldersAppPlatformAPI);
+  const shouldUseAppPlatformAPI = false && Boolean(config.isFeatureEnabled('foldersAppPlatformAPI'));
   const hookParams:
     | Parameters<typeof useLegacyGetAffectedItemsQuery>[0]
     | Parameters<typeof useGetAffectedItemsQuery>[0] = {

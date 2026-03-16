@@ -313,7 +313,7 @@ describe('LogListControls', () => {
   });
 
   test('Controls line wrapping and prettify JSON', async () => {
-    const originalFlagState = config.featureToggles.newLogsPanel;
+    const originalFlagState = config.isFeatureEnabled('newLogsPanel');
     config.featureToggles.newLogsPanel = true;
 
     const onLogOptionsChange = jest.fn();
@@ -353,7 +353,7 @@ describe('LogListControls', () => {
   });
 
   test('Enables column controls with unwrapped logs', async () => {
-    const originalFlagState = config.featureToggles.newLogsPanel;
+    const originalFlagState = config.isFeatureEnabled('newLogsPanel');
     config.featureToggles.newLogsPanel = true;
 
     const { rerender } = render(
@@ -382,7 +382,7 @@ describe('LogListControls', () => {
   });
 
   test('Disables column controls for wrapped logs', async () => {
-    const originalFlagState = config.featureToggles.newLogsPanel;
+    const originalFlagState = config.isFeatureEnabled('newLogsPanel');
     config.featureToggles.newLogsPanel = true;
 
     render(
@@ -398,7 +398,7 @@ describe('LogListControls', () => {
   });
 
   test('Controls timestamp resolution', async () => {
-    const originalFlagState = config.featureToggles.newLogsPanel;
+    const originalFlagState = config.isFeatureEnabled('newLogsPanel');
     config.featureToggles.newLogsPanel = true;
 
     const onLogOptionsChange = jest.fn();
@@ -471,7 +471,7 @@ describe('LogListControls', () => {
   });
 
   test('Controls font size', async () => {
-    const originalValue = config.featureToggles.newLogsPanel;
+    const originalValue = config.isFeatureEnabled('newLogsPanel');
     config.featureToggles.newLogsPanel = true;
 
     render(

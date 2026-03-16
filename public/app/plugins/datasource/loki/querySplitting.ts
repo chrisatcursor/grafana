@@ -129,7 +129,7 @@ export function runSplitGroupedQueries(
   const shardQueryIndex = options.shardQueryIndex ?? 0;
 
   const runNextRequest = (subscriber: Subscriber<DataQueryResponse>, requestN: number, requestGroup: number) => {
-    if (config.featureToggles.lokiQueryLimitsContext) {
+    if (config.isFeatureEnabled('lokiQueryLimitsContext')) {
       requests = addLimitsToSplitRequests(splitQueryIndex, shardQueryIndex, requests);
     }
 

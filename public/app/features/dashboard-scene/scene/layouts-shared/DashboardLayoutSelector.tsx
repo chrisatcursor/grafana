@@ -24,7 +24,7 @@ export function DashboardLayoutSelector({ layoutManager }: Props) {
   const [newLayout, setNewLayout] = useState<LayoutRegistryItem | undefined>();
 
   const disableTabsReason = useMemo(() => {
-    if (config.featureToggles.unlimitedLayoutsNesting) {
+    if (config.isFeatureEnabled('unlimitedLayoutsNesting')) {
       return undefined;
     }
 

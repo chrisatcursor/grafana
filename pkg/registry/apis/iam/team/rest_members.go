@@ -23,6 +23,7 @@ import (
 	"github.com/grafana/grafana/pkg/storage/unified/resource"
 	"github.com/grafana/grafana/pkg/storage/unified/resourcepb"
 	"github.com/grafana/grafana/pkg/storage/unified/search/builders"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var (
@@ -77,8 +78,7 @@ func (s *TeamMembersREST) ProducesObject(verb string) interface{} {
 // Connect implements rest.Connecter.
 func (s *TeamMembersREST) Connect(ctx context.Context, name string, options runtime.Object, responder rest.Responder) (http.Handler, error) {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//nolint:staticcheck // not migrated to OpenFeature
-		if !s.features.IsEnabledGlobally(featuremgmt.FlagKubernetesTeamBindings) {
+		if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesTeamBindings, false, openfeature.EvaluationContext{}) {
 			responder.Error(apierrors.NewForbidden(iamv0alpha1.TeamResourceInfo.GroupResource(),
 				name, errors.New("functionality not available")))
 			return

@@ -91,7 +91,7 @@ const DuplicateMessageTemplateComponent = () => {
 
 function DuplicateMessageTemplate() {
   const { navId } = useTemplatesNav();
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
   const parentUrl = getTemplateParentUrl(useV2Nav);
 
   return (

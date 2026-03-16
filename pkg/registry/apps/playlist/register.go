@@ -1,6 +1,7 @@
 package playlist
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/grafana/grafana-app-sdk/app"
 	appsdkapiserver "github.com/grafana/grafana-app-sdk/k8s/apiserver"
 	"github.com/grafana/grafana-app-sdk/simple"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/apps/playlist/pkg/apis/manifestdata"
 	playlistv0alpha1 "github.com/grafana/grafana/apps/playlist/pkg/apis/playlist/v0alpha1"
@@ -48,8 +50,7 @@ func RegisterAppInstaller(
 		service: p,
 	}
 	specificConfig := any(&playlistapp.PlaylistConfig{
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		EnableReconcilers: features.IsEnabledGlobally(featuremgmt.FlagPlaylistsReconciler),
+		EnableReconcilers: openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPlaylistsReconciler, false, openfeature.EvaluationContext{}),
 	})
 	provider := simple.NewAppProvider(manifestdata.LocalManifest(), specificConfig, playlistapp.New)
 

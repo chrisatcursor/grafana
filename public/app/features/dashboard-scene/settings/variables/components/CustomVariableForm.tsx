@@ -43,7 +43,7 @@ export function CustomVariableForm({
   onAllowCustomValueChange,
   onValuesFormatChange,
 }: CustomVariableFormProps) {
-  if (!config.featureToggles.multiPropsVariables) {
+  if (!config.isFeatureEnabled('multiPropsVariables')) {
     return (
       <CustomVariableFormNonMultiProps
         displayMultiPropsWarningBanner={valuesFormat === 'json'}
@@ -121,7 +121,7 @@ export function ValuesFormatSelector({ valuesFormat, onValuesFormatChange }: Val
         options={[
           {
             value: 'csv',
-            label: config.featureToggles.multiPropsVariables
+            label: config.isFeatureEnabled('multiPropsVariables')
               ? t('dashboard-scene.custom-variable-form.name-csv-values', 'CSV')
               : t('dashboard-scene.custom-variable-form.name-values-separated-comma', 'Values separated by comma'),
           },

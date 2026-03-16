@@ -13,7 +13,7 @@ interface UseIsProvisionedInstanceOptions {
 export function useIsProvisionedInstance(options: UseIsProvisionedInstanceOptions = {}) {
   const { settings, skip: skipQuery } = options;
   const hasNoRole = contextSrv.user.orgRole === OrgRole.None;
-  const skip = !config.featureToggles.provisioning || hasNoRole || skipQuery;
+  const skip = !config.isFeatureEnabled('provisioning') || hasNoRole || skipQuery;
 
   const settingsQuery = useGetFrontendSettingsQuery(settings || skip ? skipToken : undefined);
 

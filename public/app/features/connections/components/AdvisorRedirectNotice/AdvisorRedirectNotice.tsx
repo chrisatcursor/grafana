@@ -29,7 +29,7 @@ export function AdvisorRedirectNotice() {
   const [showNotice, setShowNotice] = useState(false);
   const { value: isAdvisorInstalled } = useAppPluginInstalled('grafana-advisor-app');
 
-  const canUseAdvisor = hasAdminRights && config.featureToggles.grafanaAdvisor && Boolean(isAdvisorInstalled);
+  const canUseAdvisor = hasAdminRights && config.isFeatureEnabled('grafanaAdvisor') && Boolean(isAdvisorInstalled);
 
   useEffect(() => {
     if (!canUseAdvisor) {

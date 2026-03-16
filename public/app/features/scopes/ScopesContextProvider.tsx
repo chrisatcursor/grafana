@@ -55,8 +55,10 @@ export const ScopesContextProvider = ({ children, services }: ScopesContextProvi
   }, [memoizedServices]);
 
   return (
-    <ScopesContext.Provider value={config.featureToggles.scopeFilters ? memoizedServices.scopesService : undefined}>
-      <ScopesServicesContext.Provider value={config.featureToggles.scopeFilters ? memoizedServices : undefined}>
+    <ScopesContext.Provider
+      value={config.isFeatureEnabled('scopeFilters') ? memoizedServices.scopesService : undefined}
+    >
+      <ScopesServicesContext.Provider value={config.isFeatureEnabled('scopeFilters') ? memoizedServices : undefined}>
         {children}
       </ScopesServicesContext.Provider>
     </ScopesContext.Provider>

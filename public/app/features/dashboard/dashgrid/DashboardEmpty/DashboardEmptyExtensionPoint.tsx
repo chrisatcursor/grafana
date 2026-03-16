@@ -12,7 +12,7 @@ interface DashboardEmptyExtensionPointProps {
 }
 
 export function DashboardEmptyExtensionPoint(props: DashboardEmptyExtensionPointProps): JSX.Element | null {
-  if (config.featureToggles.enableDashboardEmptyExtensions !== true) {
+  if (config.isFeatureEnabled('enableDashboardEmptyExtensions') !== true) {
     return props.renderDefaultUI();
   }
 

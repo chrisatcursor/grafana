@@ -93,7 +93,7 @@ export class ScopesApiClient {
   }
 
   async fetchMultipleScopeNodes(names: string[]): Promise<ScopeNode[]> {
-    if (!config.featureToggles.useMultipleScopeNodesEndpoint || names.length === 0) {
+    if (!config.isFeatureEnabled('useMultipleScopeNodesEndpoint') || names.length === 0) {
       return Promise.resolve([]);
     }
 
@@ -267,7 +267,7 @@ export class ScopesApiClient {
   };
 
   public fetchScopeNode = async (scopeNodeId: string): Promise<ScopeNode | undefined> => {
-    if (!config.featureToggles.useScopeSingleNodeEndpoint) {
+    if (!config.isFeatureEnabled('useScopeSingleNodeEndpoint')) {
       return Promise.resolve(undefined);
     }
 

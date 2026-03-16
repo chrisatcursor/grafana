@@ -10,6 +10,7 @@ import (
 	authlib "github.com/grafana/authlib/types"
 	appsdkapiserver "github.com/grafana/grafana-app-sdk/k8s/apiserver"
 	"github.com/grafana/grafana-app-sdk/logging"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 
 	pluginsapp "github.com/grafana/grafana/apps/plugins/pkg/app"
@@ -47,8 +48,7 @@ func ProvideAppInstaller(
 ) (*AppInstaller, error) {
 	metrics.MustRegister(registerer)
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginStoreServiceLoading, false, openfeature.EvaluationContext{}) {
 		if err := registerAccessControlRoles(accessControlService); err != nil {
 			return nil, fmt.Errorf("registering access control roles: %w", err)
 		}

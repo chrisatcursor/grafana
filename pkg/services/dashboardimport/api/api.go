@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -46,8 +47,8 @@ func (api *ImportDashboardAPI) RegisterAPIEndpoints(routeRegister routing.RouteR
 			authorize(accesscontrol.EvalPermission(dashboards.ActionDashboardsCreate)),
 			routing.Wrap(api.ImportDashboard),
 		)
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if api.features.IsEnabledGlobally(featuremgmt.FlagDashboardLibrary) || api.features.IsEnabledGlobally(featuremgmt.FlagSuggestedDashboards) || api.features.IsEnabledGlobally(featuremgmt.FlagDashboardTemplates) {
+		enabled := api.features.GetEnabled(context.Background())
+		if enabled[featuremgmt.FlagDashboardLibrary] || enabled[featuremgmt.FlagSuggestedDashboards] || enabled[featuremgmt.FlagDashboardTemplates] {
 			route.Post(
 				"/interpolate",
 				authorize(accesscontrol.EvalPermission(dashboards.ActionDashboardsCreate)),

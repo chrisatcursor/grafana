@@ -68,7 +68,7 @@ export const QueryHeader = ({
           // that was not created with the builder
           mode:
             (query.azureLogAnalytics?.builderQuery === undefined && query.azureLogAnalytics?.query !== undefined) ||
-            !config.featureToggles.azureMonitorLogsBuilderEditor
+            !config.isFeatureEnabled('azureMonitorLogsBuilderEditor')
               ? LogsEditorMode.Raw
               : LogsEditorMode.Builder,
           dashboardTime: true,
@@ -163,17 +163,18 @@ export const QueryHeader = ({
           </Button>
         )}
         <FlexItem grow={1} />
-        {query.queryType === AzureQueryType.LogAnalytics && !!config.featureToggles.azureMonitorLogsBuilderEditor && (
-          <RadioButtonGroup
-            size="sm"
-            options={EDITOR_MODES}
-            value={query.azureLogAnalytics?.mode || LogsEditorMode.Builder}
-            onChange={onLogsModeChange}
-            data-testid="azure-query-header-logs-radio-button"
-          />
-        )}
+        {query.queryType === AzureQueryType.LogAnalytics &&
+          !!config.isFeatureEnabled('azureMonitorLogsBuilderEditor') && (
+            <RadioButtonGroup
+              size="sm"
+              options={EDITOR_MODES}
+              value={query.azureLogAnalytics?.mode || LogsEditorMode.Builder}
+              onChange={onLogsModeChange}
+              data-testid="azure-query-header-logs-radio-button"
+            />
+          )}
         {query.azureLogAnalytics?.mode === LogsEditorMode.Builder &&
-          !!config.featureToggles.azureMonitorLogsBuilderEditor &&
+          !!config.isFeatureEnabled('azureMonitorLogsBuilderEditor') &&
           app !== CoreApp.Explore && (
             <Button
               variant="primary"

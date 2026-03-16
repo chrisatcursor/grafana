@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/open-feature/go-sdk/openfeature"
+
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/ngalert/api/tooling/definitions"
@@ -265,11 +267,7 @@ func (svc *Service) checkOptimisticConcurrency(existing definitions.InhibitionRu
 }
 
 func (svc *Service) isFeatureEnabled(flag string) bool {
-	if svc.featureToggles == nil {
-		return false
-	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return svc.featureToggles.IsEnabledGlobally(flag)
+	return openfeature.NewDefaultClient().Boolean(context.Background(), flag, false, openfeature.EvaluationContext{})
 }
 
 func (svc *Service) multiplePoliciesEnabled() bool {

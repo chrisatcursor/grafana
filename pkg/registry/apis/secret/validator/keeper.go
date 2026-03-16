@@ -12,6 +12,7 @@ import (
 	secretv1beta1 "github.com/grafana/grafana/apps/secret/pkg/apis/secret/v1beta1"
 	"github.com/grafana/grafana/pkg/registry/apis/secret/contracts"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type keeperValidator struct {
@@ -63,7 +64,7 @@ func (v *keeperValidator) Validate(keeper *secretv1beta1.Keeper, oldKeeper *secr
 
 	if keeper.Spec.Aws != nil {
 		//nolint
-		if !v.features.IsEnabled(context.Background(), featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper) {
+		if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper, false, openfeature.TransactionContext(context.Background())) {
 			errs = append(errs,
 				field.Forbidden(field.NewPath("spec", "aws"),
 					fmt.Sprintf("enable aws keeper feature toggle to create aws keepers: %s", featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper)))

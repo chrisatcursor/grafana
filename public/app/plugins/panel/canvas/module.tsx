@@ -36,7 +36,7 @@ export const addStandardCanvasEditorOptions = (builder: PanelOptionsEditorBuilde
     category,
     description: t('canvas.description-pan-zoom', 'Enable pan and zoom'),
     defaultValue: false,
-    showIf: () => config.featureToggles.canvasPanelPanZoom,
+    showIf: () => config.isFeatureEnabled('canvasPanelPanZoom'),
   });
   builder.addCustomEditor({
     id: 'panZoomHelp',
@@ -44,14 +44,14 @@ export const addStandardCanvasEditorOptions = (builder: PanelOptionsEditorBuilde
     name: '',
     category,
     editor: PanZoomHelp,
-    showIf: (opts) => config.featureToggles.canvasPanelPanZoom && opts.panZoom,
+    showIf: (opts) => config.isFeatureEnabled('canvasPanelPanZoom') && opts.panZoom,
   });
   builder.addBooleanSwitch({
     path: 'zoomToContent',
     name: 'Zoom to content',
     description: 'Automatically zoom to fit content',
     defaultValue: false,
-    showIf: () => config.featureToggles.canvasPanelPanZoom,
+    showIf: () => config.isFeatureEnabled('canvasPanelPanZoom'),
   });
 
   category = [t('canvas.category-tooltip', 'Tooltip')];

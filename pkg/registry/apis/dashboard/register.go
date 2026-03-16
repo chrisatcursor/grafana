@@ -7,6 +7,7 @@ import (
 	"maps"
 	"strconv"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -242,7 +243,7 @@ func NewAPIService(ac authlib.AccessClient, features featuremgmt.FeatureToggles,
 }
 
 func (b *DashboardsAPIBuilder) GetGroupVersions() []schema.GroupVersion {
-	if featuremgmt.AnyEnabled(b.features, featuremgmt.FlagDashboardNewLayouts) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDashboardNewLayouts, false, openfeature.EvaluationContext{}) {
 		// If dashboards v2 is enabled, we want to use v2beta1 as the default API version.
 		return []schema.GroupVersion{
 			dashv2beta1.DashboardResourceInfo.GroupVersion(),
@@ -611,8 +612,7 @@ func (b *DashboardsAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *genericapiserver
 
 	// Split dashboards when they are large
 	var largeObjects apistore.LargeObjectSupport
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if b.features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageBigObjectsSupport) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagUnifiedStorageBigObjectsSupport, false, openfeature.EvaluationContext{}) {
 		largeObjects = NewDashboardLargeObjectSupport(opts.Scheme, opts.StorageOpts.BlobThresholdBytes)
 		storageOpts.LargeObjectSupport = largeObjects
 	}
@@ -768,8 +768,7 @@ func (b *DashboardsAPIBuilder) storageForVersion(
 	}
 
 	// Expose read library panels
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if libraryPanels != nil && b.features.IsEnabledGlobally(featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
+	if libraryPanels != nil && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs, false, openfeature.EvaluationContext{}) {
 		legacyLibraryStore := &LibraryPanelStore{
 			Access:       b.legacy.Access,
 			ResourceInfo: *libraryPanels,

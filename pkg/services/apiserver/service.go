@@ -8,6 +8,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -442,10 +443,8 @@ func (s *service) start(ctx context.Context) error {
 	delegate := server
 
 	var runningServer *genericapiserver.GenericAPIServer
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	isKubernetesAggregatorEnabled := s.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAggregator)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	isDataplaneAggregatorEnabled := s.features.IsEnabledGlobally(featuremgmt.FlagDataplaneAggregator)
+	isKubernetesAggregatorEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAggregator, false, openfeature.EvaluationContext{})
+	isDataplaneAggregatorEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDataplaneAggregator, false, openfeature.EvaluationContext{})
 
 	if isKubernetesAggregatorEnabled {
 		aggregatorServer, err := s.aggregatorRunner.Configure(

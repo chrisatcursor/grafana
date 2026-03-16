@@ -261,7 +261,7 @@ export function getContactPointsFromDTO(ga: GrafanaRuleDefinition): AlertManager
 
 function getEditorSettingsFromDTO(ga: GrafanaRuleDefinition) {
   // we need to check if the feature toggle is enabled as it might be disabled after the rule was created with the feature enabled
-  if (!config.featureToggles.alertingQueryAndExpressionsStepMode) {
+  if (!config.isFeatureEnabled('alertingQueryAndExpressionsStepMode')) {
     return undefined;
   }
 

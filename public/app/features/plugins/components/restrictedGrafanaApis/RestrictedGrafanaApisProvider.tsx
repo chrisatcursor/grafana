@@ -6,7 +6,7 @@ import { alertingAlertRuleFormSchemaApi } from 'app/features/plugins/components/
 
 import { dashboardMutationApi } from './dashboardMutation/dashboardMutationApi';
 
-const restrictedGrafanaApis: RestrictedGrafanaApisContextType = config.featureToggles.restrictedPluginApis
+const restrictedGrafanaApis: RestrictedGrafanaApisContextType = config.isFeatureEnabled('restrictedPluginApis')
   ? {
       alertingAlertRuleFormSchema: alertingAlertRuleFormSchemaApi.alertingAlertRuleFormSchema,
       dashboardMutationAPI: dashboardMutationApi,

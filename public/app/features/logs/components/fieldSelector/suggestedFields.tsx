@@ -24,7 +24,7 @@ export function getSuggestedFieldsFromLogList(
     },
   }));
 
-  if (config.featureToggles.otelLogsFormatting) {
+  if (config.isFeatureEnabled('otelLogsFormatting')) {
     getSuggestedFieldsForLogs(logs).forEach((field) => {
       suggestedFields.push({
         name: field,

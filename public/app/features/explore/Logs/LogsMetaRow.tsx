@@ -133,8 +133,8 @@ export const LogsMetaRow = memo(
                 };
               })}
             />
-            {!config.featureToggles.logsPanelControls &&
-              !config.featureToggles.newLogsPanel &&
+            {!config.isFeatureEnabled('logsPanelControls') &&
+              !config.isFeatureEnabled('newLogsPanel') &&
               !config.exploreHideLogsDownload && (
                 <Dropdown overlay={downloadMenu}>
                   <ToolbarButton isOpen={false} variant="canvas" icon="download-alt">

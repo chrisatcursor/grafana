@@ -337,7 +337,7 @@ export const LogsPanel = ({ data, timeZone, fieldConfig, options, onOptionsChang
   }, [data]);
 
   useLayoutEffect(() => {
-    if (config.featureToggles.newLogsPanel) {
+    if (config.isFeatureEnabled('newLogsPanel')) {
       return;
     }
     if (!logsContainerRef.current || !scrollElement || keepScrollPositionRef.current) {
@@ -548,7 +548,7 @@ export const LogsPanel = ({ data, timeZone, fieldConfig, options, onOptionsChang
 
   return (
     <>
-      {(!config.featureToggles.newLogsPanel || !config.featureToggles.newLogContext) && contextRow && (
+      {(!config.isFeatureEnabled('newLogsPanel') || !config.isFeatureEnabled('newLogContext')) && contextRow && (
         <LogRowContextModal
           open={contextRow !== null}
           row={contextRow}
@@ -559,20 +559,25 @@ export const LogsPanel = ({ data, timeZone, fieldConfig, options, onOptionsChang
           getLogRowContextUi={getLogRowContextUi}
         />
       )}
-      {config.featureToggles.newLogsPanel && config.featureToggles.newLogContext && getLogRowContext && contextRow && (
-        <LogLineContext
-          open={contextRow !== null}
-          log={contextRow}
-          onClose={onCloseContext}
-          getRowContext={(row, options) => getLogRowContext(row, contextRow, options)}
-          getLogRowContextUi={getLogRowContextUi}
-          logOptionsStorageKey={controlsStorageKey}
-          logLineMenuCustomItems={isLogLineMenuCustomItems(logLineMenuCustomItems) ? logLineMenuCustomItems : undefined}
-          timeZone={timeZone}
-          displayedFields={displayedFields}
-        />
-      )}
-      {config.featureToggles.newLogsPanel && (
+      {config.isFeatureEnabled('newLogsPanel') &&
+        config.isFeatureEnabled('newLogContext') &&
+        getLogRowContext &&
+        contextRow && (
+          <LogLineContext
+            open={contextRow !== null}
+            log={contextRow}
+            onClose={onCloseContext}
+            getRowContext={(row, options) => getLogRowContext(row, contextRow, options)}
+            getLogRowContextUi={getLogRowContextUi}
+            logOptionsStorageKey={controlsStorageKey}
+            logLineMenuCustomItems={
+              isLogLineMenuCustomItems(logLineMenuCustomItems) ? logLineMenuCustomItems : undefined
+            }
+            timeZone={timeZone}
+            displayedFields={displayedFields}
+          />
+        )}
+      {config.isFeatureEnabled('newLogsPanel') && (
         <div
           onMouseLeave={onLogContainerMouseLeave}
           className={style.logListContainer}
@@ -638,7 +643,7 @@ export const LogsPanel = ({ data, timeZone, fieldConfig, options, onOptionsChang
           )}
         </div>
       )}
-      {!config.featureToggles.newLogsPanel && !showControls && (
+      {!config.isFeatureEnabled('newLogsPanel') && !showControls && (
         <ScrollContainer
           ref={(scrollElement) => {
             setScrollElement(scrollElement);
@@ -701,7 +706,7 @@ export const LogsPanel = ({ data, timeZone, fieldConfig, options, onOptionsChang
           </div>
         </ScrollContainer>
       )}
-      {!config.featureToggles.newLogsPanel && showControls && (
+      {!config.isFeatureEnabled('newLogsPanel') && showControls && (
         <div onMouseLeave={onLogContainerMouseLeave} className={style.controlledLogsContainer}>
           {showCommonLabels && !isAscending && renderCommonLabels()}
           <ControlledLogRows

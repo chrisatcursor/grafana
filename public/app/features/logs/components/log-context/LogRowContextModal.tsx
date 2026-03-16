@@ -499,7 +499,7 @@ export const LogRowContextModal: React.FunctionComponent<LogRowContextModalProps
       className={styles.modal}
       onDismiss={onClose}
     >
-      {config.featureToggles.logsContextDatasourceUi && getLogRowContextUi && (
+      {config.isFeatureEnabled('logsContextDatasourceUi') && getLogRowContextUi && (
         <div className={styles.datasourceUi}>{getLogRowContextUi(row, updateResults)}</div>
       )}
       <div className={cx(styles.flexRow, styles.paddingBottom)}>

@@ -160,7 +160,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
   const visibleVariables = variables.filter((v) => v.state.hide !== VariableHide.inControlsMenu);
   const adHocVar = visibleVariables.find((v) => sceneUtils.isAdHocVariable(v));
   const groupByVar = visibleVariables.find((v) => sceneUtils.isGroupByVariable(v));
-  const useUnifiedDrilldownUI = config.featureToggles.dashboardAdHocAndGroupByWrapper && adHocVar && groupByVar;
+  const useUnifiedDrilldownUI = config.isFeatureEnabled('dashboardAdHocAndGroupByWrapper') && adHocVar && groupByVar;
 
   if (!model.hasControls()) {
     // To still have spacing when no controls are rendered
@@ -175,7 +175,7 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
         className={cx(styles.controls, editPanel && styles.controlsPanelEdit)}
       >
         <div className={styles.topRow}>
-          {config.featureToggles.scopeFilters && !editPanel && (
+          {config.isFeatureEnabled('scopeFilters') && !editPanel && (
             <ContextualNavigationPaneToggle className={styles.contextualNavToggleNewLayout} hideWhenOpen={true} />
           )}
           {!hideVariableControls && (
@@ -190,12 +190,12 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
                 <refreshPicker.Component model={refreshPicker} />
               </div>
             )}
-            {config.featureToggles.dashboardNewLayouts && (
+            {config.isFeatureEnabled('dashboardNewLayouts') && (
               <div className={styles.fixedControlsNewLayout}>
                 <DashboardControlActions dashboard={dashboard} />
               </div>
             )}
-            {config.featureToggles.dashboardFiltersOverview && !config.featureToggles.dashboardNewLayouts && (
+            {config.isFeatureEnabled('dashboardFiltersOverview') && !config.isFeatureEnabled('dashboardNewLayouts') && (
               <div className={styles.fixedControls}>
                 <DashboardFiltersOverviewPaneToggle dashboard={dashboard} />
               </div>
@@ -229,18 +229,18 @@ function DashboardControlsRenderer({ model }: SceneComponentProps<DashboardContr
             <refreshPicker.Component model={refreshPicker} />
           </div>
         )}
-        {config.featureToggles.dashboardNewLayouts && (
+        {config.isFeatureEnabled('dashboardNewLayouts') && (
           <div className={styles.fixedControls}>
             <DashboardControlActions dashboard={dashboard} />
           </div>
         )}
-        {config.featureToggles.dashboardFiltersOverview && (
+        {config.isFeatureEnabled('dashboardFiltersOverview') && (
           <div className={styles.fixedControls}>
             <DashboardFiltersOverviewPaneToggle dashboard={dashboard} />
           </div>
         )}
       </div>
-      {config.featureToggles.scopeFilters && !editPanel && (
+      {config.isFeatureEnabled('scopeFilters') && !editPanel && (
         <ContextualNavigationPaneToggle className={styles.contextualNavToggle} hideWhenOpen={true} />
       )}
       {!hideVariableControls && (

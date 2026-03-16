@@ -8,6 +8,7 @@ import (
 
 	"github.com/fullstorydev/grpchan/inprocgrpc"
 	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go.opentelemetry.io/otel/trace"
@@ -55,29 +56,25 @@ func ProvideAuthZClient(
 	zanzanaClient zanzana.Client,
 	restConfig apiserver.RestConfigProvider,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	zanzanaEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{})
 
 	authCfg, err := readAuthzClientSettings(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) && authCfg.mode == clientModeCloud {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAuthZGRPCServer, false, openfeature.EvaluationContext{}) && authCfg.mode == clientModeCloud {
 		return nil, errors.New("authZGRPCServer feature toggle is required for cloud and grpc mode")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzanaNoLegacyClient, false, openfeature.EvaluationContext{}) {
 		return zanzanaClient, nil
 	}
 
 	// Provisioning uses mode 4 (read+write only to unified storage)
 	// For G12 launch, we can disable caching for this and find a more scalable solution soon
 	// most likely this would involve passing the RV (timestamp!) in each check method
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) {
 		authCfg.cacheTTL = 0
 	}
 
@@ -160,21 +157,18 @@ func ProvideAuthZClient(
 func ProvideStandaloneAuthZClient(
 	cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer, reg prometheus.Registerer,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAuthZGRPCServer, false, openfeature.EvaluationContext{}) {
 		return nil, nil
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	zanzanaEnabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{})
 
 	zanzanaClient, err := ProvideStandaloneZanzanaClient(cfg, features, reg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzanaNoLegacyClient, false, openfeature.EvaluationContext{}) {
 		return zanzanaClient, nil
 	}
 

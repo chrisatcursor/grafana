@@ -41,7 +41,7 @@ const SQLGroupBy = ({ query, datasource, onQueryChange }: SQLGroupByProps) => {
   const options = useMemo(
     // Exclude options we've already selected
     () => {
-      const isCrossAccountEnabled = config.featureToggles.cloudWatchCrossAccountQuerying;
+      const isCrossAccountEnabled = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 
       const baseOptionsWithAccountId =
         isCrossAccountEnabled && isMonitoringAccount

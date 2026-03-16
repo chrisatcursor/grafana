@@ -71,7 +71,7 @@ export const MetricStatEditor = ({
   return (
     <EditorRows>
       <EditorRow>
-        {!disableExpressions && config.featureToggles.cloudWatchCrossAccountQuerying && (
+        {!disableExpressions && config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && (
           <Account
             accountId={metricStat.accountId}
             onChange={(accountId?: string) => {

@@ -216,7 +216,7 @@ export const DashNav = memo<Props>((props) => {
       buttons.push(<PublicDashboardBadgeLegacy key="public-dashboard-badge" uid={dashboard.uid} />);
     }
 
-    if (isDevEnv && config.featureToggles.dashboardScene) {
+    if (isDevEnv && config.isFeatureEnabled('dashboardScene')) {
       buttons.push(
         <DashNavButton
           key="button-scenes"

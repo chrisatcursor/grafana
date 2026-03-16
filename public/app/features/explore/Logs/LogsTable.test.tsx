@@ -94,10 +94,10 @@ describe('LogsTable', () => {
     mockTransformationsRegistry(transformers);
   });
 
-  let originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
+  let originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
 
   beforeAll(() => {
-    originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
+    originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
     config.featureToggles.logsExploreTableVisualisation = true;
   });
 
@@ -196,12 +196,12 @@ describe('LogsTable', () => {
   });
 
   describe('LogsTable (loki dataplane)', () => {
-    let originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
-    let originalLokiDataplaneValue = config.featureToggles.lokiLogsDataplane;
+    let originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
+    let originalLokiDataplaneValue = config.isFeatureEnabled('lokiLogsDataplane');
 
     beforeAll(() => {
-      originalVisualisationTypeValue = config.featureToggles.logsExploreTableVisualisation;
-      originalLokiDataplaneValue = config.featureToggles.lokiLogsDataplane;
+      originalVisualisationTypeValue = config.isFeatureEnabled('logsExploreTableVisualisation');
+      originalLokiDataplaneValue = config.isFeatureEnabled('lokiLogsDataplane');
       config.featureToggles.logsExploreTableVisualisation = true;
       config.featureToggles.lokiLogsDataplane = true;
     });

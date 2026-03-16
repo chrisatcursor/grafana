@@ -126,7 +126,7 @@ export const ServiceAccountCreatePage = ({}: Props): JSX.Element => {
       pageNav={{ text: t('service-account-create-page.page-nav.label', 'Create service account') }}
     >
       <Page.Contents>
-        {config.featureToggles.rolePickerDrawer && (
+        {config.isFeatureEnabled('rolePickerDrawer') && (
           <FormProvider {...methods}>
             <form>
               <FieldSet>
@@ -152,7 +152,7 @@ export const ServiceAccountCreatePage = ({}: Props): JSX.Element => {
             </form>
           </FormProvider>
         )}
-        {!config.featureToggles.rolePickerDrawer && (
+        {!config.isFeatureEnabled('rolePickerDrawer') && (
           <Form onSubmit={onSubmit} validateOn="onSubmit">
             {({ register, errors }) => {
               return (

@@ -68,7 +68,7 @@ export const getStandardTransformers = (): TransformerRegistryItem[] => {
     getPartitionByValuesTransformRegistryItem(),
     getFormatStringTransformerRegistryItem(),
     getGroupToNestedTableTransformRegistryItem(),
-    ...(config.featureToggles.smoothingTransformation ? [getSmoothingTransformerRegistryItem()] : []),
+    ...(config.isFeatureEnabled('smoothingTransformation') ? [getSmoothingTransformerRegistryItem()] : []),
     getFormatTimeTransformerRegistryItem(),
     getTimeSeriesTableTransformRegistryItem(),
     getTransposeTransformerRegistryItem(),

@@ -28,6 +28,7 @@ import (
 	tempuser "github.com/grafana/grafana/pkg/services/temp_user"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type Registration struct{}
@@ -79,8 +80,7 @@ func ProvideRegistration(
 		}
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if cfg.PasswordlessMagicLinkAuth.Enabled && features.IsEnabled(context.Background(), featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
+	if cfg.PasswordlessMagicLinkAuth.Enabled && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPasswordlessMagicLinkAuthentication, false, openfeature.TransactionContext(context.Background())) {
 		hasEnabledProviders := authnSvc.IsClientEnabled(authn.ClientSAML) || authnSvc.IsClientEnabled(authn.ClientLDAP)
 		if !hasEnabledProviders {
 			oauthInfos := socialService.GetOAuthInfoProviders()
@@ -123,8 +123,7 @@ func ProvideRegistration(
 		authnSvc.RegisterClient(clients.ProvideOAuth(clientName, cfg, oauthTokenService, socialService, settingsProviderService, features, tracer))
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) {
 		authnSvc.RegisterClient(clients.ProvideProvisioning())
 	}
 
@@ -139,14 +138,12 @@ func ProvideRegistration(
 	authnSvc.RegisterPostAuthHook(sync.ProvideOAuthTokenSync(oauthTokenService, sessionService, socialService, tracer, features).SyncOauthTokenHook, 60)
 	authnSvc.RegisterPostAuthHook(userSync.FetchSyncedUserHook, 100)
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagEnableSCIM) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagEnableSCIM, false, openfeature.EvaluationContext{}) {
 		authnSvc.RegisterPostAuthHook(userSync.ValidateUserProvisioningHook, 30)
 	}
 
 	rbacSync := sync.ProvideRBACSync(accessControlService, tracer, permRegistry)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagCloudRBACRoles) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagCloudRBACRoles, false, openfeature.EvaluationContext{}) {
 		authnSvc.RegisterPostAuthHook(rbacSync.SyncCloudRoles, 110)
 		authnSvc.RegisterPreLogoutHook(gcomsso.ProvideGComSSOService(cfg).LogoutHook, 50)
 	}

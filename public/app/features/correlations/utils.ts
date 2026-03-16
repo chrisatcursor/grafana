@@ -100,7 +100,7 @@ const fixLokiDataplaneFields = (correlations: CorrelationData[], dataFrame: Data
   return correlations.map((correlation) => {
     if (
       correlation.source.meta?.id === 'loki' &&
-      config.featureToggles.lokiLogsDataplane === true &&
+      config.isFeatureEnabled('lokiLogsDataplane') === true &&
       correlation.config.field === 'Line'
     ) {
       const logsFrame = parseLogsFrame(dataFrame);
@@ -159,7 +159,7 @@ export const getCorrelationsFromStorage = async (
   instanceUid: string
 ): Promise<CorrelationsData> => {
   let correlations: CorrelationsData;
-  if (config.featureToggles.kubernetesCorrelations) {
+  if (config.isFeatureEnabled('kubernetesCorrelations')) {
     let queryDSRefList: DataSourceRef[];
     if (instanceUid === MIXED_DATASOURCE_NAME) {
       // filter out undefineds and duplicates. typescript doesnt recognize the null check when combined

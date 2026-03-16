@@ -9,6 +9,7 @@ import (
 	"github.com/grafana/grafana/pkg/infra/serverlock"
 	"github.com/grafana/grafana/pkg/registry"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var logger = log.New("promds.migration")
@@ -43,8 +44,7 @@ func ProvidePromTypeMigrationProvider(
 }
 
 func (s *PromTypeMigrationProviderImpl) Run(ctx context.Context) error {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.features.IsEnabled(ctx, featuremgmt.FlagPrometheusTypeMigration) {
+	if !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagPrometheusTypeMigration, false, openfeature.TransactionContext(ctx)) {
 		return nil
 	}
 	return s.migrate(ctx)

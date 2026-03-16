@@ -10,6 +10,7 @@ import (
 	"github.com/grafana/grafana-app-sdk/app"
 	appsdkapiserver "github.com/grafana/grafana-app-sdk/k8s/apiserver"
 	"github.com/grafana/grafana-app-sdk/simple"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/apps/alerting/notifications/pkg/apis"
 	notificationsApp "github.com/grafana/grafana/apps/alerting/notifications/pkg/app"
@@ -108,15 +109,13 @@ func (a AppInstaller) GetLegacyStorage(gvr schema.GroupVersionResource) grafanar
 		return receiver.NewStorage(api.ReceiverService, namespacer, api.ReceiverService)
 	} else if gvr == timeinterval.ResourceInfo.GroupVersionResource() {
 		srv := api.MuteTimings
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if a.ng.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingImportAlertmanagerAPI, false, openfeature.EvaluationContext{}) {
 			srv = srv.WithIncludeImported()
 		}
 		return timeinterval.NewStorage(srv, namespacer)
 	} else if gvr == templategroup.ResourceInfo.GroupVersionResource() {
 		srv := api.Templates
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if a.ng.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingImportAlertmanagerAPI, false, openfeature.EvaluationContext{}) {
 			srv = srv.WithIncludeImported()
 		}
 		return templategroup.NewStorage(srv, namespacer)

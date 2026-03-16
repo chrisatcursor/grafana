@@ -326,7 +326,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
           {visualisationType === 'logs' && (
             <>
               <div className={styles.divider} />
-              {config.featureToggles.newLogsPanel && (
+              {config.isFeatureEnabled('newLogsPanel') && (
                 <LogListControlsOption
                   expanded={controlsExpanded}
                   name={'search'}
@@ -369,7 +369,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
                 />
               </Dropdown>
               <div className={styles.divider} />
-              {config.featureToggles.newLogsPanel ? (
+              {config.isFeatureEnabled('newLogsPanel') ? (
                 <TimestampResolutionButton expanded={controlsExpanded} />
               ) : (
                 <LogListControlsOption
@@ -402,7 +402,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
                   size="lg"
                 />
               )}
-              {config.featureToggles.newLogsPanel ? (
+              {config.isFeatureEnabled('newLogsPanel') ? (
                 <WrapLogMessageButton expanded={controlsExpanded} />
               ) : (
                 <LogListControlsOption
@@ -419,7 +419,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
                   size="lg"
                 />
               )}
-              {config.featureToggles.newLogsPanel && (
+              {config.isFeatureEnabled('newLogsPanel') && (
                 <LogListControlsOption
                   expanded={controlsExpanded}
                   disabled={wrapLogMessage}
@@ -447,7 +447,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
                   size="lg"
                 />
               )}
-              {prettifyJSON !== undefined && !config.featureToggles.newLogsPanel && (
+              {prettifyJSON !== undefined && !config.isFeatureEnabled('newLogsPanel') && (
                 <LogListControlsOption
                   expanded={controlsExpanded}
                   name="brackets-curly"
@@ -482,7 +482,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
                   size="lg"
                 />
               )}
-              {config.featureToggles.newLogsPanel && (
+              {config.isFeatureEnabled('newLogsPanel') && (
                 <LogListControlsOption
                   expanded={controlsExpanded}
                   name="text-fields"
@@ -545,7 +545,7 @@ export const LogListControls = ({ eventBus, logLevels = FILTER_LEVELS, visualisa
         </>
       ) : (
         <>
-          {config.featureToggles.newLogsPanel && (
+          {config.isFeatureEnabled('newLogsPanel') && (
             <LogListControlsOption
               expanded={controlsExpanded}
               name={'search'}

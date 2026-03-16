@@ -33,7 +33,7 @@ export const useGetResourceRepositoryView = ({
 }: GetResourceRepositoryArgs): RepositoryViewData => {
   const hasNoRole = contextSrv.user.orgRole === OrgRole.None;
 
-  const provisioningEnabled = config.featureToggles.provisioning;
+  const provisioningEnabled = config.isFeatureEnabled('provisioning');
   const shouldSkipSettings = !provisioningEnabled || skipQuery || hasNoRole || (!name && !folderName);
   const settingsQueryArg = shouldSkipSettings ? skipToken : undefined;
 

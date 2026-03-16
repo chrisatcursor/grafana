@@ -99,7 +99,7 @@ export function TablePanel(props: Props) {
       cellHeight={options.cellHeight}
       maxRowHeight={options.maxRowHeight}
       timeRange={timeRange}
-      enableSharedCrosshair={config.featureToggles.tableSharedCrosshair && enableSharedCrosshair}
+      enableSharedCrosshair={config.isFeatureEnabled('tableSharedCrosshair') && enableSharedCrosshair}
       fieldConfig={fieldConfig}
       getActions={_getActions}
       structureRev={data.structureRev}

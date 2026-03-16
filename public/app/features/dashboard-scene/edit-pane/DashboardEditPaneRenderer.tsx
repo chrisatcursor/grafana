@@ -159,7 +159,7 @@ export function DashboardEditPaneRenderer({ editPane, dashboard }: Props) {
                 'Give feedback on the new dashboard editing experience'
               )}
             />
-            {config.featureToggles.dashboardUndoRedo && (
+            {config.isFeatureEnabled('dashboardUndoRedo') && (
               <>
                 <Sidebar.Divider />
                 <UndoButton dashboard={dashboard} />
@@ -178,15 +178,17 @@ export function DashboardEditPaneRenderer({ editPane, dashboard }: Props) {
           data-testid={selectors.pages.Dashboard.Sidebar.outlineButton}
           active={openPane === 'outline'}
         ></Sidebar.Button>
-        {config.featureToggles.dashboardNewLayouts && config.featureToggles.dashboardFiltersOverview && adHocVar && (
-          <Sidebar.Button
-            icon="filter"
-            onClick={() => editPane.openPane('filters')}
-            title={t('dashboards.filters-overview.filters', 'Filters')}
-            tooltip={t('dashboards.filters-overview.open', 'Open filters overview pane')}
-            active={openPane === 'filters'}
-          />
-        )}
+        {config.isFeatureEnabled('dashboardNewLayouts') &&
+          config.isFeatureEnabled('dashboardFiltersOverview') &&
+          adHocVar && (
+            <Sidebar.Button
+              icon="filter"
+              onClick={() => editPane.openPane('filters')}
+              title={t('dashboards.filters-overview.filters', 'Filters')}
+              tooltip={t('dashboards.filters-overview.open', 'Open filters overview pane')}
+              active={openPane === 'filters'}
+            />
+          )}
         {dashboard.isManaged() && Boolean(meta.canEdit) && <ManagedDashboardNavBarBadge dashboard={dashboard} />}
         {renderEnterpriseItems()}
         {Boolean(meta.isSnapshot) && (

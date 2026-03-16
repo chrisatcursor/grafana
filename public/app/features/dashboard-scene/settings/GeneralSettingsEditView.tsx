@@ -249,7 +249,7 @@ function GeneralSettingsEditViewComponent({ model }: SceneComponentProps<General
                 <Label htmlFor="title-input">
                   <Trans i18nKey="dashboard-settings.general.title-label">Title</Trans>
                 </Label>
-                {config.featureToggles.dashgpt && (
+                {config.isFeatureEnabled('dashgpt') && (
                   <GenAIDashTitleButton onGenerate={(title) => model.onTitleChange(title)} />
                 )}
               </Stack>
@@ -269,7 +269,7 @@ function GeneralSettingsEditViewComponent({ model }: SceneComponentProps<General
                 <Label htmlFor="description-input">
                   {t('dashboard-settings.general.description-label', 'Description')}
                 </Label>
-                {config.featureToggles.dashgpt && (
+                {config.isFeatureEnabled('dashgpt') && (
                   <GenAIDashDescriptionButton onGenerate={(description) => model.onDescriptionChange(description)} />
                 )}
               </Stack>

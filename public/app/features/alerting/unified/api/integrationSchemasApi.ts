@@ -95,7 +95,7 @@ interface UseIntegrationTypeSchemasResult {
  * Uses new k8s API when feature flag is enabled, falls back to legacy API.
  */
 export function useIntegrationTypeSchemas(options?: { skip?: boolean }): UseIntegrationTypeSchemasResult {
-  const useNewApi = config.featureToggles.alertingSyncNotifiersApiMigration;
+  const useNewApi = config.isFeatureEnabled('alertingSyncNotifiersApiMigration');
   const skip = options?.skip ?? false;
 
   const newApiResult = useGetIntegrationtypeschemasQuery(undefined, {

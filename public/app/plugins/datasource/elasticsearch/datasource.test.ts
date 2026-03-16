@@ -1364,7 +1364,7 @@ describe('ElasticDatasource', () => {
   });
 
   describe('getFieldsFieldCap', () => {
-    const originalFeatureToggleValue = config.featureToggles.elasticsearchCrossClusterSearch;
+    const originalFeatureToggleValue = config.isFeatureEnabled('elasticsearchCrossClusterSearch');
 
     afterEach(() => {
       config.featureToggles.elasticsearchCrossClusterSearch = originalFeatureToggleValue;

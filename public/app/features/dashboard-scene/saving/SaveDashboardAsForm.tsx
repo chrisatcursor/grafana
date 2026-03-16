@@ -227,7 +227,7 @@ export function TitleFieldLabel(props: TitleLabelProps) {
       <Label htmlFor="description">
         <Trans i18nKey="dashboard-scene.title-field-label.title">Title</Trans>
       </Label>
-      {/* {config.featureToggles.dashgpt && isNew && (
+      {/* {config.isFeatureEnabled('dashgpt') && isNew && (
                 <GenAIDashDescriptionButton
                   onGenerate={(description) => field.onChange(description)}
                   dashboard={dashboard}
@@ -247,7 +247,7 @@ export function DescriptionLabel(props: DescriptionLabelProps) {
       <Label htmlFor="description">
         <Trans i18nKey="dashboard-scene.description-label.description">Description</Trans>
       </Label>
-      {/* {config.featureToggles.dashgpt && isNew && (
+      {/* {config.isFeatureEnabled('dashgpt') && isNew && (
                 <GenAIDashDescriptionButton
                   onGenerate={(description) => field.onChange(description)}
                   dashboard={dashboard}

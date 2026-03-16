@@ -86,7 +86,7 @@ const ImportToGMARules = () => {
   const [selectedDatasourceName, importSource] = watch(['selectedDatasourceName', 'importSource']);
 
   const [formImportPayload, setFormImportPayload] = useState<ImportFormValues | null>(null);
-  const isImportYamlEnabled = config.featureToggles.alertingImportYAMLUI;
+  const isImportYamlEnabled = config.isFeatureEnabled('alertingImportYAMLUI');
 
   const onSubmit: SubmitHandler<ImportFormValues> = async (formData) => {
     setFormImportPayload(formData);

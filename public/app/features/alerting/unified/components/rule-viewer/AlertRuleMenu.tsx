@@ -147,7 +147,7 @@ const AlertRuleMenu = ({
   const canManageEnrichments =
     ruleUid &&
     handleManageEnrichments &&
-    config.featureToggles.alertingEnrichmentPerRule &&
+    config.isFeatureEnabled('alertingEnrichmentPerRule') &&
     enrichmentReadSupported &&
     enrichmentReadAllowed;
 

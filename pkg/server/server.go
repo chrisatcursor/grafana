@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/grafana/grafana/pkg/api"
@@ -128,8 +129,7 @@ func (s *Server) Init() error {
 		return err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginStoreServiceLoading, false, openfeature.EvaluationContext{}) {
 		if err := s.roleRegistry.RegisterFixedRoles(s.context); err != nil {
 			return err
 		}

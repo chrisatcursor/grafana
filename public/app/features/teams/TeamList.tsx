@@ -218,7 +218,7 @@ const TeamList = () => {
 
           const showDeleteModal = async () => {
             let ownedFolders: DashboardHit[] = [];
-            if (config.featureToggles.teamFolders) {
+            if (config.isFeatureEnabled('teamFolders')) {
               foldersQueryRef.current = triggerFoldersQuery({
                 type: 'folder',
                 ownerReference: [`iam.grafana.app/Team/${original.uid}`],

@@ -149,7 +149,7 @@ describe('transformSceneToSaveModelSchemaV2', () => {
   let prevFeatureToggleValue: boolean;
 
   beforeAll(() => {
-    prevFeatureToggleValue = !!config.featureToggles.groupByVariable;
+    prevFeatureToggleValue = !!config.isFeatureEnabled('groupByVariable');
     config.featureToggles.groupByVariable = true;
   });
 

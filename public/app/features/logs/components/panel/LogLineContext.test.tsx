@@ -666,7 +666,7 @@ describe('LogLineContext', () => {
   });
 
   describe('Default displayed fields', () => {
-    const originalFlagValue = config.featureToggles.otelLogsFormatting;
+    const originalFlagValue = config.isFeatureEnabled('otelLogsFormatting');
     beforeEach(() => {
       config.featureToggles.otelLogsFormatting = true;
       jest

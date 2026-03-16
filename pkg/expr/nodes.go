@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"gonum.org/v1/gonum/graph/simple"
@@ -124,8 +125,7 @@ func buildCMDNode(ctx context.Context, rn *rawNode, toggles featuremgmt.FeatureT
 	}
 
 	if commandType == TypeSQL {
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !toggles.IsEnabledGlobally(featuremgmt.FlagSqlExpressions) {
+		if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagSqlExpressions, false, openfeature.EvaluationContext{}) {
 			return nil, fmt.Errorf("sql expressions are disabled")
 		}
 	}

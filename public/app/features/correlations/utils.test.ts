@@ -84,7 +84,7 @@ describe('correlations utils', () => {
   });
 
   it('changes the config field if loki dataplane is being used and the correlation is pointing to the legacy body field (Line)', () => {
-    const originalDataplaneState = config.featureToggles.lokiLogsDataplane;
+    const originalDataplaneState = config.isFeatureEnabled('lokiLogsDataplane');
     config.featureToggles.lokiLogsDataplane = true;
     const { correlations, refIdMap } = setup();
     const testDataFrame = toDataFrame({

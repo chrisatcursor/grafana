@@ -7,8 +7,7 @@ import { checkRequiredFeatures } from '../GettingStarted/features';
 import { CONNECTIONS_URL, CONNECT_URL, GETTING_STARTED_URL, PROVISIONING_URL } from '../constants';
 
 export function getProvisioningRoutes(): RouteDescriptor[] {
-  const featureToggles = config.featureToggles || {};
-  if (!featureToggles.provisioning) {
+  if (!config.isFeatureEnabled('provisioning')) {
     return [];
   }
 

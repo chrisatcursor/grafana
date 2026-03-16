@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
@@ -143,8 +144,7 @@ func (hs *HTTPServer) GetPluginList(c *contextmodel.ReqContext) response.Respons
 			AngularDetected: pluginDef.Angular.Detected,
 		}
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if hs.Cfg.ManagedServiceAccountsEnabled && hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagExternalServiceAccounts) {
+		if hs.Cfg.ManagedServiceAccountsEnabled && openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.TransactionContext(c.Req.Context())) {
 			listItem.IAM = pluginDef.IAM
 		}
 
@@ -490,8 +490,7 @@ func (hs *HTTPServer) InstallPlugin(c *contextmodel.ReqContext) response.Respons
 		return response.ErrOrFallback(http.StatusInternalServerError, "Failed to install plugin", err)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Cfg.ManagedServiceAccountsEnabled && hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagExternalServiceAccounts) {
+	if hs.Cfg.ManagedServiceAccountsEnabled && openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.TransactionContext(c.Req.Context())) {
 		// This is a non-blocking function that verifies that the installer has
 		// the permissions that the plugin requests to have on Grafana.
 		// If we want to make this blocking, the check will have to happen before or during the installation.

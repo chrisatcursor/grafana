@@ -80,7 +80,7 @@ export const ActionRow = ({
     <Stack justifyContent="space-between" alignItems="center">
       <Stack alignItems="center">
         <TagFilter isClearable={false} tags={state.tag} tagOptions={getTagOptions} onChange={onTagFilterChange} />
-        {config.featureToggles.panelTitleSearch && (
+        {config.isFeatureEnabled('panelTitleSearch') && (
           <Checkbox
             data-testid="include-panels"
             disabled={layout === SearchLayout.Folders}

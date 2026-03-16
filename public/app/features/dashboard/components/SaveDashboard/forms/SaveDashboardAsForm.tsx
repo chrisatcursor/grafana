@@ -115,7 +115,7 @@ export const SaveDashboardAsForm = ({
                     <Label htmlFor="title">
                       <Trans i18nKey="dashboard.save-dashboard-as-form.title">Title</Trans>
                     </Label>
-                    {config.featureToggles.dashgpt && isNew && (
+                    {config.isFeatureEnabled('dashgpt') && isNew && (
                       <GenAIDashTitleButton onGenerate={(title) => field.onChange(title)} />
                     )}
                   </Stack>
@@ -148,7 +148,7 @@ export const SaveDashboardAsForm = ({
                     <Label htmlFor="description">
                       <Trans i18nKey="dashboard.save-dashboard-as-form.description">Description</Trans>
                     </Label>
-                    {config.featureToggles.dashgpt && isNew && (
+                    {config.isFeatureEnabled('dashgpt') && isNew && (
                       <GenAIDashDescriptionButton onGenerate={(description) => field.onChange(description)} />
                     )}
                   </Stack>

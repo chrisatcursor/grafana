@@ -10,7 +10,7 @@ import { validLogsQuery, validMetricSearchBuilderQuery } from '../../mocks/queri
 
 import QueryHeader from './QueryHeader';
 
-const originalFeatureToggleValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+const originalFeatureToggleValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 const ds = setupMockedDataSource({
   variables: [],
 });

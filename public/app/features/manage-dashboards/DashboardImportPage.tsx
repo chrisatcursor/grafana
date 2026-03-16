@@ -19,7 +19,7 @@ type Props = GrafanaRouteComponentProps<RouteParams, QueryParams>;
  * When kubernetesDashboards feature is removed, delete the legacy/ folder entirely.
  */
 export default function DashboardImportPage(props: Props) {
-  if (config.featureToggles.kubernetesDashboards) {
+  if (config.isFeatureEnabled('kubernetesDashboards')) {
     return <DashboardImportK8s {...props} />;
   }
 

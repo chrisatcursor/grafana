@@ -325,7 +325,7 @@ export class LokiDatasource
         ...q,
         maxLines: q.maxLines ?? this.maxLines,
         scopes:
-          config.featureToggles.scopeFilters && config.featureToggles.logQLScope
+          config.isFeatureEnabled('scopeFilters') && config.isFeatureEnabled('logQLScope')
             ? request.scopes?.flatMap((scope) => scope.spec.filters)
             : undefined,
       }));
@@ -337,7 +337,7 @@ export class LokiDatasource
 
     const streamQueries = fixedRequest.targets.filter((q) => q.queryType === LokiQueryType.Stream);
     if (
-      config.featureToggles.lokiExperimentalStreaming &&
+      config.isFeatureEnabled('lokiExperimentalStreaming') &&
       streamQueries.length > 0 &&
       fixedRequest.rangeRaw?.to === 'now'
     ) {
@@ -362,9 +362,9 @@ export class LokiDatasource
       return this.runLiveQueryThroughBackend(fixedRequest);
     }
 
-    if (config.featureToggles.lokiShardSplitting && requestSupportsSharding(fixedRequest.targets)) {
+    if (config.isFeatureEnabled('lokiShardSplitting') && requestSupportsSharding(fixedRequest.targets)) {
       return runShardSplitQuery(this, fixedRequest);
-    } else if (config.featureToggles.lokiQuerySplitting && requestSupportsSplitting(fixedRequest.targets)) {
+    } else if (config.isFeatureEnabled('lokiQuerySplitting') && requestSupportsSplitting(fixedRequest.targets)) {
       return runSplitQuery(this, fixedRequest);
     }
 
@@ -1068,7 +1068,7 @@ export class LokiDatasource
     const annotations: AnnotationEvent[] = [];
     const splitKeys: string[] = tagKeys.split(',').filter((v: string) => v !== '');
 
-    const isDataplaneLog = config.featureToggles.lokiLogsDataplane;
+    const isDataplaneLog = config.isFeatureEnabled('lokiLogsDataplane');
 
     for (const frame of data) {
       const view = new DataFrameView<{ timestamp: string; Time: string; body: string; Line: string; labels: Labels }>(

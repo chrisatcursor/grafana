@@ -59,7 +59,7 @@ function CorrelationsPageAppPlatform() {
 }
 
 export default function CorrelationsPageWrapper() {
-  if (config.featureToggles.kubernetesCorrelations) {
+  if (config.isFeatureEnabled('kubernetesCorrelations')) {
     return <CorrelationsPageAppPlatform />;
   }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
 	unifiedmigrations "github.com/grafana/grafana/pkg/storage/unified/migrations/contract"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var logger = log.New("dualwrite.service")
@@ -86,9 +87,8 @@ func ProvideService(
 		return nil, fmt.Errorf("unable to start dualwrite service due to migration error: %w", err)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagManagedDualWriter) ||
-		features.IsEnabledGlobally(featuremgmt.FlagProvisioning) // required for git provisioning
+	enabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagManagedDualWriter, false, openfeature.EvaluationContext{}) ||
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) // required for git provisioning
 
 	if cfg != nil {
 		if !enabled {

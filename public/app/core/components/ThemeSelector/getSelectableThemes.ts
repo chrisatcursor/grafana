@@ -4,7 +4,7 @@ import { config } from '@grafana/runtime';
 export function getSelectableThemes() {
   const allowedExtraThemes = [];
 
-  if (config.featureToggles.grafanaconThemes) {
+  if (config.isFeatureEnabled('grafanaconThemes')) {
     allowedExtraThemes.push('desertbloom');
     allowedExtraThemes.push('gildedgrove');
     allowedExtraThemes.push('sapphiredusk');

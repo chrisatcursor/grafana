@@ -9,4 +9,4 @@ export function isTrial() {
   return !!(expiry && expiry > 0);
 }
 
-export const highlightTrial = () => isTrial() && config.featureToggles.featureHighlights;
+export const highlightTrial = () => isTrial() && config.isFeatureEnabled('featureHighlights');

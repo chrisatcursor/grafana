@@ -16,7 +16,7 @@ import { ALERTING_PATHS } from '../utils/navigation';
 import { RevertToOldExperienceModal } from './AlertsActivityOptOutModal';
 
 export function RuleListPageTitle({ title }: { title: string }) {
-  const shouldShowV2Toggle = config.featureToggles.alertingListViewV2PreviewToggle ?? false;
+  const shouldShowV2Toggle = config.isFeatureEnabled('alertingListViewV2PreviewToggle') ?? false;
   const listViewV2Enabled = shouldUseAlertingListViewV2();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);

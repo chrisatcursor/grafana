@@ -519,7 +519,7 @@ describe('LokiDatasource', () => {
     });
 
     it('should transform the loki dataplane data to annotation response', async () => {
-      const originalDataplaneState = config.featureToggles.lokiLogsDataplane;
+      const originalDataplaneState = config.isFeatureEnabled('lokiLogsDataplane');
       config.featureToggles.lokiLogsDataplane = true;
       const res = await getTestContext(dataplaneTestFrame, { stepInterval: '15s' });
 

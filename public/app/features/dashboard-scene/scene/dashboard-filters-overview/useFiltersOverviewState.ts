@@ -2,11 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { fuzzySearch, SelectableValue } from '@grafana/data';
 import { AdHocFilterWithLabels, AdHocFiltersVariable, GroupByVariable } from '@grafana/scenes';
-
-import { OPERATORS } from './utils';
 import { ComboboxOption } from '@grafana/ui';
 
-import { buildAdHocApplyFilters, buildGroupByUpdate, buildOverviewState } from './utils';
+import { buildAdHocApplyFilters, buildGroupByUpdate, buildOverviewState, OPERATORS } from './utils';
 
 export type ListItem =
   | { type: 'group'; group: string }

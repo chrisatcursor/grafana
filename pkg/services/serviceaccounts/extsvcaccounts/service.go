@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/grafana/grafana/pkg/apimachinery/identity"
@@ -45,8 +46,7 @@ func ProvideExtSvcAccountsService(acSvc ac.Service, cfg *setting.Cfg, bus bus.Bu
 		saSvc:        saSvc,
 		skvStore:     kvstore.NewSQLSecretsKVStore(db, secretsSvc, logger), // Using SQL store to avoid a cyclic dependency
 		tracer:       tracer,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		enabled: cfg.ManagedServiceAccountsEnabled && features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts),
+		enabled:      cfg.ManagedServiceAccountsEnabled && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.EvaluationContext{}),
 	}
 
 	if esa.enabled {

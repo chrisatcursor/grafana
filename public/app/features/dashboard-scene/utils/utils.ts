@@ -260,7 +260,7 @@ export function getClosestVizPanel(sceneObject: SceneObject): VizPanel | null {
 }
 
 export function getDefaultPluginId(): string {
-  return config.featureToggles.dashboardNewLayouts || config.featureToggles.newVizSuggestions
+  return config.isFeatureEnabled('dashboardNewLayouts') || config.isFeatureEnabled('newVizSuggestions')
     ? UNCONFIGURED_PANEL_PLUGIN_ID
     : 'timeseries';
 }
@@ -269,7 +269,7 @@ export function getDefaultVizPanel(): VizPanel {
   const defaultPluginId = getDefaultPluginId();
 
   const newPanelTitle =
-    config.featureToggles.newVizSuggestions && defaultPluginId === UNCONFIGURED_PANEL_PLUGIN_ID
+    config.isFeatureEnabled('newVizSuggestions') && defaultPluginId === UNCONFIGURED_PANEL_PLUGIN_ID
       ? ''
       : t('dashboard.new-panel-title', 'New panel');
 
@@ -283,14 +283,14 @@ export function getDefaultVizPanel(): VizPanel {
     hoverHeaderOffset: 0,
     $behaviors: [],
     subHeader: new VizPanelSubHeader({
-      hideNonApplicableDrilldowns: !config.featureToggles.perPanelNonApplicableDrilldowns,
+      hideNonApplicableDrilldowns: !config.isFeatureEnabled('perPanelNonApplicableDrilldowns'),
     }),
     extendPanelContext: setDashboardPanelContext,
     menu: new VizPanelMenu({
       $behaviors: [panelMenuBehavior],
     }),
     headerActions: new VizPanelHeaderActions({
-      hideGroupByAction: !config.featureToggles.panelGroupBy,
+      hideGroupByAction: !config.isFeatureEnabled('panelGroupBy'),
     }),
     $data: datasourceSettings
       ? new SceneDataTransformer({
@@ -476,9 +476,9 @@ export function hasActualSaveChanges(dashboard: DashboardScene) {
 }
 
 export function isDashboardSceneEnabled(): boolean {
-  return !!(config.featureToggles.dashboardScene || config.featureToggles.dashboardNewLayouts);
+  return !!(config.isFeatureEnabled('dashboardScene') || config.isFeatureEnabled('dashboardNewLayouts'));
 }
 
 export function isPublicDashboardsSceneEnabled(): boolean {
-  return !!(config.featureToggles.publicDashboardsScene || config.featureToggles.dashboardNewLayouts);
+  return !!(config.isFeatureEnabled('publicDashboardsScene') || config.isFeatureEnabled('dashboardNewLayouts'));
 }

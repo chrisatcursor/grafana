@@ -75,7 +75,7 @@ export const StartModal = ({ playlist, onDismiss }: Props) => {
             onChange={(e) => setAutofit(e.currentTarget.checked)}
           />
         </Field>
-        {config.featureToggles.dashboardScene && (
+        {config.isFeatureEnabled('dashboardScene') && (
           <Field
             label={t('playlist.start-modal.label-display-dashboard-controls', 'Display dashboard controls')}
             description={t(

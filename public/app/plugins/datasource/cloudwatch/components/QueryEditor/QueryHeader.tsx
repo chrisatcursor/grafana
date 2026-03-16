@@ -48,7 +48,7 @@ const QueryHeader = ({
     }
   };
   const onRegionChange = async (region: string) => {
-    if (config.featureToggles.cloudWatchCrossAccountQuerying && isCloudWatchMetricsQuery(query)) {
+    if (config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && isCloudWatchMetricsQuery(query)) {
       const isMonitoringAccount = await datasource.resources.isMonitoringAccount(region);
       onChange({ ...query, logGroups: [], region, accountId: isMonitoringAccount ? query.accountId : undefined });
     } else {
@@ -56,7 +56,7 @@ const QueryHeader = ({
     }
   };
 
-  const shouldDisplayMonitoringBadge = config.featureToggles.cloudWatchCrossAccountQuerying && isMonitoringAccount;
+  const shouldDisplayMonitoringBadge = config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && isMonitoringAccount;
 
   return (
     <>

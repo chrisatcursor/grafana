@@ -36,7 +36,7 @@ const queryTypes: Array<{ value: string; label: string }> = [
   { value: VariableQueryType.ResourceArns, label: 'Resource ARNs' },
   { value: VariableQueryType.Statistics, label: 'Statistics' },
   { value: VariableQueryType.LogGroups, label: 'Log Groups' },
-  ...(config.featureToggles.cloudWatchCrossAccountQuerying
+  ...(config.isFeatureEnabled('cloudWatchCrossAccountQuerying')
     ? [{ value: VariableQueryType.Accounts, label: 'Accounts' }]
     : []),
 ];
@@ -182,7 +182,7 @@ export const VariableQueryEditor = ({ query, datasource, onChange }: Props) => {
       {hasAccountIDField &&
         accountState.value &&
         accountState.value?.length > 0 &&
-        config.featureToggles.cloudWatchCrossAccountQuerying && (
+        config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && (
           <VariableQueryField
             label="Account"
             value={query.accountId ?? null}

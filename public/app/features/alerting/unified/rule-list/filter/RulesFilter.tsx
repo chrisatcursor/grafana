@@ -14,7 +14,7 @@ export interface RulesFilterProps {
 }
 
 const RulesFilter = (props: RulesFilterProps) => {
-  const newView = config.featureToggles.alertingFilterV2;
+  const newView = config.isFeatureEnabled('alertingFilterV2');
   return <Suspense>{newView ? <RulesFilterV2 {...props} /> : <RulesFilterV1 {...props} />}</Suspense>;
 };
 

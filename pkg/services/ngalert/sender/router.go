@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/benbjohnson/clock"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/grafana/grafana/pkg/api/datasource"
@@ -92,8 +93,7 @@ func (d *AlertsRouter) SyncAndApplyConfigFromDatabase(ctx context.Context) error
 
 	d.logger.Debug("Attempting to sync admin configs", "count", len(cfgs))
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	disableExternal := d.featureManager.IsEnabled(ctx, featuremgmt.FlagAlertingDisableSendAlertsExternal)
+	disableExternal := openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAlertingDisableSendAlertsExternal, false, openfeature.TransactionContext(ctx))
 	orgsFound := make(map[int64]struct{}, len(cfgs))
 
 	// We're holding this lock either until we return an error or right before we stop the senders.

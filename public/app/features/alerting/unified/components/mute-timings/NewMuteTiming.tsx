@@ -10,7 +10,7 @@ import MuteTimingForm from './MuteTimingForm';
 
 function NewMuteTimingPage() {
   const { navId } = useTimeIntervalsNav();
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
   const parentUrl = getTimeIntervalParentUrl(useV2Nav);
 
   return (

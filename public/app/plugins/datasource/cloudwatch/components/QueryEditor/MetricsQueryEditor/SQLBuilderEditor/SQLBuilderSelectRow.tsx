@@ -53,7 +53,7 @@ const SQLBuilderSelectRow = ({ datasource, query, onQueryChange }: SQLBuilderSel
   const metricOptions = useMetrics(datasource, {
     region: query.region,
     namespace,
-    ...(config.featureToggles.cloudWatchCrossAccountQuerying && { accountId: query.accountId }),
+    ...(config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && { accountId: query.accountId }),
   });
   const existingFilters = useMemo(() => stringArrayToDimensions(schemaLabels ?? []), [schemaLabels]);
   const unusedDimensionKeys = useDimensionKeys(datasource, {
@@ -61,7 +61,7 @@ const SQLBuilderSelectRow = ({ datasource, query, onQueryChange }: SQLBuilderSel
     namespace,
     metricName,
     dimensionFilters: existingFilters,
-    ...(config.featureToggles.cloudWatchCrossAccountQuerying && { accountId: query.accountId }),
+    ...(config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && { accountId: query.accountId }),
   });
   const dimensionKeys = useMemo(
     () => (schemaLabels?.length ? [...unusedDimensionKeys, ...schemaLabels.map(toOption)] : unusedDimensionKeys),
@@ -87,7 +87,7 @@ const SQLBuilderSelectRow = ({ datasource, query, onQueryChange }: SQLBuilderSel
   return (
     <>
       <EditorFieldGroup>
-        {config.featureToggles.cloudWatchCrossAccountQuerying && (
+        {config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && (
           <Account
             accountId={query.accountId}
             accountOptions={accountState.value || []}

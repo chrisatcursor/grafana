@@ -41,7 +41,7 @@ const enableEmailSharing = () => {
   config.licenseInfo = { ...config.licenseInfo, enabledFeatures: { publicDashboardsEmailSharing: true } };
 };
 
-let originalConfigData: GrafanaBootConfig;
+let originalConfigData: Pick<GrafanaBootConfig, 'featureToggles' | 'licenseInfo'>;
 
 beforeEach(() => {
   originalConfigData = { ...config };

@@ -45,7 +45,7 @@ export const ConnectionPicker = ({ actionType, datasourceUid, onChange }: Connec
       },
     ];
 
-    if (config.featureToggles.vizActionsAuth) {
+    if (config.isFeatureEnabled('vizActionsAuth')) {
       const supportedDataSources = getSupportedDataSources();
 
       supportedDataSources.forEach((ds) => {

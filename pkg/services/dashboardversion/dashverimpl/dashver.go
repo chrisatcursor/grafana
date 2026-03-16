@@ -31,6 +31,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var tracer = otel.Tracer("github.com/grafana/grafana/pkg/services/dashboardversion/dashverimpl")
@@ -170,9 +171,8 @@ func (s *Service) RestoreVersion(ctx context.Context, cmd *dashver.RestoreVersio
 		}
 		cmd.DashboardUID = u
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabled(ctx, featuremgmt.FlagKubernetesDashboards) ||
-		s.features.IsEnabled(ctx, featuremgmt.FlagDashboardNewLayouts) {
+	if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagKubernetesDashboards, false, openfeature.TransactionContext(ctx)) ||
+		openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDashboardNewLayouts, false, openfeature.TransactionContext(ctx)) {
 		s.log.Debug("restoring dashboard version through k8s")
 		res, err := s.restoreVersionThroughK8s(ctx, cmd)
 		if err != nil {

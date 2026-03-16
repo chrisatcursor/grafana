@@ -14,6 +14,7 @@ import (
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/tracing"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -70,8 +71,7 @@ func handleDataplaneFrames(ctx context.Context, tracer tracing.Tracer, features 
 	case data.KindTimeSeries:
 		return handleDataplaneTimeseries(frames)
 	case data.KindNumeric:
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		sortMetrics := !features.IsEnabled(ctx, featuremgmt.FlagDisableNumericMetricsSortingInExpressions)
+		sortMetrics := !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagDisableNumericMetricsSortingInExpressions, false, openfeature.TransactionContext(ctx))
 		return handleDataplaneNumeric(frames, sortMetrics)
 	default:
 		return mathexp.Results{}, fmt.Errorf("kind %s (type %s) not supported by server side expressions", t.Kind(), t)

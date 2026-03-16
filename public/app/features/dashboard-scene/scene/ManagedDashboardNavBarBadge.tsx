@@ -13,7 +13,7 @@ export const ManagedDashboardNavBarBadge = ({ dashboard }: { dashboard: Dashboar
   const kind = dashboard.getManagerKind();
   const id = dashboard.getManagerIdentity();
 
-  const shouldSkipQuery = !config.featureToggles.provisioning || kind !== ManagerKind.Repo || !id;
+  const shouldSkipQuery = !config.isFeatureEnabled('provisioning') || kind !== ManagerKind.Repo || !id;
   const { data: repoData } = useGetRepositoryQuery(shouldSkipQuery ? skipToken : { name: id });
 
   if (!kind) {

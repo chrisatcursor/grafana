@@ -16,6 +16,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/login"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 const (
@@ -281,8 +282,7 @@ func handleLogin(r *http.Request, w http.ResponseWriter, cfg *setting.Cfg, ident
 	WriteSessionCookie(w, cfg, identity.SessionToken)
 
 	redirectURL := cfg.AppSubURL + "/"
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagUseSessionStorageForRedirection) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagUseSessionStorageForRedirection, false, openfeature.EvaluationContext{}) {
 		if redirectToCookieName == "" {
 			return redirectURL
 		}

@@ -10,7 +10,7 @@ import { OptionsPaneItemDescriptor } from 'app/features/dashboard/components/Pan
 function useVariableHasMultiProps(variable: MultiValueVariable) {
   const state = variable.useState();
   const hasMultiProps =
-    config.featureToggles.multiPropsVariables && 'valuesFormat' in state && state.valuesFormat === 'json';
+    config.isFeatureEnabled('multiPropsVariables') && 'valuesFormat' in state && state.valuesFormat === 'json';
   return hasMultiProps;
 }
 

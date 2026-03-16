@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/metrics"
@@ -37,8 +38,7 @@ func (rs *RenderingService) GetRenderUser(ctx context.Context, key string) (*Ren
 
 	var renderUser *RenderUser
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if looksLikeJWT(key) && rs.features.IsEnabled(ctx, featuremgmt.FlagRenderAuthJWT) {
+	if looksLikeJWT(key) && openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagRenderAuthJWT, false, openfeature.TransactionContext(ctx)) {
 		from = "jwt"
 		renderUser = rs.getRenderUserFromJWT(key)
 	} else {

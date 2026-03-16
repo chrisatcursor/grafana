@@ -12,7 +12,7 @@ import { isSupportedExternalRulesSourceType } from '../utils/datasource';
 import { getInstantFromDataQuery } from '../utils/rule-form';
 
 export function setQueryEditorSettings(values: RuleFormValues): RuleFormValues {
-  const isQuerySwitchModeEnabled = config.featureToggles.alertingQueryAndExpressionsStepMode ?? false;
+  const isQuerySwitchModeEnabled = config.isFeatureEnabled('alertingQueryAndExpressionsStepMode') ?? false;
 
   if (!isQuerySwitchModeEnabled) {
     return {

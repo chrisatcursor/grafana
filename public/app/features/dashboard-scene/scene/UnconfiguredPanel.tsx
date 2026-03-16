@@ -65,7 +65,7 @@ function UnconfiguredPanelComp(props: PanelProps) {
   };
 
   useEffect(() => {
-    if (!panel || !config.featureToggles.newVizSuggestions) {
+    if (!panel || !config.isFeatureEnabled('newVizSuggestions')) {
       return;
     }
 
@@ -91,7 +91,7 @@ function UnconfiguredPanelComp(props: PanelProps) {
     </Menu>
   );
 
-  const showEmptyState = config.featureToggles.newVizSuggestions && panelContext.app === CoreApp.PanelEditor;
+  const showEmptyState = config.isFeatureEnabled('newVizSuggestions') && panelContext.app === CoreApp.PanelEditor;
 
   if (showEmptyState) {
     const defaultContent = (

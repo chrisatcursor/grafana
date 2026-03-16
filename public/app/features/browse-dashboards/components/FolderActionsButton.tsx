@@ -56,7 +56,7 @@ export function FolderActionsButton({ folder, repoType, isReadOnlyRepo }: Props)
   const canDeleteFolders = canDeleteFoldersPermissions && !isProvisionedRootFolder && !isReadOnlyRepo;
   // Show permissions only if the folder is not provisioned, or if the provisioningFolderMetadata flag is enabled
   const canShowPermissions =
-    canViewPermissions && (!isProvisionedFolder || !!config.featureToggles.provisioningFolderMetadata);
+    canViewPermissions && (!isProvisionedFolder || !!config.isFeatureEnabled('provisioningFolderMetadata'));
 
   const onMove = async (destinationUID: string) => {
     await moveFolder({ folderUID: folder.uid, destinationUID: destinationUID });
@@ -145,7 +145,7 @@ export function FolderActionsButton({ folder, repoType, isReadOnlyRepo }: Props)
   const deleteLabel = t('browse-dashboards.folder-actions-button.delete', 'Delete this folder');
 
   // For now, only admins can manage folder owners
-  const showManageOwners = config.featureToggles.teamFolders && isAdmin && !isProvisionedFolder;
+  const showManageOwners = config.isFeatureEnabled('teamFolders') && isAdmin && !isProvisionedFolder;
 
   const menu = (
     <Menu>

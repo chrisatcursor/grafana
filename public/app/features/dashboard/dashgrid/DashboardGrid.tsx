@@ -55,7 +55,7 @@ export class DashboardGrid extends PureComponent<Props, State> {
   componentDidMount() {
     const { dashboard } = this.props;
 
-    if (config.featureToggles.panelFilterVariable) {
+    if (config.isFeatureEnabled('panelFilterVariable')) {
       // If panel filter variable is set on load then
       // update state to filter panels
       for (const variable of dashboard.getVariables()) {

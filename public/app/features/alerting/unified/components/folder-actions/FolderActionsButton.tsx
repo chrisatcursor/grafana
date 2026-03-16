@@ -32,7 +32,7 @@ export const FolderActionsButton = ({ folderUID }: Props) => {
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
   // feature toggles
-  const bulkActionsEnabled = config.featureToggles.alertingBulkActionsInUI;
+  const bulkActionsEnabled = config.isFeatureEnabled('alertingBulkActionsInUI');
   const listView2Enabled = shouldUseAlertingListViewV2();
 
   const [exportRulesSupported, exportRulesAllowed] = useAlertingAbility(AlertingAction.ExportGrafanaManagedRules);
@@ -131,7 +131,7 @@ function BulkActions({
 }) {
   // feature toggles
   const listView2Enabled = shouldUseAlertingListViewV2();
-  const bulkActionsEnabled = config.featureToggles.alertingBulkActionsInUI;
+  const bulkActionsEnabled = config.isFeatureEnabled('alertingBulkActionsInUI');
 
   // abilities
   const [pauseSupported, pauseAllowed] = useFolderBulkActionAbility(FolderBulkAction.Pause);

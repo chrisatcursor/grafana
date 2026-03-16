@@ -29,7 +29,7 @@ const NotificationPoliciesTabs = () => {
 
   // When V2 navigation is enabled, Time Intervals has its own dedicated tab in the navigation,
   // so we don't show local tabs here - just show the notification policies content directly
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
   // Alertmanager logic and data hooks
   const { selectedAlertmanager = '' } = useAlertmanager();
@@ -104,7 +104,7 @@ const NotificationPoliciesTabs = () => {
 const PolicyTreeTab = () => {
   const { isGrafanaAlertmanager } = useAlertmanager();
 
-  const useMultiplePoliciesView = config.featureToggles.alertingMultiplePolicies;
+  const useMultiplePoliciesView = config.isFeatureEnabled('alertingMultiplePolicies');
 
   // Render just the single main tree if not Grafana Alertmanager or the multiple policies view is disabled.
   if (!isGrafanaAlertmanager || !useMultiplePoliciesView) {

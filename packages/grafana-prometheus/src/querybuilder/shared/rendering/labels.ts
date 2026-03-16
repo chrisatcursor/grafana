@@ -21,7 +21,7 @@ export function renderLabels(labels: QueryBuilderLabelFilter[]): string {
     let labelValue = filter.value;
     const usingRegexOperator = filter.op === '=~' || filter.op === '!~';
 
-    if (config.featureToggles.prometheusSpecialCharsInLabelValues && !usingRegexOperator) {
+    if (config.isFeatureEnabled('prometheusSpecialCharsInLabelValues') && !usingRegexOperator) {
       labelValue = prometheusRegularEscape(labelValue);
     }
     expr += `${utf8Support(filter.label)}${filter.op}"${labelValue}"`;
@@ -40,7 +40,7 @@ export function renderLabelsWithoutBrackets(labels: QueryBuilderLabelFilter[]): 
     let labelValue = filter.value;
     const usingRegexOperator = filter.op === '=~' || filter.op === '!~';
 
-    if (config.featureToggles.prometheusSpecialCharsInLabelValues && !usingRegexOperator) {
+    if (config.isFeatureEnabled('prometheusSpecialCharsInLabelValues') && !usingRegexOperator) {
       labelValue = prometheusRegularEscape(labelValue);
     }
     renderedLabels.push(`${utf8Support(filter.label)}${filter.op}"${labelValue}"`);

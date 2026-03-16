@@ -31,7 +31,7 @@ export function PanelEditControls({ panelEditor }: Props) {
         aria-label={t('dashboard-scene.panel-edit-controls.table-view-aria-label-toggletableview', 'Toggle table view')}
         data-testid={selectors.components.PanelEditor.toggleTableView}
       />
-      {config.featureToggles.queryEditorNext && (
+      {config.isFeatureEnabled('queryEditorNext') && (
         <InlineSwitch
           label={t('dashboard-scene.panel-edit-controls.query-editor-version', 'Query editor v2')}
           showLabel={true}

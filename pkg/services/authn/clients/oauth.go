@@ -26,6 +26,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/login"
 	"github.com/grafana/grafana/pkg/services/oauthtoken"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 const (
@@ -171,8 +172,7 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	if oauthCfg.UseRefreshToken && token.RefreshToken == "" {
 		c.log.FromContext(ctx).Warn("No refresh token available with use_refresh_token enabled", "authmodule", c.moduleName)
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if c.features.IsEnabledGlobally(featuremgmt.FlagRefreshTokenRequired) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagRefreshTokenRequired, false, openfeature.EvaluationContext{}) {
 			return nil, errOAuthMissingRefreshToken.Errorf("provider did not return a refresh token")
 		}
 	}
@@ -187,8 +187,7 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	}
 
 	if userInfo.Id == "" {
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if c.features.IsEnabledGlobally(featuremgmt.FlagOauthRequireSubClaim) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagOauthRequireSubClaim, false, openfeature.EvaluationContext{}) {
 			return nil, errOAuthUserInfo.Errorf("missing required sub claims")
 		} else {
 			c.log.FromContext(ctx).Warn("Missing sub claim, oauth authentication without a sub claim is deprecated and will be rejected in future versions.")

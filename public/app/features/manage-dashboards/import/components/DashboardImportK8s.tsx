@@ -98,7 +98,7 @@ export function DashboardImportK8s({ queryParams }: Props) {
 
     const json = JSON.parse(formData.dashboardJson);
 
-    if ((json.spec?.elements || json.elements) && !config.featureToggles.dashboardNewLayouts) {
+    if ((json.spec?.elements || json.elements) && !config.isFeatureEnabled('dashboardNewLayouts')) {
       appEvents.emit(AppEvents.alertError, [
         'Import failed',
         'Dashboard using new layout cannot be imported because the feature is not enabled',

@@ -12,7 +12,7 @@ import {
 
 import { LogGroupsField } from './LogGroupsField';
 
-const originalFeatureToggleValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+const originalFeatureToggleValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 const originalDebounce = lodash.debounce;
 
 const defaultProps = {

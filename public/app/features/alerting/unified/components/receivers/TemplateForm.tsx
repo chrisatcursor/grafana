@@ -164,7 +164,7 @@ export const TemplateForm = ({ originalTemplate, prefill, alertmanager }: Props)
 
   const submit = async (values: TemplateFormValues) => {
     // V2 nav has dedicated templates page, legacy nav uses tab parameter
-    const useV2Nav = config.featureToggles.alertingNavigationV2;
+    const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
     const returnLink = useV2Nav
       ? makeAMLink(ALERTING_PATHS.TEMPLATES, alertmanager)
       : makeAMLink(ALERTING_PATHS.NOTIFICATIONS, alertmanager, {

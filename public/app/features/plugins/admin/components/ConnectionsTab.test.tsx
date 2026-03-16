@@ -34,7 +34,7 @@ const setupContextSrv = () => {
 
 describe('<ConnectionsTab>', () => {
   const oldExporeEnabled = config.exploreEnabled;
-  const olddatasourceConnectionsTab = config.featureToggles.datasourceConnectionsTab;
+  const olddatasourceConnectionsTab = config.isFeatureEnabled('datasourceConnectionsTab');
   config.exploreEnabled = true;
   config.featureToggles.datasourceConnectionsTab = true;
   afterEach(() => {

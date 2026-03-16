@@ -231,7 +231,7 @@ export class KeybindingSrv {
       appEvents.publish(new AbsoluteTimeEvent({ updateUrl }));
     });
 
-    if (config.featureToggles.newTimeRangeZoomShortcuts) {
+    if (config.isFeatureEnabled('newTimeRangeZoomShortcuts')) {
       this.bind('t +', () => {
         appEvents.publish(new ZoomOutEvent({ scale: 0.5, updateUrl }));
       });

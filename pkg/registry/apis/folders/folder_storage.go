@@ -11,6 +11,7 @@ import (
 	"k8s.io/apiserver/pkg/util/dryrun"
 
 	claims "github.com/grafana/authlib/types"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	folders "github.com/grafana/grafana/apps/folder/pkg/apis/folder/v1beta1"
 	"github.com/grafana/grafana/pkg/api/apierrors"
@@ -161,8 +162,7 @@ func (s *folderStorage) setDefaultFolderPermissions(ctx context.Context, orgID i
 	var permissions []accesscontrol.SetResourcePermissionCommand
 
 	isNested := parentUID != ""
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabledGlobally(featuremgmt.FlagKubernetesDashboards) && isNested {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesDashboards, false, openfeature.EvaluationContext{}) && isNested {
 		// No permissions on nested folders when kubernetesDashboards is enabled
 		return nil
 	}

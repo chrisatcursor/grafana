@@ -145,7 +145,7 @@ const ResourcePicker = ({
 
   useEffectOnce(() => {
     loadInitialData();
-    if (config.featureToggles.azureResourcePickerUpdates) {
+    if (config.isFeatureEnabled('azureResourcePickerUpdates')) {
       loadFilterOptions();
     }
   });
@@ -431,7 +431,7 @@ const ResourcePicker = ({
     return (
       <>
         <Search searchFn={handleSearch} />
-        {config.featureToggles.azureResourcePickerUpdates && (
+        {config.isFeatureEnabled('azureResourcePickerUpdates') && (
           <Stack direction={'row'} alignItems="flex-start" justifyContent={'space-between'} gap={1}>
             <Field
               label={t('components.resource-picker.subscriptions-filter', 'Subscriptions')}
@@ -577,7 +577,7 @@ const ResourcePicker = ({
     );
   };
 
-  return config.featureToggles.azureResourcePickerUpdates ? tabbedResourcePicker() : baseResourcePicker();
+  return config.isFeatureEnabled('azureResourcePickerUpdates') ? tabbedResourcePicker() : baseResourcePicker();
 };
 
 export default ResourcePicker;

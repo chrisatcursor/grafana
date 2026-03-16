@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"maps"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -66,9 +67,8 @@ func RegisterAPIService(
 	reg prometheus.Registerer,
 	pluginSources sources.Registry,
 ) (*DataSourceAPIBuilder, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) &&
-		!features.IsEnabledGlobally(featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryServiceWithConnections, false, openfeature.EvaluationContext{}) &&
+		!openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs, false, openfeature.EvaluationContext{}) {
 		return nil, nil
 	}
 
@@ -104,11 +104,10 @@ func RegisterAPIService(
 			datasources.GetDatasourceProvider(pluginJSON),
 			contextProvider,
 			accessControl,
-			//nolint:staticcheck // not yet migrated to OpenFeature
 			DataSourceAPIBuilderConfig{
-				LoadQueryTypes:         features.IsEnabledGlobally(featuremgmt.FlagDatasourceQueryTypes),
-				UseDualWriter:          features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections),
-				EnableResourceEndpoint: features.IsEnabledGlobally(featuremgmt.FlagDatasourcesApiServerEnableResourceEndpoint),
+				LoadQueryTypes:         openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDatasourceQueryTypes, false, openfeature.EvaluationContext{}),
+				UseDualWriter:          openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagQueryServiceWithConnections, false, openfeature.EvaluationContext{}),
+				EnableResourceEndpoint: openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagDatasourcesApiServerEnableResourceEndpoint, false, openfeature.EvaluationContext{}),
 			},
 		)
 		if err != nil {

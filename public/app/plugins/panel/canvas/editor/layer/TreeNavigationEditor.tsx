@@ -170,7 +170,7 @@ export const TreeNavigationEditor = ({ item }: StandardEditorProps<unknown, Tree
             <Trans i18nKey="canvas.tree-navigation-editor.clear-selection">Clear selection</Trans>
           </Button>
         )}
-        {selection.length > 1 && config.featureToggles.canvasPanelNesting && (
+        {selection.length > 1 && config.isFeatureEnabled('canvasPanelNesting') && (
           <Button size="sm" variant="secondary" onClick={onFrameSelection}>
             <Trans i18nKey="canvas.tree-navigation-editor.frame-selection">Frame selection</Trans>
           </Button>

@@ -13,7 +13,7 @@ import { useAlertRulesNav } from './useAlertRulesNav';
  */
 export function useDeletedRulesNav() {
   const alertRulesNav = useAlertRulesNav();
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
   if (useV2Nav) {
     // V2 Navigation: deleted rules appears as a tab under Alert rules

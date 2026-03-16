@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"encoding/binary"
 	"errors"
 	"hash/fnv"
@@ -8,6 +9,7 @@ import (
 	"unsafe"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/common/model"
 
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
@@ -244,8 +246,7 @@ func (s *ContactPointRouting) Fingerprint(features featuremgmt.FeatureToggles) d
 	// Add a separator between the time intervals to avoid collisions
 	// when all settings are the same including interval names except for the interval type (mute vs active).
 	// Use new algorithm by default, unless feature flag is explicitly disabled
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features == nil || (features != nil && features.IsEnabledGlobally(featuremgmt.FlagAlertingUseNewSimplifiedRoutingHashAlgorithm)) {
+	if features == nil || (features != nil && openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingUseNewSimplifiedRoutingHashAlgorithm, false, openfeature.EvaluationContext{})) {
 		_, _ = h.Write([]byte{255})
 	}
 	for _, interval := range s.ActiveTimeIntervals {

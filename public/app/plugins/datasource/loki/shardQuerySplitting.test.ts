@@ -15,7 +15,7 @@ jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('uuid'),
 }));
 
-const originalLokiQueryLimitsContextState = config.featureToggles.lokiQueryLimitsContext;
+const originalLokiQueryLimitsContextState = config.isFeatureEnabled('lokiQueryLimitsContext');
 
 const originalLog = console.log;
 const originalWarn = console.warn;

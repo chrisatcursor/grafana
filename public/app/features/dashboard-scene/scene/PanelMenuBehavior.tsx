@@ -290,7 +290,7 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
 
     items.push(getInspectMenuItem(plugin, panel, dashboard));
 
-    if (config.featureToggles.panelTimeSettings) {
+    if (config.isFeatureEnabled('panelTimeSettings')) {
       items.push({
         text: t('panel.header-menu.time-settings', 'Time settings'),
         iconClassName: 'clock-nine',
@@ -347,7 +347,11 @@ export function panelMenuBehavior(menu: VizPanelMenu) {
       }
     }
 
-    if (panel.state.pluginId === 'timeseries' && config.featureToggles.panelStyleActions && dashboard.state.isEditing) {
+    if (
+      panel.state.pluginId === 'timeseries' &&
+      config.isFeatureEnabled('panelStyleActions') &&
+      dashboard.state.isEditing
+    ) {
       const stylesSubMenu: PanelMenuItem[] = [];
 
       stylesSubMenu.push({

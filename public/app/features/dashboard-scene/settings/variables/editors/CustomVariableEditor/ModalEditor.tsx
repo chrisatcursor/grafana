@@ -20,7 +20,7 @@ interface ModalEditorProps {
 }
 
 export function ModalEditor(props: ModalEditorProps) {
-  if (!config.featureToggles.multiPropsVariables) {
+  if (!config.isFeatureEnabled('multiPropsVariables')) {
     return <ModalEditorNonMultiProps {...props} />;
   }
   return <ModalEditorMultiProps {...props} />;
@@ -140,7 +140,7 @@ function useModalEditor({ variable, onClose }: ModalEditorProps) {
         source: variable,
         description: t('dashboard-scene.use-modal-editor.description.change-variable-query', 'Change variable query'),
         perform: async () => {
-          if (!config.featureToggles.multiPropsVariables) {
+          if (!config.isFeatureEnabled('multiPropsVariables')) {
             variable.setState({ valuesFormat: 'csv', query });
           } else {
             variable.setState({ valuesFormat, query });

@@ -180,7 +180,7 @@ describe('QueryEditor should render right editor', () => {
       datasourceMock.datasource.resources.isMonitoringAccount = jest.fn().mockResolvedValue(true);
       datasourceMock.datasource.resources.getMetrics = jest.fn().mockResolvedValue([]);
       datasourceMock.datasource.resources.getDimensionKeys = jest.fn().mockResolvedValue([]);
-      originalValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+      originalValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
     });
     afterEach(() => {
       config.featureToggles.cloudWatchCrossAccountQuerying = originalValue;
@@ -339,7 +339,7 @@ describe('QueryEditor should render right editor', () => {
   describe('metric insights in builder mode', () => {
     let originalValueCloudWatchCrossAccountQuerying: boolean | undefined;
     beforeEach(() => {
-      originalValueCloudWatchCrossAccountQuerying = config.featureToggles.cloudWatchCrossAccountQuerying;
+      originalValueCloudWatchCrossAccountQuerying = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
     });
     afterEach(() => {
       config.featureToggles.cloudWatchCrossAccountQuerying = originalValueCloudWatchCrossAccountQuerying;

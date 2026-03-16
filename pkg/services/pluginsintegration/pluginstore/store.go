@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/grafana/dskit/services"
+	"github.com/open-feature/go-sdk/openfeature"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/grafana/grafana/pkg/infra/log"
@@ -40,8 +41,7 @@ type Service struct {
 
 func ProvideService(pluginRegistry registry.Service, pluginSources sources.Registry,
 	pluginLoader loader.Service, features featuremgmt.FeatureToggles) (*Service, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPluginStoreServiceLoading, false, openfeature.EvaluationContext{}) {
 		s := New(pluginRegistry, pluginLoader, pluginSources)
 		s.loadOnStartup = true
 		return s, nil

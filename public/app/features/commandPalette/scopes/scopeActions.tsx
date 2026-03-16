@@ -40,13 +40,15 @@ export function useRegisterScopesActions(
 
   // If we have global search actions we use those. Inside the hook the search should be conditional based on where
   // in the command palette we are.
-  const nodesActions = config.featureToggles.scopeFilters ? globalScopeActions || scopeTreeActions : [];
+  const nodesActions = config.isFeatureEnabled('scopeFilters') ? globalScopeActions || scopeTreeActions : [];
 
   // Register actions unconditionally (empty array if feature toggle is off)
   useRegisterActions(nodesActions, [nodesActions]);
 
   // Returns a component to show what scopes are selected or applied (undefined if feature toggle is off)
-  return { scopesRow: config.featureToggles.scopeFilters ? scopesRow : undefined };
+  return {
+    scopesRow: config.isFeatureEnabled('scopeFilters') ? scopesRow : undefined,
+  };
 }
 
 /**
@@ -142,7 +144,7 @@ function useGlobalScopesSearch(searchQuery: string, parentId?: string | null) {
   const searchQueryRef = useRef<string>(undefined);
 
   useEffect(() => {
-    if ((!parentId || parentId === 'scopes') && searchQuery && config.featureToggles.scopeSearchAllLevels) {
+    if ((!parentId || parentId === 'scopes') && searchQuery && config.isFeatureEnabled('scopeSearchAllLevels')) {
       // We only search globally if there is no parentId
       searchQueryRef.current = searchQuery;
       searchAllNodes(searchQuery, 10).then((nodes) => {
@@ -152,7 +154,7 @@ function useGlobalScopesSearch(searchQuery: string, parentId?: string | null) {
 
           const parentNodesMap = new Map<string | undefined, string>();
 
-          if (config.featureToggles.useMultipleScopeNodesEndpoint) {
+          if (config.isFeatureEnabled('useMultipleScopeNodesEndpoint')) {
             // Make sure we only request unqiue parent node names
             const uniqueParentNodeNames = [
               ...new Set(nodes.map((node) => node.spec.parentName).filter((name) => name !== undefined)),

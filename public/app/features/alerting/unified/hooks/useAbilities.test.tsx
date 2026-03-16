@@ -244,7 +244,7 @@ describe('AlertRule abilities', () => {
 describe('enrichment abilities', () => {
   setupMswServer();
 
-  const originalFeatureToggle = config.featureToggles.alertEnrichment;
+  const originalFeatureToggle = config.isFeatureEnabled('alertEnrichment');
 
   beforeEach(() => {
     // Default to feature toggle enabled

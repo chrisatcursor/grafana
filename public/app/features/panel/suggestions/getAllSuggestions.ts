@@ -25,7 +25,7 @@ interface PluginLoadResult {
 }
 
 function getPanelPluginIds(): string[] {
-  return config.featureToggles.externalVizSuggestions
+  return config.isFeatureEnabled('externalVizSuggestions')
     ? getAllPanelPluginMeta()
         .filter((panel) => panel.suggestions)
         .map((m) => m.id)

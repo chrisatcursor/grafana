@@ -15,7 +15,7 @@ import { ALERTING_PATHS, NAV_IDS } from '../utils/navigation';
  * Use this for pages that need to reference the Notification configuration navigation.
  */
 export function getNotificationConfigNavId(): string {
-  return config.featureToggles.alertingNavigationV2 ? NAV_IDS.NOTIFICATION_CONFIG : NAV_IDS.RECEIVERS;
+  return config.isFeatureEnabled('alertingNavigationV2') ? NAV_IDS.NOTIFICATION_CONFIG : NAV_IDS.RECEIVERS;
 }
 
 /**
@@ -59,7 +59,7 @@ export function useNotificationConfigNav() {
   const navIndex = useSelector((state) => state.navIndex);
 
   // Check if V2 navigation is enabled
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
   // V2 Navigation: Get the notification config nav item
   const notificationConfigNav = navIndex[NAV_IDS.NOTIFICATION_CONFIG];
@@ -157,7 +157,7 @@ interface NavHookResult {
 function createNavHook(legacyNavId: string) {
   return function useNavHook(): NavHookResult {
     const notificationConfigNav = useNotificationConfigNav();
-    const useV2Nav = config.featureToggles.alertingNavigationV2;
+    const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
 
     if (useV2Nav) {
       return notificationConfigNav;

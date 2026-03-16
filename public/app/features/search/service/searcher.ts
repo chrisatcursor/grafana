@@ -10,7 +10,7 @@ export function getGrafanaSearcher(): GrafanaSearcher {
   if (!searcher) {
     const sqlSearcher = new SQLSearcher();
     const useUnifiedStorageSearch =
-      config.featureToggles.unifiedStorageSearchUI || config.featureToggles.panelTitleSearch;
+      config.isFeatureEnabled('unifiedStorageSearchUI') || config.isFeatureEnabled('panelTitleSearch');
     searcher = useUnifiedStorageSearch ? new UnifiedSearcher(sqlSearcher) : sqlSearcher;
   }
   return searcher!;

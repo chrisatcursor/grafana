@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -1377,8 +1378,7 @@ func (dr *DashboardServiceImpl) SetDefaultPermissionsAfterCreate(ctx context.Con
 	}
 	permissions := []accesscontrol.SetResourcePermissionCommand{}
 	isNested := obj.GetFolder() != ""
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if dr.features.IsEnabledGlobally(featuremgmt.FlagKubernetesDashboards) && isNested {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesDashboards, false, openfeature.EvaluationContext{}) && isNested {
 		// Don't set any permissions for nested dashboards
 		return nil
 	}

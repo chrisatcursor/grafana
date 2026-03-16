@@ -103,7 +103,7 @@ const QueryEditorForm = ({ value, onRunQuery }: Props & { onRunQuery: () => void
   const isTimeSeries = isTimeSeriesQuery(value);
 
   const isCodeEditor = value.editorType === 'code';
-  const rawDSLFeatureEnabled = config.featureToggles.elasticsearchRawDSLQuery;
+  const rawDSLFeatureEnabled = config.isFeatureEnabled('elasticsearchRawDSLQuery');
 
   // Default to 'builder' if editorType is empty
   const currentEditorType: EditorType = value.editorType === 'code' ? 'code' : 'builder';

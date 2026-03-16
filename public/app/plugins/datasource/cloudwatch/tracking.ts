@@ -140,7 +140,7 @@ export const onDashboardLoadedHandler = ({
         q.metricQueryType === MetricQueryType.Insights && q.metricEditorMode === MetricEditorMode.Code
       );
       e.metrics_queries_with_account_count += +Boolean(
-        config.featureToggles.cloudWatchCrossAccountQuerying && isMetricSearchBuilder(q) && q.accountId
+        config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && isMetricSearchBuilder(q) && q.accountId
       );
     }
 

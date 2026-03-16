@@ -271,7 +271,7 @@ export const LogListContextProvider = ({
   }, []);
 
   const otelDisplayedFields = useMemo(() => {
-    if (!config.featureToggles.otelLogsFormatting || !setDisplayedFields || showLogAttributes === false) {
+    if (!config.isFeatureEnabled('otelLogsFormatting') || !setDisplayedFields || showLogAttributes === false) {
       return [];
     }
     return getDisplayedFieldsForLogs(logs);
@@ -279,7 +279,7 @@ export const LogListContextProvider = ({
 
   // OTel displayed fields
   useEffect(() => {
-    if (config.featureToggles.otelLogsFormatting && showLogAttributes !== false) {
+    if (config.isFeatureEnabled('otelLogsFormatting') && showLogAttributes !== false) {
       onLogOptionsChange?.('defaultDisplayedFields', otelDisplayedFields);
     }
   }, [onLogOptionsChange, otelDisplayedFields, showLogAttributes]);

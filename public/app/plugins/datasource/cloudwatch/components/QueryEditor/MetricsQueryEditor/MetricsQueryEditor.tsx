@@ -55,7 +55,7 @@ export const MetricsQueryEditor = (props: Props) => {
   );
 
   const updateAccounIdOnMount = () => {
-    if (config.featureToggles.cloudWatchCrossAccountQuerying && query.accountId) {
+    if (config.isFeatureEnabled('cloudWatchCrossAccountQuerying') && query.accountId) {
       datasource.resources.isMonitoringAccount(query.region).then((isMonitoring) => {
         if (!isMonitoring && query.accountId) {
           onChange({ ...query, accountId: undefined });

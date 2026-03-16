@@ -9,6 +9,7 @@ import (
 	"github.com/fullstorydev/grpchan"
 	grpcUtils "github.com/grafana/grafana/pkg/storage/unified/resource/grpc"
 	"github.com/grafana/grafana/pkg/storage/unified/resourcepb"
+	"github.com/open-feature/go-sdk/openfeature"
 	otgrpc "github.com/opentracing-contrib/go-grpc"
 	"github.com/opentracing/opentracing-go"
 	"github.com/prometheus/client_golang/prometheus"
@@ -270,8 +271,7 @@ func newGrpcConn(address string, metrics *clientMetrics, features featuremgmt.Fe
 	// Create either a connection pool or a single connection.
 	// The connection pool __can__ be useful when connection to
 	// server side load balancers like kube-proxy.
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageGrpcConnectionPool) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagUnifiedStorageGrpcConnectionPool, false, openfeature.EvaluationContext{}) {
 		conn, err := newPooledConn(&poolOpts{
 			initialCapacity: 3,
 			maxCapacity:     6,

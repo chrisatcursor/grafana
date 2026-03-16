@@ -214,7 +214,7 @@ class DataSourceWithBackend<
     let url = '/api/ds/query?ds_type=' + this.type;
 
     // Use the new query service
-    if (config.featureToggles.queryServiceFromUI) {
+    if (config.isFeatureEnabled('queryServiceFromUI')) {
       const allowedTypes = getFeatureFlagClient().getObjectValue('datasources.querier.fe-allowed-types', {
         types: [],
       });

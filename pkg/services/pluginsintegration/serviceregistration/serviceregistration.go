@@ -12,6 +12,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/pluginsintegration/pluginsettings"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type Service struct {
@@ -22,8 +23,7 @@ type Service struct {
 }
 
 func ProvideService(cfg *setting.Cfg, features featuremgmt.FeatureToggles, reg extsvcauth.ExternalServiceRegistry, settingsSvc pluginsettings.Service) *Service {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts) && cfg.ManagedServiceAccountsEnabled
+	enabled := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagExternalServiceAccounts, false, openfeature.EvaluationContext{}) && cfg.ManagedServiceAccountsEnabled
 	s := &Service{
 		featureEnabled: enabled,
 		log:            log.New("plugins.external.registration"),

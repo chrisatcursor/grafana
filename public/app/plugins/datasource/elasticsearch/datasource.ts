@@ -200,7 +200,7 @@ export class ElasticDatasource
       indexList = [this.indexPattern.getIndexForToday()];
     }
 
-    const url = config.featureToggles.elasticsearchCrossClusterSearch ? '_field_caps' : '_mapping';
+    const url = config.isFeatureEnabled('elasticsearchCrossClusterSearch') ? '_field_caps' : '_mapping';
 
     const indexUrlList = indexList.map((index) => {
       // make sure `index` does not end with a slash
@@ -722,7 +722,7 @@ export class ElasticDatasource
    * or fix the implementation.
    */
   getFields(type?: string[], range?: TimeRange): Observable<MetricFindValue[]> {
-    if (config.featureToggles.elasticsearchCrossClusterSearch) {
+    if (config.isFeatureEnabled('elasticsearchCrossClusterSearch')) {
       return this.getFieldsCrossCluster(type, range);
     }
 

@@ -116,7 +116,7 @@ export class AppWrapper extends Component<AppWrapperProps, AppWrapperState> {
       providers: enterpriseProviders,
     };
 
-    const MaybeTimeRangeProvider = config.featureToggles.timeRangeProvider ? TimeRangeProvider : Fragment;
+    const MaybeTimeRangeProvider = config.isFeatureEnabled('timeRangeProvider') ? TimeRangeProvider : Fragment;
 
     return (
       <Provider store={store}>

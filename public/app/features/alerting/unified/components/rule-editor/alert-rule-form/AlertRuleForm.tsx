@@ -292,7 +292,7 @@ export const AlertRuleForm = ({ existing, prefill, isManualRestore }: Props) => 
                 </Button>
               )}
 
-              {config.featureToggles.alertingBacktesting && <BacktestDropdownButton ruleDefinition={watch()} />}
+              {config.isFeatureEnabled('alertingBacktesting') && <BacktestDropdownButton ruleDefinition={watch()} />}
             </Stack>
           </Stack>
         </div>

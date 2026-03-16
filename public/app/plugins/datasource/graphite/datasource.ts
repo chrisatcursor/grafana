@@ -358,14 +358,14 @@ export class GraphiteDatasource
       originalTargetMap[target.refId] = target.target || '';
 
       // We only need to alias queries in frontend mode
-      if (!config.featureToggles.graphiteBackendMode) {
+      if (!config.isFeatureEnabled('graphiteBackendMode')) {
         // Use aliasSub to include the refID in the response series name. This allows us to set the refID on the frame.
         const updatedTarget = `aliasSub(${target.target}, "(^.*$)", "\\1 ${formattedRefId}")`;
         target.target = updatedTarget;
       }
     }
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       const graphiteQueries = this.backendBuildGraphiteQueries(options, originalTargetMap);
 
       options.targets = graphiteQueries;
@@ -589,7 +589,7 @@ export class GraphiteDatasource
       const tags = options.tags || '';
       const from = this.translateTime(options.range.raw.from, false, options.timezone);
       const until = this.translateTime(options.range.raw.to, true, options.timezone);
-      if (config.featureToggles.graphiteBackendMode) {
+      if (config.isFeatureEnabled('graphiteBackendMode')) {
         return await this.postResource<{ data: GraphiteEvents[] }>('events', {
           from: typeof from === 'string' ? from : `${from}`,
           until: typeof until === 'string' ? until : `${until}`,
@@ -802,7 +802,7 @@ export class GraphiteDatasource
       params.until = range.until;
     }
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       return await this.postResource<MetricFindValue[]>('metrics/find', {
         from: params.from ? (typeof params.from === 'string' ? params.from : `${params.from}`) : undefined,
         until: params.until ? (typeof params.until === 'string' ? params.until : `${params.until}`) : undefined,
@@ -852,7 +852,7 @@ export class GraphiteDatasource
       params.until = range.until;
     }
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       const metrics = await this.postResource<MetricFindValue[]>('metrics/expand', {
         from: params.from ? (typeof params.from === 'string' ? params.from : `${params.from}`) : undefined,
         until: params.until ? (typeof params.until === 'string' ? params.until : `${params.until}`) : undefined,
@@ -906,7 +906,7 @@ export class GraphiteDatasource
       params.until = this.translateTime(options.range.to, true, options.timezone);
     }
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       const tags = await this.postResource<string[]>('tags/autoComplete/tags', {
         from: typeof params.from === 'string' ? params.from : `${params.from}`,
         until: typeof params.until === 'string' ? params.until : `${params.until}`,
@@ -946,7 +946,7 @@ export class GraphiteDatasource
       params.until = this.translateTime(options.range.to, true, options.timezone);
     }
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       const tagValues = await this.postResource<string[]>('tags/autoComplete/values', {
         from: typeof params.from === 'string' ? params.from : `${params.from}`,
         until: typeof params.until === 'string' ? params.until : `${params.until}`,
@@ -980,7 +980,7 @@ export class GraphiteDatasource
       requestId: options.requestId,
     };
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       const version = await this.getResource<string>('version');
       const semver = new SemVer(version);
       return valid(semver) ? version : '';
@@ -1033,7 +1033,7 @@ export class GraphiteDatasource
       responseType: 'text' as const,
     };
 
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       try {
         const functions = await this.getResource<string>('functions');
         this.funcDefs = gfunc.parseFuncDefs(functions);
@@ -1067,7 +1067,7 @@ export class GraphiteDatasource
   }
 
   testDatasource() {
-    if (config.featureToggles.graphiteBackendMode) {
+    if (config.isFeatureEnabled('graphiteBackendMode')) {
       return super.testDatasource();
     }
     const query: DataQueryRequest<GraphiteQuery> = {

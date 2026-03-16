@@ -148,7 +148,7 @@ export function useStaticActions(): CommandPaletteAction[] {
   return useMemo(() => {
     let navBarActions = navTreeToActions(navBarTree);
 
-    if (config.featureToggles.dashboardTemplates) {
+    if (config.isFeatureEnabled('dashboardTemplates')) {
       const testDataSources = getDataSourceSrv().getList({ type: 'grafana-testdata-datasource' });
       if (testDataSources.length > 0) {
         const navBarActionsWithoutActions = navBarActions.filter((action) => action.priority !== ACTIONS_PRIORITY);

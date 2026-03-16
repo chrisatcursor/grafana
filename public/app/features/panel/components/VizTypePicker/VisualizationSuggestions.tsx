@@ -76,7 +76,7 @@ export function VisualizationSuggestions({ onChange, data, panel, searchQuery, i
   const [suggestionHash, setSuggestionHash] = useState<string | null>(null);
   const [firstCardRef, { width }] = useMeasure<HTMLDivElement>();
   const [firstCardHash, setFirstCardHash] = useState<string | null>(null);
-  const isNewVizSuggestionsEnabled = config.featureToggles.newVizSuggestions;
+  const isNewVizSuggestionsEnabled = config.isFeatureEnabled('newVizSuggestions');
   const isUnconfiguredPanel = panel?.type === UNCONFIGURED_PANEL_PLUGIN_ID;
 
   const panelState = useMemo((): PanelState => {

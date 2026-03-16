@@ -56,7 +56,7 @@ export function getPanelFrameCategory(props: OptionPaneRenderProps): OptionsPane
             />
           );
         },
-        addon: config.featureToggles.dashgpt && (
+        addon: config.isFeatureEnabled('dashgpt') && (
           <GenAIPanelTitleButton
             onGenerate={setPanelTitle}
             panel={panel.getSaveModel()}
@@ -81,7 +81,7 @@ export function getPanelFrameCategory(props: OptionPaneRenderProps): OptionsPane
             />
           );
         },
-        addon: config.featureToggles.dashgpt && (
+        addon: config.isFeatureEnabled('dashgpt') && (
           <GenAIPanelDescriptionButton onGenerate={setPanelDescription} panel={panel.getSaveModel()} />
         ),
       })

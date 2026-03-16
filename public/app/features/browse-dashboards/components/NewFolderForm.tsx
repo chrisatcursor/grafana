@@ -24,7 +24,7 @@ interface FormModel {
 const initialFormModel: FormModel = { folderName: '' };
 
 export function NewFolderForm({ onCancel, onConfirm, parentFolder }: Props) {
-  const showFolderOwnerSelector = config.featureToggles.teamFolders;
+  const showFolderOwnerSelector = config.isFeatureEnabled('teamFolders');
   const {
     handleSubmit,
     register,

@@ -52,7 +52,7 @@ export const CloudRules = ({ namespaces, expandAll }: Props) => {
 
   const canMigrateToGMA =
     hasDataSourcesConfigured &&
-    config.featureToggles.alertingMigrationUI &&
+    config.isFeatureEnabled('alertingMigrationUI') &&
     contextSrv.hasPermission(AccessControlAction.AlertingRuleCreate) &&
     contextSrv.hasPermission(AccessControlAction.AlertingProvisioningSetStatus);
 

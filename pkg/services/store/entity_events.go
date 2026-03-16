@@ -10,6 +10,7 @@ import (
 	"github.com/grafana/grafana/pkg/registry"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type EntityEventType string
@@ -70,8 +71,7 @@ type EntityEventsService interface {
 }
 
 func ProvideEntityEventsService(cfg *setting.Cfg, sqlStore db.DB, features featuremgmt.FeatureToggles) EntityEventsService {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagPanelTitleSearch) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagPanelTitleSearch, false, openfeature.EvaluationContext{}) {
 		return &dummyEntityEventsService{}
 	}
 

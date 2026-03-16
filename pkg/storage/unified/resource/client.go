@@ -14,6 +14,7 @@ import (
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
@@ -58,8 +59,7 @@ type resourceClient struct {
 }
 
 func NewResourceClient(conn, indexConn grpc.ClientConnInterface, cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer) (ResourceClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAppPlatformGrpcClientAuth) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAppPlatformGrpcClientAuth, false, openfeature.EvaluationContext{}) {
 		return NewLegacyResourceClient(conn, indexConn), nil
 	}
 

@@ -90,7 +90,7 @@ export const usePluginDetailsTabs = (
       return navModelChildren;
     }
 
-    if (config.featureToggles.externalServiceAccounts && (plugin?.iam || plugin?.details?.iam)) {
+    if (config.isFeatureEnabled('externalServiceAccounts') && (plugin?.iam || plugin?.details?.iam)) {
       navModelChildren.push({
         text: PluginTabLabels.IAM,
         icon: 'shield',
@@ -101,7 +101,7 @@ export const usePluginDetailsTabs = (
     }
 
     if (
-      config.featureToggles.unifiedStorageSearchUI &&
+      config.isFeatureEnabled('unifiedStorageSearchUI') &&
       (pluginConfig.meta.type === PluginType.panel || pluginConfig.meta.type === PluginType.datasource)
     ) {
       navModelChildren.push({
@@ -113,7 +113,7 @@ export const usePluginDetailsTabs = (
       });
     }
 
-    if (config.featureToggles.datasourceConnectionsTab && plugin?.type === PluginType.datasource) {
+    if (config.isFeatureEnabled('datasourceConnectionsTab') && plugin?.type === PluginType.datasource) {
       navModelChildren.push({
         text: PluginTabLabels.DATASOURCE_CONNECTIONS,
         icon: 'database',

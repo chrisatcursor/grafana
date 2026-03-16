@@ -23,7 +23,7 @@ const wrapper = ({ children }: { children: ReactNode }) => {
 };
 
 describe('useFoldersQuery', () => {
-  let configBackup: runtime.GrafanaBootConfig;
+  let configBackup: Pick<runtime.GrafanaBootConfig, 'featureToggles'>;
 
   beforeAll(() => {
     configBackup = { ...runtime.config };

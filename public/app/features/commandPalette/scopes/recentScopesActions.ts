@@ -8,7 +8,7 @@ import { RECENT_SCOPES_PRIORITY } from '../values';
 export function useRecentScopesActions(): CommandPaletteAction[] {
   const services = useScopesServices();
 
-  if (!(config.featureToggles.scopeFilters && services)) {
+  if (!(config.isFeatureEnabled('scopeFilters') && services)) {
     return [];
   }
 

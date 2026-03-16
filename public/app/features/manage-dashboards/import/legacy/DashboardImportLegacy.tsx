@@ -217,7 +217,7 @@ class UnthemedDashboardImportLegacy extends PureComponent<Props> {
 
     const dashboard = JSON.parse(formData.dashboardJson);
 
-    if ((dashboard.spec?.elements || dashboard.elements) && !config.featureToggles.dashboardNewLayouts) {
+    if ((dashboard.spec?.elements || dashboard.elements) && !config.isFeatureEnabled('dashboardNewLayouts')) {
       return appEvents.emit(AppEvents.alertError, [
         'Import failed',
         'Dashboard using new layout cannot be imported because the feature is not enabled',

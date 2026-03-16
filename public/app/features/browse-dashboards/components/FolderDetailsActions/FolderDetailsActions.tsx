@@ -33,10 +33,10 @@ export const FolderDetailsActions = ({ folderDTO }: { folderDTO?: CombinedFolder
 
   return (
     <Stack alignItems="center">
-      {canReadTeams && config.featureToggles.teamFolders && folderDTO && 'ownerReferences' in folderDTO && (
+      {canReadTeams && config.isFeatureEnabled('teamFolders') && folderDTO && 'ownerReferences' in folderDTO && (
         <FolderOwners ownerReferences={folderDTO.ownerReferences} />
       )}
-      {config.featureToggles.restoreDashboards && (
+      {config.isFeatureEnabled('restoreDashboards') && (
         <LinkButton
           variant="secondary"
           href={config.appSubUrl + '/dashboard/recently-deleted'}

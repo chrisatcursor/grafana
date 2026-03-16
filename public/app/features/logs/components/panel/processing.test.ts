@@ -312,7 +312,7 @@ Value"
     });
 
     describe('OTel logs', () => {
-      const originalState = config.featureToggles.otelLogsFormatting;
+      const originalState = config.isFeatureEnabled('otelLogsFormatting');
 
       test('Does not create the OTel attribute field when not enabled', () => {
         config.featureToggles.otelLogsFormatting = false;

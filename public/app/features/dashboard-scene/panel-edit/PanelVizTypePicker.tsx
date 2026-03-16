@@ -49,7 +49,7 @@ const getTabs = (): Array<{ label: string; value: VisualizationSelectPaneTab }> 
     label: t('dashboard-scene.panel-viz-type-picker.radio-options.label.all-visualizations', 'All visualizations'),
     value: VisualizationSelectPaneTab.Visualizations,
   };
-  return config.featureToggles.newVizSuggestions
+  return config.isFeatureEnabled('newVizSuggestions')
     ? [suggestionsTab, allVisualizationsTab]
     : [allVisualizationsTab, suggestionsTab];
 };
@@ -94,7 +94,7 @@ export function PanelVizTypePicker({
   const [storedListMode, setStoredListMode] = useSessionStorage(LS_VISUALIZATION_SELECT_TAB_KEY, defaultTab);
 
   const shouldDefaultToSuggestions =
-    (isNewPanel && !hasPickedViz && config.featureToggles.newVizSuggestions) ||
+    (isNewPanel && !hasPickedViz && config.isFeatureEnabled('newVizSuggestions')) ||
     storedListMode === VisualizationSelectPaneTab.Suggestions;
   const initialTab = shouldDefaultToSuggestions ? VisualizationSelectPaneTab.Suggestions : storedListMode;
   const [listMode, setListMode] = useState(initialTab);

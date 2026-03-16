@@ -184,7 +184,7 @@ const mockTimeAndLocation = (mockNow: Date, queryParams: Record<string, string>)
 };
 
 const withFeatureToggle = (enabled: boolean, testFn: () => Promise<void>) => async () => {
-  const originalValue = config.featureToggles.reloadDashboardsOnParamsChange;
+  const originalValue = config.isFeatureEnabled('reloadDashboardsOnParamsChange');
   config.featureToggles.reloadDashboardsOnParamsChange = enabled;
 
   try {

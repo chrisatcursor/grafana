@@ -19,7 +19,7 @@ import {
 } from './mocks/CloudWatchDataSource';
 import { setupMockedResourcesAPI } from './mocks/ResourcesAPI';
 
-const originalFeatureToggleValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+const originalFeatureToggleValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 
 describe('hooks', () => {
   afterEach(() => {

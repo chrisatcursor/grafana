@@ -359,7 +359,7 @@ export const LogLineContext = memo(
         className={styles.modal}
         onDismiss={handleClose}
       >
-        {config.featureToggles.logsContextDatasourceUi && getLogRowContextUi && (
+        {config.isFeatureEnabled('logsContextDatasourceUi') && getLogRowContextUi && (
           <div>{getLogRowContextUi(log, updateResults)}</div>
         )}
         <Collapse

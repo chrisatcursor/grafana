@@ -100,5 +100,5 @@ export const isPublicDashboardsEnabled = () => {
 
 export const isEmailSharingEnabled = () =>
   isPublicDashboardsEnabled() &&
-  !!config.featureToggles.publicDashboardsEmailSharing &&
+  !!config.isFeatureEnabled('publicDashboardsEmailSharing') &&
   featureEnabled('publicDashboardsEmailSharing');

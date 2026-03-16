@@ -197,7 +197,7 @@ type WrapperProps = {
 };
 
 export const LogGroupsFieldWrapper = (props: WrapperProps) => {
-  if (!config.featureToggles.cloudWatchCrossAccountQuerying) {
+  if (!config.isFeatureEnabled('cloudWatchCrossAccountQuerying')) {
     return (
       <LegacyLogGroupSelection
         {...props}

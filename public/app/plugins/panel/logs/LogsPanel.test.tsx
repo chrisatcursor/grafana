@@ -726,7 +726,7 @@ describe.each([false, true])('LogsPanel with controls = %s', (showControls: bool
   });
 
   describe('Field selector', () => {
-    const originalFlagState = config.featureToggles.newLogsPanel;
+    const originalFlagState = config.isFeatureEnabled('newLogsPanel');
     const series = [
       createDataFrame({
         refId: 'A',

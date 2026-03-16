@@ -117,7 +117,7 @@ export class LogListModel implements LogRowModel {
     }
     this.raw = log.raw;
 
-    if (config.featureToggles.otelLogsFormatting && this.otelLanguage) {
+    if (config.isFeatureEnabled('otelLogsFormatting') && this.otelLanguage) {
       this.labels[OTEL_LOG_LINE_ATTRIBUTES_FIELD_NAME] = getOtelAttributesField(this, wrapLogMessage);
     }
   }

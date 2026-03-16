@@ -14,6 +14,7 @@ import (
 	"github.com/grafana/dskit/middleware"
 	"github.com/grafana/dskit/services"
 	grpcAuth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
+	"github.com/open-feature/go-sdk/openfeature"
 	openfgav1 "github.com/openfga/api/proto/openfga/v1"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -39,8 +40,7 @@ import (
 // ProvideZanzanaClient used to register ZanzanaClient.
 // It will also start an embedded ZanzanaSever if mode is set to "embedded".
 func ProvideZanzanaClient(cfg *setting.Cfg, db db.DB, zanzanaServer zanzana.Server, features featuremgmt.FeatureToggles, reg prometheus.Registerer) (zanzana.Client, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{}) {
 		return zClient.NewNoopClient(), nil
 	}
 
@@ -86,8 +86,7 @@ func ProvideZanzanaClient(cfg *setting.Cfg, db db.DB, zanzanaServer zanzana.Serv
 
 // ProvideEmbeddedZanzanaServer creates and registers embedded ZanzanaServer.
 func ProvideEmbeddedZanzanaServer(cfg *setting.Cfg, db db.DB, tracer tracing.Tracer, features featuremgmt.FeatureToggles, reg prometheus.Registerer, restConfig apiserver.RestConfigProvider) (zanzana.Server, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{}) {
 		return zServer.NewNoopServer(), nil
 	}
 
@@ -160,8 +159,7 @@ func (s *EmbeddedZanzanaService) IsDisabled() bool {
 // ProvideStandaloneZanzanaClient provides a standalone Zanzana client, without registering the Zanzana service.
 // Client connects to a remote Zanzana server specified in the configuration.
 func ProvideStandaloneZanzanaClient(cfg *setting.Cfg, features featuremgmt.FeatureToggles, reg prometheus.Registerer) (zanzana.Client, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagZanzana, false, openfeature.EvaluationContext{}) {
 		return zClient.NewNoopClient(), nil
 	}
 

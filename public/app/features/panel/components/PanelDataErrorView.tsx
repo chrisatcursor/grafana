@@ -101,7 +101,7 @@ export function PanelDataErrorView(props: PanelDataErrorViewProps) {
   const noData = !hasData(props.data);
   const noQueryConfigured = hasNoQueryConfigured(props.data);
   const showEmptyState = Boolean(
-    config.featureToggles.newVizSuggestions && context.app === CoreApp.PanelEditor && noQueryConfigured && noData
+    config.isFeatureEnabled('newVizSuggestions') && context.app === CoreApp.PanelEditor && noQueryConfigured && noData
   );
   const message = getMessageFor(props, dataSummary, showEmptyState);
 

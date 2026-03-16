@@ -7,6 +7,7 @@ import (
 	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/ngalert/models"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type provenanceRecord struct {
@@ -96,8 +97,7 @@ func (st DBstore) SetProvenance(ctx context.Context, o models.Provisionable, org
 		// TODO: Need to make sure that writing a record where our concurrency key fails will also fail the whole transaction. That way, this gets rolled back too. can't just check that 0 updates happened inmemory. Check with jp. If not possible, we need our own concurrency key.
 		// TODO: Clean up stale provenance records periodically.
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		if st.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingProvenanceLockWrites) {
+		if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingProvenanceLockWrites, false, openfeature.EvaluationContext{}) {
 			return st.setProvenanceWithLocking(sess, recordKey, recordType, org, p)
 		}
 		return st.setProvenanceUpsert(sess, recordKey, recordType, org, p)

@@ -96,7 +96,7 @@ export function PluginDetailsBody({ plugin, queryParams, pageId, info, showDetai
   }
 
   if (
-    config.featureToggles.datasourceConnectionsTab &&
+    config.isFeatureEnabled('datasourceConnectionsTab') &&
     pageId === PluginTabIds.DATASOURCE_CONNECTIONS &&
     plugin.type === PluginType.datasource
   ) {
@@ -111,7 +111,7 @@ export function PluginDetailsBody({ plugin, queryParams, pageId, info, showDetai
   const permissions = plugin.iam?.permissions || plugin.details?.iam?.permissions;
 
   const displayPermissions =
-    config.featureToggles.externalServiceAccounts &&
+    config.isFeatureEnabled('externalServiceAccounts') &&
     pageId === PluginTabIds.IAM &&
     permissions &&
     permissions.length > 0;

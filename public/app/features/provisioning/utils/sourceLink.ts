@@ -35,7 +35,11 @@ export function removeExistingSourceLinks(links: DashboardLink[] | undefined): D
  * Returns undefined if the dashboard is not repo-managed or if the repository is not a git provider.
  */
 export async function buildSourceLink(annotations: ObjectMeta['annotations']): Promise<DashboardLink | undefined> {
-  if (!annotations || !config.featureToggles.provisioning || annotations[AnnoKeyManagerKind] !== ManagerKind.Repo) {
+  if (
+    !annotations ||
+    !config.isFeatureEnabled('provisioning') ||
+    annotations[AnnoKeyManagerKind] !== ManagerKind.Repo
+  ) {
     return undefined;
   }
 

@@ -65,7 +65,7 @@ export const LoginCtrl = memo(({ resetCode, children }: Props) => {
   );
 
   const toGrafana = useCallback(() => {
-    if (config.featureToggles.useSessionStorageForRedirection) {
+    if (config.isFeatureEnabled('useSessionStorageForRedirection')) {
       window.location.assign(config.appSubUrl + '/');
       return;
     }

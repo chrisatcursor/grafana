@@ -103,14 +103,14 @@ export const QueryAndExpressionsStep = ({ editingExistingRule, onDataChange, mod
   } = useFormContext<RuleFormValues>();
 
   const { queryPreviewData, runQueries, cancelQueries, isPreviewLoading } = useAlertQueryRunner();
-  const isSwitchModeEnabled = config.featureToggles.alertingQueryAndExpressionsStepMode ?? false;
+  const isSwitchModeEnabled = config.isFeatureEnabled('alertingQueryAndExpressionsStepMode') ?? false;
 
   const initialState = {
     queries: getValues('queries'),
   };
 
   const [{ queries }, dispatch] = useReducer(queriesAndExpressionsReducer, initialState);
-  const isOptimizeReducerEnabled = config.featureToggles.alertingUIOptimizeReducer ?? false;
+  const isOptimizeReducerEnabled = config.isFeatureEnabled('alertingUIOptimizeReducer') ?? false;
 
   // data queries only
   const dataQueries = useMemo(() => {
@@ -423,7 +423,7 @@ export const QueryAndExpressionsStep = ({ editingExistingRule, onDataChange, mod
   const { sectionTitle, helpLabel, helpContent, helpLink } = DESCRIPTIONS[type ?? RuleFormType.grafana];
   // Only show the data source managed option if there are data sources with manageAlerts enabled
   const hasAlertEnabledDataSources = useMemo(() => getRulesDataSources().length > 0, []);
-  const isDisableDMAinUIEnabled = config.featureToggles.alertingDisableDMAinUI ?? false;
+  const isDisableDMAinUIEnabled = config.isFeatureEnabled('alertingDisableDMAinUI') ?? false;
   const canSelectDataSourceManaged =
     onlyOneDSInQueries(queries) && hasAlertEnabledDataSources && !isDisableDMAinUIEnabled;
   if (!type) {

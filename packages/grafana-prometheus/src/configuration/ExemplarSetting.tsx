@@ -69,7 +69,7 @@ export function ExemplarSetting({ value, onChange, onDelete, disabled }: Props) 
         >
           <DataSourcePicker
             filter={
-              config.featureToggles.azureMonitorPrometheusExemplars
+              config.isFeatureEnabled('azureMonitorPrometheusExemplars')
                 ? undefined
                 : (ds) => ds.type !== 'grafana-azure-monitor-datasource'
             }

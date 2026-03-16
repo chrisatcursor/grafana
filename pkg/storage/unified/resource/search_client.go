@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"google.golang.org/grpc"
@@ -115,9 +116,8 @@ func shouldMakeBackgroundCall(ctx context.Context, features featuremgmt.FeatureT
 		return false, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	res := features != nil &&
-		features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageSearchDualReaderEnabled) &&
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagUnifiedStorageSearchDualReaderEnabled, false, openfeature.EvaluationContext{}) &&
 		!unifiedIsMainStorage &&
 		status.WriteUnified
 

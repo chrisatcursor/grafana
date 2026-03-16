@@ -149,7 +149,7 @@ export const OrgUsersTable = ({
             }
           };
 
-          if (config.featureToggles.rolePickerDrawer) {
+          if (config.isFeatureEnabled('rolePickerDrawer')) {
             return <RolePickerBadges disabled={basicRoleDisabled} user={original} />;
           }
 

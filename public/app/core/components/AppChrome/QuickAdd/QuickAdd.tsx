@@ -23,7 +23,7 @@ export const QuickAdd = ({}: Props) => {
   const createActions = useMemo(() => {
     const createActions = findCreateActions(navBarTree);
 
-    if (config.featureToggles.dashboardTemplates) {
+    if (config.isFeatureEnabled('dashboardTemplates')) {
       const testDataSources = getDataSourceSrv().getList({ type: 'grafana-testdata-datasource' });
       if (testDataSources.length > 0) {
         createActions.splice(1, 0, {

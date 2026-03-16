@@ -38,6 +38,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/team"
 	tempuser "github.com/grafana/grafana/pkg/services/temp_user"
 	"github.com/grafana/grafana/pkg/setting"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 type AlertRuleService interface {
@@ -236,8 +237,7 @@ func (srv *CleanUpService) shouldCleanupTempFile(filemtime time.Time, now time.T
 
 func (srv *CleanUpService) deleteExpiredSnapshots(ctx context.Context) {
 	logger := srv.log.FromContext(ctx)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.Features.IsEnabledGlobally(featuremgmt.FlagKubernetesSnapshots) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesSnapshots, false, openfeature.EvaluationContext{}) {
 		srv.deleteKubernetesExpiredSnapshots(ctx)
 	} else {
 		cmd := dashboardsnapshots.DeleteExpiredSnapshotsCommand{}
@@ -377,8 +377,7 @@ func (srv *CleanUpService) expireOldVerifications(ctx context.Context) {
 
 func (srv *CleanUpService) deleteStaleShortURLs(ctx context.Context) {
 	logger := srv.log.FromContext(ctx)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.Features.IsEnabledGlobally(featuremgmt.FlagKubernetesShortURLs) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesShortURLs, false, openfeature.EvaluationContext{}) {
 		srv.deleteStaleKubernetesShortURLs(ctx)
 	} else {
 		cmd := shorturls.DeleteShortUrlCommand{

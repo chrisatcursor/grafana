@@ -202,7 +202,7 @@ export class ScopesDashboardsService extends ScopesServiceBase<ScopesDashboardsS
 
     try {
       // Fetch navigations for this subScope
-      const fetchNavigations = config.featureToggles.useScopesNavigationEndpoint
+      const fetchNavigations = config.isFeatureEnabled('useScopesNavigationEndpoint')
         ? this.apiClient.fetchScopeNavigations
         : this.apiClient.fetchDashboards;
 
@@ -304,7 +304,7 @@ export class ScopesDashboardsService extends ScopesServiceBase<ScopesDashboardsS
 
     this.updateState({ forScopeNames, loading: true });
 
-    const fetchNavigations = config.featureToggles.useScopesNavigationEndpoint
+    const fetchNavigations = config.isFeatureEnabled('useScopesNavigationEndpoint')
       ? this.apiClient.fetchScopeNavigations
       : this.apiClient.fetchDashboards;
 

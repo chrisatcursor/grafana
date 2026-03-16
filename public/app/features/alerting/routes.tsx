@@ -107,7 +107,7 @@ export function getAlertingRoutes(cfg = config): RouteDescriptor[] {
         ...PERMISSIONS_NOTIFICATION_POLICIES_READ,
         ...PERMISSIONS_NOTIFICATION_POLICIES_MODIFY,
       ]),
-      component: config.featureToggles.alertingMultiplePolicies
+      component: config.isFeatureEnabled('alertingMultiplePolicies')
         ? importAlertingComponent(
             () =>
               import(
@@ -302,7 +302,7 @@ export function getAlertingRoutes(cfg = config): RouteDescriptor[] {
         AccessControlAction.AlertingRuleCreate,
         AccessControlAction.AlertingProvisioningSetStatus,
       ]),
-      component: config.featureToggles.alertingMigrationUI
+      component: config.isFeatureEnabled('alertingMigrationUI')
         ? importAlertingComponent(
             () =>
               import(
@@ -314,7 +314,7 @@ export function getAlertingRoutes(cfg = config): RouteDescriptor[] {
     {
       path: '/alerting/import-to-gma',
       roles: () => ['Admin'],
-      component: config.featureToggles.alertingMigrationWizardUI
+      component: config.isFeatureEnabled('alertingMigrationWizardUI')
         ? importAlertingComponent(
             () =>
               import(

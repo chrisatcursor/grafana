@@ -13,7 +13,7 @@ import { AzureCredentialsForm } from './AzureCredentialsForm';
 export const AzureAuthSettings = (props: HttpSettingsBaseProps) => {
   const { dataSourceConfig, onChange } = props;
 
-  const [overrideAudienceAllowed] = useState<boolean>(!!config.featureToggles.prometheusAzureOverrideAudience);
+  const [overrideAudienceAllowed] = useState<boolean>(!!config.isFeatureEnabled('prometheusAzureOverrideAudience'));
   const [overrideAudienceChecked, setOverrideAudienceChecked] = useState<boolean>(
     !!dataSourceConfig.jsonData.azureEndpointResourceId
   );

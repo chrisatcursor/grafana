@@ -24,7 +24,7 @@ export function QueryActionAssistantButton<TQuery extends DataQuery = DataQuery>
   const { isAvailable, openAssistant } = useAssistant();
 
   // Check if the feature toggle is enabled
-  if (!config.featureToggles.queryWithAssistant) {
+  if (!config.isFeatureEnabled('queryWithAssistant')) {
     return null;
   }
 

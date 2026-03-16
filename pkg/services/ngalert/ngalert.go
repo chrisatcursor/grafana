@@ -10,6 +10,7 @@ import (
 	notificationHistorian "github.com/grafana/alerting/notify/historian"
 	"github.com/grafana/alerting/notify/historian/lokiclient"
 	"github.com/grafana/alerting/notify/nfstatus"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/alertmanager/featurecontrol"
 	"github.com/prometheus/alertmanager/matchers/compat"
 	"golang.org/x/sync/errgroup"
@@ -202,12 +203,9 @@ func (ng *AlertNG) init() error {
 	var opts []notifier.Option
 	moaLogger := log.New("ngalert.multiorg.alertmanager")
 	crypto := notifier.NewCrypto(ng.SecretsService, ng.store, moaLogger)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remotePrimary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemotePrimary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondaryWithRemoteState := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState)
+	remotePrimary := openfeature.NewDefaultClient().Boolean(initCtx, featuremgmt.FlagAlertmanagerRemotePrimary, false, openfeature.TransactionContext(initCtx))
+	remoteSecondary := openfeature.NewDefaultClient().Boolean(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondary, false, openfeature.TransactionContext(initCtx))
+	remoteSecondaryWithRemoteState := openfeature.NewDefaultClient().Boolean(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState, false, openfeature.TransactionContext(initCtx))
 	if remotePrimary || remoteSecondary || remoteSecondaryWithRemoteState {
 		m := ng.Metrics.GetRemoteAlertmanagerMetrics()
 		smtpCfg := remoteClient.SmtpConfig{
@@ -457,8 +455,7 @@ func (ng *AlertNG) init() error {
 		ng.Log,
 		ng.ResourcePermissions,
 		ng.tracer,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		ng.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI),
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingImportAlertmanagerAPI, false, openfeature.EvaluationContext{}),
 	)
 	receiverTestService := notifier.NewReceiverTestingService(
 		receiverService,
@@ -564,8 +561,7 @@ func initInstanceStore(sqlStore db.DB, logger log.Logger, featureToggles feature
 		SQLStore: sqlStore,
 		Logger:   logger,
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStateCompressed) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingSaveStateCompressed, false, openfeature.EvaluationContext{}) {
 		logger.Info("Using protobuf-based alert instance store")
 		instanceStore = protoInstanceStore
 	} else {
@@ -579,10 +575,8 @@ func initInstanceStore(sqlStore db.DB, logger log.Logger, featureToggles feature
 func initStatePersister(uaCfg setting.UnifiedAlertingSettings, cfg state.ManagerCfg, featureToggles featuremgmt.FeatureToggles) state.StatePersister {
 	logger := log.New("ngalert.state.manager.persist")
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	compressed := featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStateCompressed)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	periodic := featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStatePeriodic)
+	compressed := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingSaveStateCompressed, false, openfeature.EvaluationContext{})
+	periodic := openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertingSaveStatePeriodic, false, openfeature.EvaluationContext{})
 
 	switch {
 	case compressed && periodic:
@@ -763,8 +757,7 @@ func configureNotificationHistorian(
 	l log.Logger,
 	tracer tracing.Tracer,
 ) (nfstatus.NotificationHistorian, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !featureToggles.IsEnabled(ctx, featuremgmt.FlagAlertingNotificationHistory) || !cfg.Enabled {
+	if !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAlertingNotificationHistory, false, openfeature.TransactionContext(ctx)) || !cfg.Enabled {
 		met.Info.Set(0)
 		return nil, nil
 	}

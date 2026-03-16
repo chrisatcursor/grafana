@@ -18,7 +18,7 @@ jest.mock('@grafana/runtime', () => {
   };
 });
 
-const originalFeatureToggleValue = config.featureToggles.cloudWatchCrossAccountQuerying;
+const originalFeatureToggleValue = config.isFeatureEnabled('cloudWatchCrossAccountQuerying');
 describe('onDashboardLoadedHandler', () => {
   it('should report a `grafana_ds_cloudwatch_dashboard_loaded` interaction ', () => {
     config.featureToggles.cloudWatchCrossAccountQuerying = true;

@@ -322,7 +322,7 @@ describe.each(fontSizes)('LogLine', (fontSize: LogListFontSize) => {
     });
 
     test('Highlights the OTel attributes field when rendered', () => {
-      const originalState = config.featureToggles.otelLogsFormatting;
+      const originalState = config.isFeatureEnabled('otelLogsFormatting');
       config.featureToggles.otelLogsFormatting = true;
       log = createLogLine({
         labels: { [OTEL_PROBE_FIELD]: '1', service: 'some service' },
@@ -347,7 +347,7 @@ describe.each(fontSizes)('LogLine', (fontSize: LogListFontSize) => {
     });
 
     test('OTel attributes field is not present when the flag is disabled', () => {
-      const originalState = config.featureToggles.otelLogsFormatting;
+      const originalState = config.isFeatureEnabled('otelLogsFormatting');
       config.featureToggles.otelLogsFormatting = false;
       log = createLogLine({
         labels: { [OTEL_PROBE_FIELD]: '1', service: 'some service' },

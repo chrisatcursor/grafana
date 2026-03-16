@@ -56,7 +56,7 @@ export function CustomVariableEditor({ variable, onRunQuery }: CustomVariableEdi
     (event: FormEvent<HTMLTextAreaElement>) => {
       setPrevQuery('');
 
-      if (config.featureToggles.multiPropsVariables && valuesFormat === 'json') {
+      if (config.isFeatureEnabled('multiPropsVariables') && valuesFormat === 'json') {
         const validationError = validateJsonQuery(event.currentTarget.value.trim());
         setQueryValidationError(validationError);
         if (validationError) {
@@ -64,7 +64,7 @@ export function CustomVariableEditor({ variable, onRunQuery }: CustomVariableEdi
         }
       }
 
-      if (!config.featureToggles.multiPropsVariables) {
+      if (!config.isFeatureEnabled('multiPropsVariables')) {
         variable.setState({ valuesFormat: 'csv' });
       }
 

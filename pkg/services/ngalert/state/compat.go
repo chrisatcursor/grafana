@@ -1,6 +1,7 @@
 package state
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"github.com/benbjohnson/clock"
 	"github.com/go-openapi/strfmt"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/prometheus/alertmanager/api/v2/models"
 	"github.com/prometheus/common/model"
 
@@ -92,8 +94,7 @@ func StateToPostableAlert(transition StateTransition, appURL *url.URL, featureTo
 	}
 
 	startsAt := strfmt.DateTime(alertState.StartsAt)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertRuleUseFiredAtForStartsAt) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagAlertRuleUseFiredAtForStartsAt, false, openfeature.EvaluationContext{}) {
 		if alertState.FiredAt != nil {
 			startsAt = strfmt.DateTime(*alertState.FiredAt)
 		}

@@ -1,6 +1,7 @@
 package resourcepermissions
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -21,6 +22,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var tracer = otel.Tracer("github.com/grafana/grafana/pkg/accesscontrol/resourcepermissions")
@@ -56,9 +58,8 @@ func newApi(cfg *setting.Cfg, ac accesscontrol.AccessControl, router routing.Rou
 
 // shouldUseK8sAPIs returns true if both feature flags for K8s API redirect are enabled
 func (a *api) shouldUseK8sAPIs() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return a.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthZResourcePermissionsRedirect) &&
-		a.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthzResourcePermissionApis)
+	return openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAuthZResourcePermissionsRedirect, false, openfeature.EvaluationContext{}) &&
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAuthzResourcePermissionApis, false, openfeature.EvaluationContext{})
 }
 
 func (a *api) registerEndpoints() {
@@ -198,9 +199,8 @@ func (a *api) getPermissions(c *contextmodel.ReqContext) response.Response {
 
 	resourceID := web.Params(c.Req)[":resourceID"]
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if a.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthZResourcePermissionsRedirect) &&
-		a.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthzResourcePermissionApis) {
+	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAuthZResourcePermissionsRedirect, false, openfeature.EvaluationContext{}) &&
+		openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagKubernetesAuthzResourcePermissionApis, false, openfeature.EvaluationContext{}) {
 		k8sPermissions, err := a.getResourcePermissionsFromK8s(c.Req.Context(), c.Namespace, resourceID)
 		if err == nil {
 			return response.JSON(http.StatusOK, k8sPermissions)

@@ -33,6 +33,7 @@ import (
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util/errhttp"
 	"github.com/grafana/grafana/pkg/web"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 func (l *LibraryElementService) registerAPIEndpoints() {
@@ -148,8 +149,7 @@ func (l *LibraryElementService) deleteHandler(c *contextmodel.ReqContext) respon
 // 404: notFoundError
 // 500: internalServerError
 func (l *LibraryElementService) getHandler(c *contextmodel.ReqContext) response.Response {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if l.features.IsEnabled(c.Req.Context(), featuremgmt.FlagKubernetesLibraryPanels) {
+	if openfeature.NewDefaultClient().Boolean(c.Req.Context(), featuremgmt.FlagKubernetesLibraryPanels, false, openfeature.TransactionContext(c.Req.Context())) {
 		l.k8sHandler.getK8sLibraryElement(c)
 		return nil // already handled in the k8s handler
 	}

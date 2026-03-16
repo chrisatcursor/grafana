@@ -48,7 +48,7 @@ export async function importPluginModule({
   const modulePath = resolveModulePath(path);
 
   // inject integrity hash into SystemJS import map
-  if (config.featureToggles.pluginsSriChecks) {
+  if (config.isFeatureEnabled('pluginsSriChecks')) {
     const resolvedModule = System.resolve(modulePath);
     const integrityMap = System.getImportMap().integrity;
 
@@ -75,7 +75,7 @@ export async function importPluginModule({
       pluginVersion: version ?? '',
       expectedHash: moduleHash ?? '',
       loadingStrategy: loadingStrategy.toString(),
-      sriChecksEnabled: String(Boolean(config.featureToggles.pluginsSriChecks)),
+      sriChecksEnabled: String(Boolean(config.isFeatureEnabled('pluginsSriChecks'))),
       originalErrorMessage: e.originalErr?.message || '',
       originalErrorStack: e.originalErr?.stack || '',
       systemJSOriginalErr: e.originalErr?.message || '',

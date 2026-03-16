@@ -74,7 +74,7 @@ const MuteTimingForm = ({ muteTiming, showError, loading, provenance, editMode }
   const updating = formApi.formState.isSubmitting;
 
   // V2 nav has dedicated time intervals page, legacy nav uses tab parameter
-  const useV2Nav = config.featureToggles.alertingNavigationV2;
+  const useV2Nav = config.isFeatureEnabled('alertingNavigationV2');
   const returnLink = useV2Nav
     ? makeAMLink(ALERTING_PATHS.TIME_INTERVALS, selectedAlertmanager!)
     : makeAMLink(ALERTING_PATHS.ROUTES + '/', selectedAlertmanager!, { tab: 'time_intervals' });

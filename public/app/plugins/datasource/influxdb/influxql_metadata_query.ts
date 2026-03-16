@@ -38,7 +38,7 @@ const runExploreQuery = async (options: MetadataQueryOptions): Promise<Array<{ t
     rawQuery: true,
     refId: 'metadataQuery',
   };
-  if (config.featureToggles.influxdbBackendMigration) {
+  if (config.isFeatureEnabled('influxdbBackendMigration')) {
     return datasource.runMetadataQuery(target);
   } else {
     const options = { policy: target.policy };
