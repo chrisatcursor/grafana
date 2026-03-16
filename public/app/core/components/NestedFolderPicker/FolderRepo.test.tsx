@@ -8,7 +8,12 @@ import { DashboardViewItem } from 'app/features/search/types';
 import { FolderRepo } from './FolderRepo';
 
 jest.mock('@grafana/runtime', () => ({
-  config: { featureToggles: { provisioning: true } },
+  config: {
+    featureToggles: { provisioning: true },
+    isFeatureEnabled(flag: string) {
+      return Boolean((this as { featureToggles?: Record<string, boolean> }).featureToggles?.[flag]);
+    },
+  },
 }));
 
 const mockUseGetFrontendSettingsQuery = jest.fn();
