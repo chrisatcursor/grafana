@@ -2,7 +2,8 @@ package cloudwatch
 
 import (
 	"context"
-	"strings"
+	"sync"
+	"testing"
 
 	"github.com/aws/smithy-go"
 
@@ -16,10 +17,13 @@ import (
 	resourcegroupstaggingapitypes "github.com/aws/aws-sdk-go-v2/service/resourcegroupstaggingapi/types"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/stretchr/testify/mock"
 )
+
+var openfeatureTestMutex sync.Mutex
 
 type fakeCWLogsClient struct {
 	calls logsQueryCalls
@@ -265,8 +269,24 @@ func (f fakeSmithyError) ErrorFault() smithy.ErrorFault {
 	return 0
 }
 
-func contextWithFeaturesEnabled(enabled ...string) context.Context {
-	featureString := strings.Join(enabled, ",")
-	cfg := backend.NewGrafanaCfg(map[string]string{featuretoggles.EnabledFeatures: featureString})
-	return backend.WithGrafanaConfig(context.Background(), cfg)
+func contextWithFeaturesEnabled(t *testing.T, enabled ...string) context.Context {
+	t.Helper()
+	openfeatureTestMutex.Lock()
+	flags := make(map[string]memprovider.InMemoryFlag)
+	for _, flagName := range enabled {
+		flags[flagName] = memprovider.InMemoryFlag{
+			Key:            flagName,
+			DefaultVariant: "on",
+			Variants:       map[string]any{"on": true, "off": false},
+		}
+	}
+	mp := memprovider.NewInMemoryProvider(flags)
+	if err := openfeature.SetProviderAndWait(mp); err != nil {
+		t.Fatalf("failed to set OpenFeature provider: %v", err)
+	}
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+		openfeatureTestMutex.Unlock()
+	})
+	return context.Background()
 }

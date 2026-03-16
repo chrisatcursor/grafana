@@ -7,8 +7,9 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/utils"
 )
@@ -34,8 +35,8 @@ func (ds *DataSource) executeTimeSeriesQuery(ctx context.Context, req *backend.Q
 		if !startTime.Before(endTime) {
 			return nil, backend.DownstreamError(fmt.Errorf("invalid time range: start time must be before end time"))
 		}
-		requestQueries, err := models.ParseMetricDataQueries(timeBatch, startTime, endTime, ds.Settings.Region, ds.logger.FromContext(ctx),
-			features.IsEnabled(ctx, features.FlagCloudWatchCrossAccountQuerying))
+		crossAccountEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchCrossAccountQuerying, false, openfeature.TransactionContext(ctx))
+		requestQueries, err := models.ParseMetricDataQueries(timeBatch, startTime, endTime, ds.Settings.Region, ds.logger.FromContext(ctx), crossAccountEnabled)
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +57,7 @@ func (ds *DataSource) executeTimeSeriesQuery(ctx context.Context, req *backend.Q
 	eg, ectx := errgroup.WithContext(ctx)
 	for _, timeAndRegionQueries := range requestQueriesByTimeAndRegion {
 		batches := [][]*models.CloudWatchQuery{timeAndRegionQueries}
-		if features.IsEnabled(ctx, features.FlagCloudWatchBatchQueries) {
+		if batchQueriesEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchBatchQueries, false, openfeature.TransactionContext(ctx)); batchQueriesEnabled {
 			batches = getMetricQueryBatches(timeAndRegionQueries, ds.logger.FromContext(ctx))
 		}
 
