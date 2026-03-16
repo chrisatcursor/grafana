@@ -16,6 +16,10 @@ When implementing features, fixing bugs, or making significant code changes, del
 - **Code that touches auth, user input, or security boundaries** → spin up the `security-scanner` subagent to audit for vulnerabilities
 - **After implementation is complete** → spin up the `docs-updater` subagent to update affected documentation
 - **Exploring unfamiliar code or tracing architecture** → spin up the `code-explorer` subagent
+- **Inventorying feature flag usage** → spin up the `feature-flag-inventory` subagent to scan legacy and OpenFeature call sites
+- **Migrating feature flags to OpenFeature** → spin up the `feature-flag-migrator` subagent to convert legacy evaluations
+- **Verifying feature flag migrations** → spin up the `feature-flag-verifier` subagent as an independent reviewer
+- **Cleaning up stale feature flags** → spin up the `feature-flag-cleaner` subagent to safely remove dead flags
 
 ## How to delegate
 
