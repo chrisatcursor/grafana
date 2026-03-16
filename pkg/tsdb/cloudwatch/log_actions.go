@@ -17,9 +17,10 @@ import (
 	"github.com/aws/smithy-go"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/kinds/dataquery"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 )
@@ -210,7 +211,7 @@ func (ds *DataSource) executeStartQuery(ctx context.Context, logsClient models.C
 	}
 
 	isMonitoringAccount := false
-	if features.IsEnabled(ctx, features.FlagCloudWatchCrossAccountQuerying) && region != "" {
+	if crossAccountEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchCrossAccountQuerying, false, openfeature.TransactionContext(ctx)); crossAccountEnabled && region != "" {
 		monitoringAccountStatus, err := ds.isMonitoringAccount(ctx, region)
 		if err != nil {
 			ds.logger.FromContext(ctx).Debug("failed to determine monitoring account status", "err", err)
