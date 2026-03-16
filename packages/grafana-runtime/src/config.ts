@@ -148,6 +148,11 @@ export class GrafanaBootConfig {
   theme2: GrafanaTheme2;
   featureToggles: FeatureToggles = {};
 
+  /**
+   * Returns whether a feature flag is enabled for Grafana core frontend code.
+   * Uses boot-data values first for backward compatibility, then falls back
+   * to the OpenFeature client value.
+   */
   isFeatureEnabled = function (
     this: GrafanaBootConfig,
     featureFlag: keyof FeatureToggles,
@@ -159,6 +164,23 @@ export class GrafanaBootConfig {
     }
 
     return OpenFeature.getClient(GRAFANA_CORE_OPEN_FEATURE_DOMAIN).getBooleanValue(featureFlag, defaultValue);
+  };
+
+  /**
+   * Returns `undefined` when a toggle is absent from boot data.
+   * This preserves legacy "optional toggle" semantics for callers
+   * that must distinguish between missing and explicit values.
+   */
+  getOptionalFeatureEnabled = function (
+    this: GrafanaBootConfig,
+    featureFlag: keyof FeatureToggles,
+    defaultValue = false
+  ): boolean | undefined {
+    if (!(featureFlag in this.featureToggles)) {
+      return undefined;
+    }
+
+    return this.isFeatureEnabled(featureFlag, defaultValue);
   };
   anonymousEnabled = false;
   anonymousDeviceLimit?: number;

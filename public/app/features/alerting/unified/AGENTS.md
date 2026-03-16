@@ -314,7 +314,7 @@ A full list of features can be found in `pkg/services/featuremgmt/toggles_gen.cs
 ```typescript
 import { config } from '@grafana/runtime';
 
-if (config.featureToggles.alertingTriage) {
+if (config.isFeatureEnabled('alertingTriage')) {
   // Render triage view
 }
 ```

@@ -109,6 +109,18 @@ If using non-boolean flags (a unique feature of the new feature flag system), ex
 
 For advanced, non-React contexts (utilities, class methods, callbacks), you can use the OpenFeature client directly.
 
+For Grafana core frontend code, prefer `config.isFeatureEnabled('<flag>')` from `@grafana/runtime` over direct
+`config.featureToggles` reads. This keeps boot-data compatibility while still evaluating through OpenFeature when
+runtime values are available.
+
+```ts
+import { config } from '@grafana/runtime';
+
+if (config.isFeatureEnabled('newPreferences')) {
+  // do new things
+}
+```
+
 However, because this is seperate from the React render loop there are important caveats you must be aware of:
 
 - Flag values are loaded asynchronously, so you cannot call `getBooleanValue()` just at the top-level of a module. You must wait until `app.ts` has initialised until you call a flag otherwise you will only get the default value

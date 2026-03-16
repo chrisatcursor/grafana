@@ -139,14 +139,7 @@ export function createSnapshotVariable(variable: TypedVariableModel): SceneVaria
 }
 
 export function createSceneVariableFromVariableModel(variable: TypedVariableModel): SceneVariable {
-  const legacyToggles = config.featureToggles ?? {};
-  const getOptionalFeatureToggle = (flag: keyof typeof legacyToggles) => {
-    if (!(flag in legacyToggles)) {
-      return undefined;
-    }
-
-    return config.isFeatureEnabled(flag);
-  };
+  const getOptionalFeatureToggle = (flag: keyof typeof config.featureToggles) => config.getOptionalFeatureEnabled(flag);
 
   const commonProperties = {
     name: variable.name,
