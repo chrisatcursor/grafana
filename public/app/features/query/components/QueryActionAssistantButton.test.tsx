@@ -16,6 +16,9 @@ const mockConfig = {
   featureToggles: {
     queryWithAssistant: false,
   },
+  isFeatureEnabled(flag: string) {
+    return Boolean((this as { featureToggles?: Record<string, boolean> }).featureToggles?.[flag]);
+  },
 };
 
 jest.mock('@grafana/runtime', () => ({

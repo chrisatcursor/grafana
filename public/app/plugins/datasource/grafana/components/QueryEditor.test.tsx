@@ -12,6 +12,9 @@ jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   config: {
     featureToggles: {},
+    isFeatureEnabled(flag: string) {
+      return Boolean((this as { featureToggles?: Record<string, boolean> }).featureToggles?.[flag]);
+    },
   },
 }));
 
