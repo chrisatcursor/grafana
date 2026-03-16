@@ -1,0 +1,25 @@
+---
+description: Ensure all git operations target the ChrisatCursor fork, never upstream grafana/grafana.
+alwaysApply: true
+---
+
+# Git Fork Safety
+
+This repository is a fork of `grafana/grafana`. All work targets `ChrisatCursor/grafana` only.
+
+## Before Any PR Creation
+
+Run this command before creating your first pull request in a session:
+
+```bash
+gh repo set-default ChrisatCursor/grafana
+```
+
+This prevents `gh pr create` from defaulting to the upstream `grafana/grafana`.
+
+## Rules
+
+- **Push**: Only push to `origin` (which must be `ChrisatCursor/grafana`)
+- **PRs**: All PRs target `ChrisatCursor/grafana`. Always use `--repo ChrisatCursor/grafana` as a safety flag if unsure.
+- **Never**: Do not push to or create PRs against `grafana/grafana` unless explicitly instructed by the user.
+- **Verify**: If uncertain, run `git remote -v` and `gh repo set-default --view` to confirm before pushing or creating PRs.
