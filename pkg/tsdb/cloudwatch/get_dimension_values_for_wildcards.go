@@ -4,17 +4,18 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/patrickmn/go-cache"
+
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/clients"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models/resources"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/services"
-
-	"github.com/patrickmn/go-cache"
 )
 
 func shouldSkipFetchingWildcards(ctx context.Context, q *models.CloudWatchQuery) bool {
-	newLabelParsingEnabled := features.IsEnabled(ctx, features.FlagCloudWatchNewLabelParsing)
+	newLabelParsingEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchNewLabelParsing, false, openfeature.TransactionContext(ctx))
 	if q.MetricQueryType == models.MetricQueryTypeSearch && (q.MatchExact || newLabelParsingEnabled) {
 		return true
 	}

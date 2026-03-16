@@ -12,7 +12,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/kinds/dataquery"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/mocks"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
@@ -622,10 +622,11 @@ func TestTimeSeriesQuery_CrossAccountQuerying(t *testing.T) {
 	}
 
 	t.Run("should call GetMetricDataInput with AccountId nil when no AccountId is provided", func(t *testing.T) {
+		setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchCrossAccountQuerying)
 		api = mocks.MetricsAPI{}
 		api.On("GetMetricData", mock.Anything, mock.Anything, mock.Anything).Return(&cloudwatch.GetMetricDataOutput{}, nil)
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(context.Background(), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{
 				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
 			},
@@ -702,9 +703,10 @@ func TestTimeSeriesQuery_CrossAccountQuerying(t *testing.T) {
 	})
 
 	t.Run("should call GetMetricDataInput with AccountId in a MetricStat query", func(t *testing.T) {
+		setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchCrossAccountQuerying)
 		api = mocks.MetricsAPI{}
 		api.On("GetMetricData", mock.Anything, mock.Anything, mock.Anything).Return(&cloudwatch.GetMetricDataOutput{}, nil)
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(context.Background(), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{
 				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
 			},
@@ -742,9 +744,10 @@ func TestTimeSeriesQuery_CrossAccountQuerying(t *testing.T) {
 	})
 
 	t.Run("should GetMetricDataInput with AccountId in an inferred search expression query", func(t *testing.T) {
+		setupOpenFeatureForCloudWatchTests(t, featuremgmt.FlagCloudWatchCrossAccountQuerying)
 		api = mocks.MetricsAPI{}
 		api.On("GetMetricData", mock.Anything, mock.Anything, mock.Anything).Return(&cloudwatch.GetMetricDataOutput{}, nil)
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(context.Background(), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{
 				DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{},
 			},
