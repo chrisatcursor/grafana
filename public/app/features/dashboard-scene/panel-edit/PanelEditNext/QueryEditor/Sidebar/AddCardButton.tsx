@@ -42,7 +42,7 @@ export const AddCardButton = ({ variant, afterId, alwaysVisible = false }: AddCa
   // When the savedQueriesRBAC feature toggle is enabled, access to the query
   // library is governed by fine-grained RBAC permissions. Otherwise, any
   // signed-in user can read saved queries (the pre-RBAC default).
-  const canReadQueries = grafanaConfig.featureToggles.savedQueriesRBAC
+  const canReadQueries = grafanaConfig.isFeatureEnabled('savedQueriesRBAC')
     ? contextSrv.hasPermission(AccessControlAction.QueriesRead)
     : contextSrv.isSignedIn;
 

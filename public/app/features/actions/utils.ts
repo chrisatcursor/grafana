@@ -28,7 +28,7 @@ import { reportActionTrigger } from './analytics';
 
 /** @internal */
 export const isInfinityActionWithAuth = (action: Action): boolean => {
-  return (grafanaConfig.featureToggles.vizActionsAuth ?? false) && action.type === ActionType.Infinity;
+  return grafanaConfig.isFeatureEnabled('vizActionsAuth') && action.type === ActionType.Infinity;
 };
 
 /** @internal */

@@ -275,7 +275,7 @@ export function getAlertingRoutes(cfg = config): RouteDescriptor[] {
     },
     {
       path: '/alerting/notifications-history/',
-      component: cfg.featureToggles.alertingNotificationHistoryGlobal
+      component: cfg.isFeatureEnabled('alertingNotificationHistoryGlobal')
         ? importAlertingComponent(
             () =>
               import(
@@ -417,7 +417,7 @@ export function getAlertingRoutes(cfg = config): RouteDescriptor[] {
     },
   ];
 
-  if (cfg.featureToggles.alertingTriage) {
+  if (cfg.isFeatureEnabled('alertingTriage')) {
     routes.push({
       path: '/alerting/alerts',
       roles: evaluateAccess([AccessControlAction.AlertingRuleRead, AccessControlAction.AlertingRuleExternalRead]),
