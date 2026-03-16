@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
 	cloudwatchtypes "github.com/aws/aws-sdk-go-v2/service/cloudwatch/types"
 
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -26,7 +26,7 @@ func TestGetMetricDataExecutorTestRequest(t *testing.T) {
 			&cloudwatch.GetMetricDataOutput{
 				MetricDataResults: []cloudwatchtypes.MetricDataResult{{Values: []float64{}}},
 			}, nil).Once()
-		_, err := executor.executeRequest(contextWithFeaturesEnabled(features.FlagCloudWatchRoundUpEndTime), mockMetricClient, inputs)
+		_, err := executor.executeRequest(contextWithOpenFeatureFlags(t, featuremgmt.FlagCloudWatchRoundUpEndTime), mockMetricClient, inputs)
 		require.NoError(t, err)
 		expectedTime, _ := time.Parse("2006-01-02T15:04:05Z07:00", "2024-05-01T01:46:00Z")
 		expectedInput := &cloudwatch.GetMetricDataInput{EndTime: &expectedTime, MetricDataQueries: []cloudwatchtypes.MetricDataQuery{}}

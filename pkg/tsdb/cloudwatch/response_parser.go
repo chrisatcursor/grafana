@@ -9,10 +9,11 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 )
 
@@ -169,6 +170,7 @@ func buildDataFrames(ctx context.Context, aggregatedResponse models.QueryRowResp
 	query *models.CloudWatchQuery) (data.Frames, error) {
 	frames := data.Frames{}
 	hasStaticLabel := query.Label != "" && !dynamicLabel.MatchString(query.Label)
+	newLabelParsingEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchNewLabelParsing, false, openfeature.TransactionContext(ctx))
 
 	for _, metric := range aggregatedResponse.Metrics {
 		label := *metric.Label
@@ -181,7 +183,7 @@ func buildDataFrames(ctx context.Context, aggregatedResponse models.QueryRowResp
 		// In case a multi-valued dimension is used and the cloudwatch query yields no values, create one empty time
 		// series for each dimension value. Use that dimension value to expand the alias field
 		if len(metric.Values) == 0 && query.IsMultiValuedDimensionExpression() {
-			if features.IsEnabled(ctx, features.FlagCloudWatchNewLabelParsing) {
+			if newLabelParsingEnabled {
 				label, _, _ = strings.Cut(label, keySeparator)
 			}
 			series := 0
@@ -224,7 +226,7 @@ func buildDataFrames(ctx context.Context, aggregatedResponse models.QueryRowResp
 		var labels data.Labels
 		if query.GetGetMetricDataAPIMode() == models.GMDApiModeSQLExpression {
 			labels = getLabels(label, query, true)
-		} else if features.IsEnabled(ctx, features.FlagCloudWatchNewLabelParsing) {
+		} else if newLabelParsingEnabled {
 			name, labels = parseLabels(label, query)
 		} else {
 			labels = getLabels(label, query, false)

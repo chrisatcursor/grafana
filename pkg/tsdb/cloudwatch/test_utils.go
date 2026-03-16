@@ -3,6 +3,8 @@ package cloudwatch
 import (
 	"context"
 	"strings"
+	"sync"
+	"testing"
 
 	"github.com/aws/smithy-go"
 
@@ -17,8 +19,13 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 type fakeCWLogsClient struct {
@@ -269,4 +276,27 @@ func contextWithFeaturesEnabled(enabled ...string) context.Context {
 	featureString := strings.Join(enabled, ",")
 	cfg := backend.NewGrafanaCfg(map[string]string{featuretoggles.EnabledFeatures: featureString})
 	return backend.WithGrafanaConfig(context.Background(), cfg)
+}
+
+var openfeatureTestMutex sync.Mutex
+
+// contextWithOpenFeatureFlags sets up the OpenFeature in-memory provider with the given flags enabled
+// and returns a context for use in tests. Call from tests that need OpenFeature flag evaluation.
+func contextWithOpenFeatureFlags(t *testing.T, flags ...string) context.Context {
+	t.Helper()
+	openfeatureTestMutex.Lock()
+	staticFlags := make(map[string]memprovider.InMemoryFlag)
+	for _, f := range flags {
+		staticFlags[f] = setting.NewInMemoryFlag(f, true)
+	}
+	err := featuremgmt.InitOpenFeature(featuremgmt.OpenFeatureConfig{
+		ProviderType: setting.StaticProviderType,
+		StaticFlags:  staticFlags,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+		openfeatureTestMutex.Unlock()
+	})
+	return context.Background()
 }

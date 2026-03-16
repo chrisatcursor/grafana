@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
+	"github.com/open-feature/go-sdk/openfeature"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/utils"
 )
@@ -23,7 +23,7 @@ func (ds *DataSource) executeRequest(ctx context.Context, client models.CWClient
 			metricDataInput.NextToken = aws.String(nextToken)
 		}
 		// GetMetricData EndTime is exclusive, so we round up to the next minute to get the last data point
-		if features.IsEnabled(ctx, features.FlagCloudWatchRoundUpEndTime) {
+		if roundUpEnabled, _ := openfeature.NewDefaultClient().BooleanValue(ctx, featuremgmt.FlagCloudWatchRoundUpEndTime, false, openfeature.TransactionContext(ctx)); roundUpEnabled {
 			*metricDataInput.EndTime = metricDataInput.EndTime.Truncate(time.Minute).Add(time.Minute)
 		}
 
