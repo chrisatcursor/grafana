@@ -87,8 +87,7 @@ func ProvideService(
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagManagedDualWriter) ||
-		features.IsEnabledGlobally(featuremgmt.FlagProvisioning) // required for git provisioning
+	enabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagManagedDualWriter) || featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) // required for git provisioning
 
 	if cfg != nil {
 		if !enabled {

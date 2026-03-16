@@ -274,7 +274,7 @@ func RegisterAPIService(
 	connectionFactory connection.Factory,
 ) (*APIBuilder, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		return nil, nil
 	}
 
@@ -808,8 +808,7 @@ func (b *APIBuilder) GetPostStartHooks() (map[string]genericapiserver.PostStartH
 				b.resourceLister,
 				export.ExportAll,
 				stageIfPossible,
-				metrics,
-				b.features.IsEnabled(postStartHookCtx.Context, featuremgmt.FlagProvisioningExport), //nolint:staticcheck
+				metrics, featuremgmt.OpenFeatureIsEnabled(postStartHookCtx.Context, b.features, featuremgmt.FlagProvisioningExport),
 			)
 
 			syncer := sync.NewSyncer(sync.Compare, sync.FullSync, sync.IncrementalSync, b.tracer, 10, metrics)
@@ -831,8 +830,7 @@ func (b *APIBuilder) GetPostStartHooks() (map[string]genericapiserver.PostStartH
 				syncWorker,
 			)
 			migrationWorker := migrate.NewMigrationWorker(
-				unifiedStorageMigrator,
-				b.features.IsEnabled(postStartHookCtx.Context, featuremgmt.FlagProvisioningExport), //nolint:staticcheck
+				unifiedStorageMigrator, featuremgmt.OpenFeatureIsEnabled(postStartHookCtx.Context, b.features, featuremgmt.FlagProvisioningExport),
 			)
 
 			deleteWorker := deletepkg.NewWorker(syncWorker, stageIfPossible, b.repositoryResources, metrics)

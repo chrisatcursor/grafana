@@ -41,7 +41,7 @@ func NewServiceAccountsAPI(
 	features featuremgmt.FeatureToggles,
 ) *ServiceAccountsAPI {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts) && cfg.ManagedServiceAccountsEnabled
+	enabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagExternalServiceAccounts) && cfg.ManagedServiceAccountsEnabled
 	return &ServiceAccountsAPI{
 		cfg:                  cfg,
 		service:              service,

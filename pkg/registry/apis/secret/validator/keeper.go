@@ -63,7 +63,7 @@ func (v *keeperValidator) Validate(keeper *secretv1beta1.Keeper, oldKeeper *secr
 
 	if keeper.Spec.Aws != nil {
 		//nolint
-		if !v.features.IsEnabled(context.Background(), featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper) {
+		if !featuremgmt.OpenFeatureIsEnabled(context.Background(), v.features, featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper) {
 			errs = append(errs,
 				field.Forbidden(field.NewPath("spec", "aws"),
 					fmt.Sprintf("enable aws keeper feature toggle to create aws keepers: %s", featuremgmt.FlagSecretsManagementAppPlatformAwsKeeper)))

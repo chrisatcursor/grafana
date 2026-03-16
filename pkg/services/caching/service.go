@@ -211,7 +211,7 @@ func (c *CachingServiceClient) WithQueryDataCaching(ctx context.Context, req *ba
 	if err == nil && cr.UpdateCacheFn != nil {
 		// If AWS async caching is not enabled, use the old code path
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if c.features == nil || !c.features.IsEnabled(ctx, featuremgmt.FlagAwsAsyncQueryCaching) {
+		if c.features == nil || !featuremgmt.OpenFeatureIsEnabled(ctx, c.features, featuremgmt.FlagAwsAsyncQueryCaching) {
 			cr.UpdateCacheFn(ctx, resp)
 		} else if reqCtx != nil {
 			// time how long shouldCacheQuery takes

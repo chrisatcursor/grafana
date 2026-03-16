@@ -125,7 +125,7 @@ func buildCMDNode(ctx context.Context, rn *rawNode, toggles featuremgmt.FeatureT
 
 	if commandType == TypeSQL {
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !toggles.IsEnabledGlobally(featuremgmt.FlagSqlExpressions) {
+		if !featuremgmt.OpenFeatureIsEnabledGlobally(toggles, featuremgmt.FlagSqlExpressions) {
 			return nil, fmt.Errorf("sql expressions are disabled")
 		}
 	}

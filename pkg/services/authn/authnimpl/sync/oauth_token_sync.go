@@ -79,7 +79,7 @@ func (s *OAuthTokenSync) SyncOauthTokenHook(ctx context.Context, id *authn.Ident
 
 	cacheKey := fmt.Sprintf("token-check-%s", id.GetID())
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagImprovedExternalSessionHandling) {
 		cacheKey = fmt.Sprintf("token-check-%s-%d", id.GetID(), id.SessionToken.Id)
 	}
 

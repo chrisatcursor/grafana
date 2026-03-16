@@ -149,7 +149,7 @@ func (l *LibraryElementService) deleteHandler(c *contextmodel.ReqContext) respon
 // 500: internalServerError
 func (l *LibraryElementService) getHandler(c *contextmodel.ReqContext) response.Response {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if l.features.IsEnabled(c.Req.Context(), featuremgmt.FlagKubernetesLibraryPanels) {
+	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), l.features, featuremgmt.FlagKubernetesLibraryPanels) {
 		l.k8sHandler.getK8sLibraryElement(c)
 		return nil // already handled in the k8s handler
 	}

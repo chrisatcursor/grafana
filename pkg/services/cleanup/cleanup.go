@@ -237,7 +237,7 @@ func (srv *CleanUpService) shouldCleanupTempFile(filemtime time.Time, now time.T
 func (srv *CleanUpService) deleteExpiredSnapshots(ctx context.Context) {
 	logger := srv.log.FromContext(ctx)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.Features.IsEnabledGlobally(featuremgmt.FlagKubernetesSnapshots) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(srv.Features, featuremgmt.FlagKubernetesSnapshots) {
 		srv.deleteKubernetesExpiredSnapshots(ctx)
 	} else {
 		cmd := dashboardsnapshots.DeleteExpiredSnapshotsCommand{}
@@ -378,7 +378,7 @@ func (srv *CleanUpService) expireOldVerifications(ctx context.Context) {
 func (srv *CleanUpService) deleteStaleShortURLs(ctx context.Context) {
 	logger := srv.log.FromContext(ctx)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.Features.IsEnabledGlobally(featuremgmt.FlagKubernetesShortURLs) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(srv.Features, featuremgmt.FlagKubernetesShortURLs) {
 		srv.deleteStaleKubernetesShortURLs(ctx)
 	} else {
 		cmd := shorturls.DeleteShortUrlCommand{

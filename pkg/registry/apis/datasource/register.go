@@ -67,8 +67,8 @@ func RegisterAPIService(
 	pluginSources sources.Registry,
 ) (*DataSourceAPIBuilder, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) &&
-		!features.IsEnabledGlobally(featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagQueryServiceWithConnections) &&
+		!featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		return nil, nil
 	}
 
@@ -106,9 +106,9 @@ func RegisterAPIService(
 			accessControl,
 			//nolint:staticcheck // not yet migrated to OpenFeature
 			DataSourceAPIBuilderConfig{
-				LoadQueryTypes:         features.IsEnabledGlobally(featuremgmt.FlagDatasourceQueryTypes),
-				UseDualWriter:          features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections),
-				EnableResourceEndpoint: features.IsEnabledGlobally(featuremgmt.FlagDatasourcesApiServerEnableResourceEndpoint),
+				LoadQueryTypes:         featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagDatasourceQueryTypes),
+				UseDualWriter:          featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagQueryServiceWithConnections),
+				EnableResourceEndpoint: featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagDatasourcesApiServerEnableResourceEndpoint),
 			},
 		)
 		if err != nil {

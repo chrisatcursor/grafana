@@ -129,7 +129,7 @@ func (s *Server) Init() error {
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagPluginStoreServiceLoading) {
 		if err := s.roleRegistry.RegisterFixedRoles(s.context); err != nil {
 			return err
 		}

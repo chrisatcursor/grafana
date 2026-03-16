@@ -66,7 +66,7 @@ func (b *QueryAPIBuilder) GetAPIRoutes(gv schema.GroupVersion) *builder.APIRoute
 
 	// Get a list of all datasource instances
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !b.features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagQueryServiceWithConnections) {
 		return routes
 	}
 

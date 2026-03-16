@@ -389,7 +389,7 @@ func (am *alertmanager) applyConfig(ctx context.Context, cfg *apimodels.Postable
 	// Also add extra inhibition rules to the configuration if extra route exists and doesn't conflict with existing
 	// route
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if am.features.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(am.features, featuremgmt.FlagAlertingMultiplePolicies) {
 		managedRoutes := maps.Clone(cfg.ManagedRoutes)
 		if managedRoutes == nil {
 			managedRoutes = make(map[string]*apimodels.Route)

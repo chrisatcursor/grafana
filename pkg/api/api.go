@@ -127,7 +127,7 @@ func (hs *HTTPServer) registerRoutes() {
 
 	// secrets management page
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabledGlobally(featuremgmt.FlagSecretsManagementAppPlatformUI) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagSecretsManagementAppPlatformUI) {
 		r.Get("/admin/secrets", authorize(ac.EvalAny(
 			ac.EvalPermission(secret.ActionSecretSecureValuesCreate),
 			ac.EvalPermission(secret.ActionSecretSecureValuesRead),
@@ -171,7 +171,7 @@ func (hs *HTTPServer) registerRoutes() {
 	r.Get("/d/:uid", reqSignedIn, redirectFromLegacyPanelEditURL, hs.Index)
 	r.Get("/dashboard/script/*", reqSignedIn, hs.Index)
 	r.Get("/dashboard/new", reqSignedIn, hs.Index)
-	if featuremgmt.AnyEnabled(hs.Features, featuremgmt.FlagDashboardLibrary, featuremgmt.FlagSuggestedDashboards, featuremgmt.FlagDashboardTemplates) {
+	if featuremgmt.OpenFeatureAnyEnabledGlobally(hs.Features, featuremgmt.FlagDashboardLibrary, featuremgmt.FlagSuggestedDashboards, featuremgmt.FlagDashboardTemplates) {
 		r.Get("/dashboard/template", reqSignedIn, hs.Index)
 	}
 	r.Get("/dashboard-solo/snapshot/*", hs.Index)
@@ -235,7 +235,7 @@ func (hs *HTTPServer) registerRoutes() {
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && hs.Features.IsEnabledGlobally(featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
+	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
 		r.Post("/api/login/passwordless/start", requestmeta.SetOwner(requestmeta.TeamAuth), quota(string(auth.QuotaTargetSrv)), hs.StartPasswordless)
 		r.Post("/api/login/passwordless/authenticate", requestmeta.SetOwner(requestmeta.TeamAuth), quota(string(auth.QuotaTargetSrv)), routing.Wrap(hs.LoginPasswordless))
 	}
@@ -330,7 +330,7 @@ func (hs *HTTPServer) registerRoutes() {
 		})
 
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if hs.Features.IsEnabledGlobally(featuremgmt.FlagStorage) {
+		if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagStorage) {
 			// Will eventually be replaced with the 'object' route
 			apiRoute.Group("/storage", hs.StorageService.RegisterHTTPRoutes)
 		}
@@ -423,7 +423,7 @@ func (hs *HTTPServer) registerRoutes() {
 			datasourceRoute.Any("/proxy/uid/:uid/*", requestmeta.SetSLOGroup(requestmeta.SLOGroupHighSlow), authorize(ac.EvalPermission(datasources.ActionQuery)), hs.ProxyDataSourceRequestWithUID)
 
 			//nolint:staticcheck // not yet migrated to OpenFeature
-			if !hs.Features.IsEnabledGlobally(featuremgmt.FlagDatasourceDisableIdApi) {
+			if !featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagDatasourceDisableIdApi) {
 				// Deprecated Access by internal ID
 				datasourceRoute.Get("/:id", authorize(ac.EvalPermission(datasources.ActionRead, idScope)), routing.Wrap(hs.GetDataSourceById))
 				datasourceRoute.Put("/:id", authorize(ac.EvalPermission(datasources.ActionWrite, idScope)), routing.Wrap(hs.UpdateDataSourceByID))

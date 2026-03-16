@@ -82,7 +82,7 @@ func (proxy *PluginProxy) HandleRequest() {
 			proxy.proxyPath = path
 
 			//nolint:staticcheck // not yet migrated to OpenFeature
-			if hasSlash && !strings.HasSuffix(path, "/") && proxy.features.IsEnabled(proxy.ctx.Req.Context(), featuremgmt.FlagPluginProxyPreserveTrailingSlash) {
+			if hasSlash && !strings.HasSuffix(path, "/") && featuremgmt.OpenFeatureIsEnabled(proxy.ctx.Req.Context(), proxy.features, featuremgmt.FlagPluginProxyPreserveTrailingSlash) {
 				proxy.proxyPath += "/"
 			}
 		} else {

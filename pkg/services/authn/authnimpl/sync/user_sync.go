@@ -458,7 +458,7 @@ func (s *UserSync) upsertAuthConnection(ctx context.Context, usr *user.User, ide
 		}
 
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+		if !featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagImprovedExternalSessionHandling) {
 			setAuthInfoCmd.OAuthToken = identity.OAuthToken
 		}
 		return s.authInfoService.SetAuthInfo(ctx, setAuthInfoCmd)
@@ -471,7 +471,7 @@ func (s *UserSync) upsertAuthConnection(ctx context.Context, usr *user.User, ide
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.features.IsEnabledGlobally(featuremgmt.FlagImprovedExternalSessionHandling) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagImprovedExternalSessionHandling) {
 		updateAuthInfoCmd.OAuthToken = identity.OAuthToken
 	}
 

@@ -96,7 +96,7 @@ func RegisterAPIService(
 	registerMetrics(reg)
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	enableAuthnMutation := features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthnMutation)
+	enableAuthnMutation := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagKubernetesAuthnMutation)
 
 	resourceParentProvider := iamauthorizer.NewApiParentProvider(
 		iamauthorizer.NewLocalConfigProvider(restConfig.GetRestConfig),
@@ -274,7 +274,7 @@ func (b *IdentityAccessManagementAPIBuilder) InstallSchema(scheme *runtime.Schem
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if b.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthzResourcePermissionApis) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagKubernetesAuthzResourcePermissionApis) {
 		if err := iamv0.AddResourcePermissionKnownTypes(scheme, iamv0.SchemeGroupVersion); err != nil {
 			return err
 		}
@@ -307,7 +307,7 @@ func (b *IdentityAccessManagementAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *ge
 	defer cancelFn()
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	enableZanzanaSync := b.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthzZanzanaSync)
+	enableZanzanaSync := featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagKubernetesAuthzZanzanaSync)
 
 	enableCoreRolesApi := client.Boolean(ctx, featuremgmt.FlagKubernetesAuthzCoreRolesApi, false, openfeature.TransactionContext(ctx))
 	enableRolesApi := client.Boolean(ctx, featuremgmt.FlagKubernetesAuthzRolesApi, false, openfeature.TransactionContext(ctx))
@@ -383,7 +383,7 @@ func (b *IdentityAccessManagementAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *ge
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if b.features.IsEnabledGlobally(featuremgmt.FlagKubernetesAuthzResourcePermissionApis) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagKubernetesAuthzResourcePermissionApis) {
 		if err := b.UpdateResourcePermissionsAPIGroup(apiGroupInfo, opts, storage, enableZanzanaSync); err != nil {
 			return err
 		}

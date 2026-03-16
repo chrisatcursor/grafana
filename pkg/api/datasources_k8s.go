@@ -30,14 +30,14 @@ import (
 // Optional access control metadata is still fetched from the legacy accesscontrol service for now.
 func (hs *HTTPServer) getK8sDataSourceByUIDHandler() web.Handler {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !hs.Features.IsEnabledGlobally(featuremgmt.FlagDatasourcesRerouteLegacyCRUDAPIs) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagDatasourcesRerouteLegacyCRUDAPIs) {
 		return routing.Wrap(hs.GetDataSourceByUID)
 	}
 
 	// datasourcesRerouteLegacyCRUDAPIs requires these flags to be enabled
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryService) ||
-		!hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryServiceWithConnections) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagQueryService) ||
+		!featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagQueryServiceWithConnections) {
 		return routing.Wrap(func(c *contextmodel.ReqContext) response.Response {
 			return response.Error(http.StatusInternalServerError,
 				"datasourcesRerouteLegacyCRUDAPIs requires queryService and queryServiceWithConnections feature flags",

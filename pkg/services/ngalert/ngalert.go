@@ -203,11 +203,11 @@ func (ng *AlertNG) init() error {
 	moaLogger := log.New("ngalert.multiorg.alertmanager")
 	crypto := notifier.NewCrypto(ng.SecretsService, ng.store, moaLogger)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	remotePrimary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemotePrimary)
+	remotePrimary := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemotePrimary)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondary)
+	remoteSecondary := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemoteSecondary)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondaryWithRemoteState := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState)
+	remoteSecondaryWithRemoteState := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState)
 	if remotePrimary || remoteSecondary || remoteSecondaryWithRemoteState {
 		m := ng.Metrics.GetRemoteAlertmanagerMetrics()
 		smtpCfg := remoteClient.SmtpConfig{
@@ -456,9 +456,9 @@ func (ng *AlertNG) init() error {
 		ng.store,
 		ng.Log,
 		ng.ResourcePermissions,
-		ng.tracer,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		ng.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI),
+		ng.tracer, featuremgmt.
+			//nolint:staticcheck // not yet migrated to OpenFeature
+			OpenFeatureIsEnabledGlobally(ng.FeatureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI),
 	)
 	receiverTestService := notifier.NewReceiverTestingService(
 		receiverService,
@@ -565,7 +565,7 @@ func initInstanceStore(sqlStore db.DB, logger log.Logger, featureToggles feature
 		Logger:   logger,
 	}
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStateCompressed) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStateCompressed) {
 		logger.Info("Using protobuf-based alert instance store")
 		instanceStore = protoInstanceStore
 	} else {
@@ -580,9 +580,9 @@ func initStatePersister(uaCfg setting.UnifiedAlertingSettings, cfg state.Manager
 	logger := log.New("ngalert.state.manager.persist")
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	compressed := featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStateCompressed)
+	compressed := featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStateCompressed)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	periodic := featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingSaveStatePeriodic)
+	periodic := featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStatePeriodic)
 
 	switch {
 	case compressed && periodic:
@@ -764,7 +764,7 @@ func configureNotificationHistorian(
 	tracer tracing.Tracer,
 ) (nfstatus.NotificationHistorian, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !featureToggles.IsEnabled(ctx, featuremgmt.FlagAlertingNotificationHistory) || !cfg.Enabled {
+	if !featuremgmt.OpenFeatureIsEnabled(ctx, featureToggles, featuremgmt.FlagAlertingNotificationHistory) || !cfg.Enabled {
 		met.Info.Set(0)
 		return nil, nil
 	}

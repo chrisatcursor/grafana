@@ -97,7 +97,7 @@ func (st DBstore) SetProvenance(ctx context.Context, o models.Provisionable, org
 		// TODO: Clean up stale provenance records periodically.
 
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if st.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingProvenanceLockWrites) {
+		if featuremgmt.OpenFeatureIsEnabledGlobally(st.FeatureToggles, featuremgmt.FlagAlertingProvenanceLockWrites) {
 			return st.setProvenanceWithLocking(sess, recordKey, recordType, org, p)
 		}
 		return st.setProvenanceUpsert(sess, recordKey, recordType, org, p)

@@ -40,7 +40,7 @@ import (
 // It will also start an embedded ZanzanaSever if mode is set to "embedded".
 func ProvideZanzanaClient(cfg *setting.Cfg, db db.DB, zanzanaServer zanzana.Server, features featuremgmt.FeatureToggles, reg prometheus.Registerer) (zanzana.Client, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana) {
 		return zClient.NewNoopClient(), nil
 	}
 
@@ -87,7 +87,7 @@ func ProvideZanzanaClient(cfg *setting.Cfg, db db.DB, zanzanaServer zanzana.Serv
 // ProvideEmbeddedZanzanaServer creates and registers embedded ZanzanaServer.
 func ProvideEmbeddedZanzanaServer(cfg *setting.Cfg, db db.DB, tracer tracing.Tracer, features featuremgmt.FeatureToggles, reg prometheus.Registerer, restConfig apiserver.RestConfigProvider) (zanzana.Server, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana) {
 		return zServer.NewNoopServer(), nil
 	}
 
@@ -161,7 +161,7 @@ func (s *EmbeddedZanzanaService) IsDisabled() bool {
 // Client connects to a remote Zanzana server specified in the configuration.
 func ProvideStandaloneZanzanaClient(cfg *setting.Cfg, features featuremgmt.FeatureToggles, reg prometheus.Registerer) (zanzana.Client, error) {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagZanzana) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana) {
 		return zClient.NewNoopClient(), nil
 	}
 

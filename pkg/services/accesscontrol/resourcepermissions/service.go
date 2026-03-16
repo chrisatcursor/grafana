@@ -365,7 +365,7 @@ func (s *Service) mapPermission(permission string) ([]string, error) {
 
 		// If we only want to store action sets, return now
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if s.features.IsEnabledGlobally(featuremgmt.FlagOnlyStoreActionSets) {
+		if featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagOnlyStoreActionSets) {
 			return actions, nil
 		}
 	}

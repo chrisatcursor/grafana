@@ -59,7 +59,7 @@ func (f *AlertmanagerApiHandler) getService(ctx *contextmodel.ReqContext) (*Lote
 func (f *AlertmanagerApiHandler) isExtraConfig(ctx *contextmodel.ReqContext) bool {
 	// Only enabled if feature flag is on
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !f.FeatureManager.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerUI) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(f.FeatureManager, featuremgmt.FlagAlertingImportAlertmanagerUI) {
 		return false
 	}
 

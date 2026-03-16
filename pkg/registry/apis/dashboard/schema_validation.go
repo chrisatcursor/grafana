@@ -34,11 +34,11 @@ func (b *DashboardsAPIBuilder) ValidateDashboardSpec(ctx context.Context, obj ru
 			errorOnSchemaMismatches = false // Never error for v0
 		case *v1.Dashboard:
 			//nolint:staticcheck // not yet migrated to OpenFeature
-			errorOnSchemaMismatches = !b.features.IsEnabled(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV1)
+			errorOnSchemaMismatches = !featuremgmt.OpenFeatureIsEnabled(ctx, b.features, featuremgmt.FlagDashboardDisableSchemaValidationV1)
 		case *v2alpha1.Dashboard:
 		case *v2beta1.Dashboard:
 			//nolint:staticcheck // not yet migrated to OpenFeature
-			errorOnSchemaMismatches = !b.features.IsEnabled(ctx, featuremgmt.FlagDashboardDisableSchemaValidationV2)
+			errorOnSchemaMismatches = !featuremgmt.OpenFeatureIsEnabled(ctx, b.features, featuremgmt.FlagDashboardDisableSchemaValidationV2)
 		default:
 			return nil, fmt.Errorf("invalid dashboard type: %T", obj)
 		}
@@ -48,7 +48,7 @@ func (b *DashboardsAPIBuilder) ValidateDashboardSpec(ctx context.Context, obj ru
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	alwaysLogSchemaValidationErrors := b.features.IsEnabled(ctx, featuremgmt.FlagDashboardSchemaValidationLogging)
+	alwaysLogSchemaValidationErrors := featuremgmt.OpenFeatureIsEnabled(ctx, b.features, featuremgmt.FlagDashboardSchemaValidationLogging)
 
 	var errors field.ErrorList
 	var schemaVersionError field.ErrorList

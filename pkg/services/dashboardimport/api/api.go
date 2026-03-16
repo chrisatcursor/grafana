@@ -47,7 +47,7 @@ func (api *ImportDashboardAPI) RegisterAPIEndpoints(routeRegister routing.RouteR
 			routing.Wrap(api.ImportDashboard),
 		)
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if api.features.IsEnabledGlobally(featuremgmt.FlagDashboardLibrary) || api.features.IsEnabledGlobally(featuremgmt.FlagSuggestedDashboards) || api.features.IsEnabledGlobally(featuremgmt.FlagDashboardTemplates) {
+		if featuremgmt.OpenFeatureIsEnabledGlobally(api.features, featuremgmt.FlagDashboardLibrary) || featuremgmt.OpenFeatureIsEnabledGlobally(api.features, featuremgmt.FlagSuggestedDashboards) || featuremgmt.OpenFeatureIsEnabledGlobally(api.features, featuremgmt.FlagDashboardTemplates) {
 			route.Post(
 				"/interpolate",
 				authorize(accesscontrol.EvalPermission(dashboards.ActionDashboardsCreate)),

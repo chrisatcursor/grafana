@@ -193,7 +193,7 @@ func (hs *HTTPServer) tryAutoLogin(c *contextmodel.ReqContext) bool {
 		if provider.AutoLogin || hs.Cfg.OAuthAutoLogin {
 			redirectUrl := hs.Cfg.AppSubURL + "/login/" + providerName
 			//nolint:staticcheck // not yet migrated to OpenFeature
-			if hs.Features.IsEnabledGlobally(featuremgmt.FlagUseSessionStorageForRedirection) {
+			if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagUseSessionStorageForRedirection) {
 				redirectUrl += hs.getRedirectToForAutoLogin(c)
 			}
 			c.Logger.Info("OAuth auto login enabled. Redirecting to " + redirectUrl)
@@ -205,7 +205,7 @@ func (hs *HTTPServer) tryAutoLogin(c *contextmodel.ReqContext) bool {
 	if samlAutoLogin {
 		redirectUrl := hs.Cfg.AppSubURL + "/login/saml"
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if hs.Features.IsEnabledGlobally(featuremgmt.FlagUseSessionStorageForRedirection) {
+		if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagUseSessionStorageForRedirection) {
 			redirectUrl += hs.getRedirectToForAutoLogin(c)
 		}
 		c.Logger.Info("SAML auto login enabled. Redirecting to " + redirectUrl)

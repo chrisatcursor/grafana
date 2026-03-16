@@ -89,7 +89,7 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 
 	var regionalFormat string
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagLocaleFormatPreference) {
+	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagLocaleFormatPreference) {
 		regionalFormat = "en"
 
 		// We default the regional format (locale) to the Accept-Language header rather than the language preference
@@ -311,7 +311,7 @@ func (hs *HTTPServer) getThemeForIndexData(themePrefId string, themeURLParam str
 		theme := pref.GetThemeByID(themePrefId)
 		// TODO refactor
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if !theme.IsExtra || hs.Features.IsEnabledGlobally(featuremgmt.FlagGrafanaconThemes) {
+		if !theme.IsExtra || featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagGrafanaconThemes) {
 			return theme
 		}
 	}

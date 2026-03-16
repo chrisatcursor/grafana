@@ -114,7 +114,7 @@ func (h *ContextHandler) setRequestContext(ctx context.Context) context.Context 
 		AllowAnonymous:            false,
 		SkipDSCache:               false,
 		Logger:                    log.New("context"),
-		UseSessionStorageRedirect: h.features.IsEnabledGlobally(featuremgmt.FlagUseSessionStorageForRedirection),
+		UseSessionStorageRedirect: featuremgmt.OpenFeatureIsEnabledGlobally(h.features, featuremgmt.FlagUseSessionStorageForRedirection),
 	}
 
 	// inject ReqContext in the context

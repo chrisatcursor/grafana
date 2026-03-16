@@ -153,7 +153,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 		}
 
 		//nolint:staticcheck // not yet migrated to OpenFeature
-		if panel.ID == "datagrid" && !hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagEnableDatagridEditing) {
+		if panel.ID == "datagrid" && !featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagEnableDatagridEditing) {
 			continue
 		}
 
@@ -417,7 +417,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
+	if hs.Cfg.PasswordlessMagicLinkAuth.Enabled && featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
 		hasEnabledProviders := hs.samlEnabled() || hs.authnService.IsClientEnabled(authn.ClientLDAP)
 
 		if !hasEnabledProviders {
@@ -456,7 +456,7 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 
 	// experimental scope features
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabled(c.Req.Context(), featuremgmt.FlagScopeFilters) {
+	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagScopeFilters) {
 		frontendSettings.ListScopesEndpoint = hs.Cfg.ScopesListScopesURL
 		frontendSettings.ListDashboardScopesEndpoint = hs.Cfg.ScopesListDashboardsURL
 	}

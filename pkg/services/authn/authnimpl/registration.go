@@ -80,7 +80,7 @@ func ProvideRegistration(
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if cfg.PasswordlessMagicLinkAuth.Enabled && features.IsEnabled(context.Background(), featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
+	if cfg.PasswordlessMagicLinkAuth.Enabled && featuremgmt.OpenFeatureIsEnabled(context.Background(), features, featuremgmt.FlagPasswordlessMagicLinkAuthentication) {
 		hasEnabledProviders := authnSvc.IsClientEnabled(authn.ClientSAML) || authnSvc.IsClientEnabled(authn.ClientLDAP)
 		if !hasEnabledProviders {
 			oauthInfos := socialService.GetOAuthInfoProviders()
@@ -124,7 +124,7 @@ func ProvideRegistration(
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		authnSvc.RegisterClient(clients.ProvideProvisioning())
 	}
 
@@ -140,13 +140,13 @@ func ProvideRegistration(
 	authnSvc.RegisterPostAuthHook(userSync.FetchSyncedUserHook, 100)
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagEnableSCIM) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagEnableSCIM) {
 		authnSvc.RegisterPostAuthHook(userSync.ValidateUserProvisioningHook, 30)
 	}
 
 	rbacSync := sync.ProvideRBACSync(accessControlService, tracer, permRegistry)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagCloudRBACRoles) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagCloudRBACRoles) {
 		authnSvc.RegisterPostAuthHook(rbacSync.SyncCloudRoles, 110)
 		authnSvc.RegisterPreLogoutHook(gcomsso.ProvideGComSSOService(cfg).LogoutHook, 50)
 	}

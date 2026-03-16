@@ -35,7 +35,7 @@ func (hs *HTTPServer) handleQueryMetricsError(err error) *response.NormalRespons
 // metrics.go
 func (hs *HTTPServer) getDSQueryEndpoint() web.Handler {
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if hs.Features.IsEnabledGlobally(featuremgmt.FlagQueryServiceRewrite) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagQueryServiceRewrite) {
 		// rewrite requests from /ds/query to the new query service
 		namespaceMapper := request.GetNamespaceMapper(hs.Cfg)
 		return func(w http.ResponseWriter, r *http.Request) {

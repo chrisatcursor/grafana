@@ -116,8 +116,7 @@ func shouldMakeBackgroundCall(ctx context.Context, features featuremgmt.FeatureT
 	}
 
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	res := features != nil &&
-		features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageSearchDualReaderEnabled) &&
+	res := features != nil && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagUnifiedStorageSearchDualReaderEnabled) &&
 		!unifiedIsMainStorage &&
 		status.WriteUnified
 

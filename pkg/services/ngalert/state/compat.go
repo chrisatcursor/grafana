@@ -93,7 +93,7 @@ func StateToPostableAlert(transition StateTransition, appURL *url.URL, featureTo
 
 	startsAt := strfmt.DateTime(alertState.StartsAt)
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	if featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertRuleUseFiredAtForStartsAt) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertRuleUseFiredAtForStartsAt) {
 		if alertState.FiredAt != nil {
 			startsAt = strfmt.DateTime(*alertState.FiredAt)
 		}

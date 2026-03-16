@@ -443,7 +443,7 @@ func (nps *Service) managedRoutesEnabled() bool {
 		return false
 	}
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies)
+	return featuremgmt.OpenFeatureIsEnabledGlobally(nps.FeatureToggles, featuremgmt.FlagAlertingMultiplePolicies)
 }
 
 func (nps *Service) includeImported() bool {
@@ -451,5 +451,5 @@ func (nps *Service) includeImported() bool {
 		return false
 	}
 	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI)
+	return featuremgmt.OpenFeatureIsEnabledGlobally(nps.FeatureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI)
 }

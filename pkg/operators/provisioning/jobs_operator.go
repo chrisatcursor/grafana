@@ -218,7 +218,7 @@ func setupWorkers(
 		return nil, fmt.Errorf("failed to provide feature manager: %w", err)
 	}
 	features := featuremgmt.ProvideToggles(featureManager)
-	exportEnabled := features.IsEnabledGlobally(featuremgmt.FlagProvisioningExport) //nolint:staticcheck
+	exportEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioningExport)
 
 	clients, err := controllerCfg.Clients()
 	if err != nil {
