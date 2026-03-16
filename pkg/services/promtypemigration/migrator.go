@@ -43,7 +43,6 @@ func ProvidePromTypeMigrationProvider(
 }
 
 func (s *PromTypeMigrationProviderImpl) Run(ctx context.Context) error {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabled(ctx, s.features, featuremgmt.FlagPrometheusTypeMigration) {
 		return nil
 	}

@@ -58,7 +58,6 @@ type resourceClient struct {
 }
 
 func NewResourceClient(conn, indexConn grpc.ClientConnInterface, cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer) (ResourceClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAppPlatformGrpcClientAuth) {
 		return NewLegacyResourceClient(conn, indexConn), nil
 	}

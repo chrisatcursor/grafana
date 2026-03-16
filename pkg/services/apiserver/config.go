@@ -76,7 +76,6 @@ func applyGrafanaConfig(cfg *setting.Cfg, features featuremgmt.FeatureToggles, o
 	unifiedStorageCfg := cfg.UnifiedStorage
 	o.StorageOptions.UnifiedStorageConfig = unifiedStorageCfg
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	o.ExtraOptions.DevMode = featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagGrafanaAPIServerEnsureKubectlAccess)
 	o.ExtraOptions.ExternalAddress = host
 	o.ExtraOptions.APIURL = apiURL

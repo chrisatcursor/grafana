@@ -611,7 +611,6 @@ func (b *DashboardsAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *genericapiserver
 
 	// Split dashboards when they are large
 	var largeObjects apistore.LargeObjectSupport
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagUnifiedStorageBigObjectsSupport) {
 		largeObjects = NewDashboardLargeObjectSupport(opts.Scheme, opts.StorageOpts.BlobThresholdBytes)
 		storageOpts.LargeObjectSupport = largeObjects
@@ -768,7 +767,6 @@ func (b *DashboardsAPIBuilder) storageForVersion(
 	}
 
 	// Expose read library panels
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if libraryPanels != nil && featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		legacyLibraryStore := &LibraryPanelStore{
 			Access:       b.legacy.Access,

@@ -171,7 +171,6 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	if oauthCfg.UseRefreshToken && token.RefreshToken == "" {
 		c.log.FromContext(ctx).Warn("No refresh token available with use_refresh_token enabled", "authmodule", c.moduleName)
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		if featuremgmt.OpenFeatureIsEnabledGlobally(c.features, featuremgmt.FlagRefreshTokenRequired) {
 			return nil, errOAuthMissingRefreshToken.Errorf("provider did not return a refresh token")
 		}
@@ -187,7 +186,6 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 	}
 
 	if userInfo.Id == "" {
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		if featuremgmt.OpenFeatureIsEnabledGlobally(c.features, featuremgmt.FlagOauthRequireSubClaim) {
 			return nil, errOAuthUserInfo.Errorf("missing required sub claims")
 		} else {

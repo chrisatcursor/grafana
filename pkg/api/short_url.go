@@ -31,7 +31,6 @@ import (
 func (hs *HTTPServer) registerShortURLAPI(apiRoute routing.RouteRegister) {
 	reqSignedIn := middleware.ReqSignedIn
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagKubernetesShortURLs) {
 		handler := newShortURLK8sHandler(hs)
 		apiRoute.Post("/api/short-urls", reqSignedIn, handler.createKubernetesShortURLsHandler)

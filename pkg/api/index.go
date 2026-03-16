@@ -88,7 +88,6 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 	}
 
 	var regionalFormat string
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagLocaleFormatPreference) {
 		regionalFormat = "en"
 
@@ -310,7 +309,6 @@ func (hs *HTTPServer) getThemeForIndexData(themePrefId string, themeURLParam str
 	if pref.IsValidThemeID(themePrefId) {
 		theme := pref.GetThemeByID(themePrefId)
 		// TODO refactor
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		if !theme.IsExtra || featuremgmt.OpenFeatureIsEnabledGlobally(hs.Features, featuremgmt.FlagGrafanaconThemes) {
 			return theme
 		}

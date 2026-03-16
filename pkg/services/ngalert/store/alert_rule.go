@@ -77,7 +77,6 @@ func (st DBstore) DeleteAlertRulesByUID(ctx context.Context, orgID int64, user *
 		logger.Debug("Deleted alert rule state", "count", rows)
 
 		var versions []alertRuleVersion
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		if featuremgmt.OpenFeatureIsEnabledGlobally(st.FeatureToggles, featuremgmt.FlagAlertRuleRestore) && st.Cfg.DeletedRuleRetention > 0 && !permanently { // save deleted version only if retention is greater than 0
 			versions, err = st.getLatestVersionOfRulesByUID(ctx, orgID, ruleUID)
 			if err != nil {
@@ -1203,7 +1202,6 @@ func (st DBstore) GetAlertRulesForScheduling(ctx context.Context, query *ngmodel
 					continue
 				}
 			}
-			//nolint:staticcheck // not yet migrated to OpenFeature
 			if featuremgmt.OpenFeatureIsEnabled(ctx, st.FeatureToggles, featuremgmt.FlagAlertingQueryOptimization) {
 				if optimizations, err := OptimizeAlertQueries(converted.Data); err != nil {
 					st.Logger.Error("Could not migrate rule from range to instant query", "rule", rule.UID, "err", err)

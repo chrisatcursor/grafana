@@ -52,7 +52,6 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 			Url:      s.cfg.AppSubURL + "/admin/migrate-to-cloud",
 		})
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if c.HasRole(identity.RoleAdmin) && featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagProvisioning) {
 		generalNodeLinks = append(generalNodeLinks, &navtree.NavLink{
 			Text:     "Provisioning",
@@ -97,7 +96,6 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		})
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if (s.cfg.Env == setting.Dev) || featuremgmt.OpenFeatureIsEnabled(ctx, s.features, featuremgmt.FlagEnableExtensionsAdminPage) && hasAccess(pluginaccesscontrol.AdminAccessEvaluator) {
 		pluginsNodeLinks = append(pluginsNodeLinks, &navtree.NavLink{
 			Text:     "Extensions",
@@ -146,7 +144,6 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 		})
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if s.license.FeatureEnabled("groupsync") && featuremgmt.OpenFeatureIsEnabled(ctx, s.features, featuremgmt.FlagGroupAttributeSync) &&
 		hasAccess(ac.EvalAny(
 			ac.EvalPermission("groupsync.mappings:read"),

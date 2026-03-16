@@ -58,7 +58,6 @@ func (f *AlertmanagerApiHandler) getService(ctx *contextmodel.ReqContext) (*Lote
 // Extra configs are the alertmanager configurations that were saved using the Prometheus conversion API.
 func (f *AlertmanagerApiHandler) isExtraConfig(ctx *contextmodel.ReqContext) bool {
 	// Only enabled if feature flag is on
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(f.FeatureManager, featuremgmt.FlagAlertingImportAlertmanagerUI) {
 		return false
 	}

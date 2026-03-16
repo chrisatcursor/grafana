@@ -291,7 +291,6 @@ func (b *FolderAPIBuilder) setDefaultFolderPermissions(ctx context.Context, key 
 
 func (b *FolderAPIBuilder) registerPermissionHooks(store *genericregistry.Store) {
 	log := logging.FromContext(context.Background())
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagZanzana) {
 		log.Info("Enabling Zanzana folder propagation hooks")
 		store.BeginCreate = b.beginCreate

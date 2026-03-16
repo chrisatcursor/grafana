@@ -96,7 +96,6 @@ func (st DBstore) SetProvenance(ctx context.Context, o models.Provisionable, org
 		// TODO: Need to make sure that writing a record where our concurrency key fails will also fail the whole transaction. That way, this gets rolled back too. can't just check that 0 updates happened inmemory. Check with jp. If not possible, we need our own concurrency key.
 		// TODO: Clean up stale provenance records periodically.
 
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		if featuremgmt.OpenFeatureIsEnabledGlobally(st.FeatureToggles, featuremgmt.FlagAlertingProvenanceLockWrites) {
 			return st.setProvenanceWithLocking(sess, recordKey, recordType, org, p)
 		}

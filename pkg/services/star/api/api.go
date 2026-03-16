@@ -27,7 +27,6 @@ func ProvideApi(
 	starService star.Service,
 	configProvider apiserver.DirectRestConfigProvider,
 ) *API {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagKubernetesStars) {
 		starService = nil // don't use it
 	}

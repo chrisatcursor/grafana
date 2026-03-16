@@ -273,7 +273,6 @@ func RegisterAPIService(
 	repoFactory repository.Factory,
 	connectionFactory connection.Factory,
 ) (*APIBuilder, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		return nil, nil
 	}

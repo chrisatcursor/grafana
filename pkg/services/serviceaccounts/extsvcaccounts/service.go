@@ -45,8 +45,7 @@ func ProvideExtSvcAccountsService(acSvc ac.Service, cfg *setting.Cfg, bus bus.Bu
 		saSvc:        saSvc,
 		skvStore:     kvstore.NewSQLSecretsKVStore(db, secretsSvc, logger), // Using SQL store to avoid a cyclic dependency
 		tracer:       tracer,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		enabled: cfg.ManagedServiceAccountsEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagExternalServiceAccounts),
+		enabled:      cfg.ManagedServiceAccountsEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagExternalServiceAccounts),
 	}
 
 	if esa.enabled {

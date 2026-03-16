@@ -202,11 +202,8 @@ func (ng *AlertNG) init() error {
 	var opts []notifier.Option
 	moaLogger := log.New("ngalert.multiorg.alertmanager")
 	crypto := notifier.NewCrypto(ng.SecretsService, ng.store, moaLogger)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	remotePrimary := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemotePrimary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	remoteSecondary := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemoteSecondary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	remoteSecondaryWithRemoteState := featuremgmt.OpenFeatureIsEnabled(initCtx, ng.FeatureToggles, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState)
 	if remotePrimary || remoteSecondary || remoteSecondaryWithRemoteState {
 		m := ng.Metrics.GetRemoteAlertmanagerMetrics()
@@ -457,7 +454,6 @@ func (ng *AlertNG) init() error {
 		ng.Log,
 		ng.ResourcePermissions,
 		ng.tracer, featuremgmt.
-			//nolint:staticcheck // not yet migrated to OpenFeature
 			OpenFeatureIsEnabledGlobally(ng.FeatureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI),
 	)
 	receiverTestService := notifier.NewReceiverTestingService(
@@ -564,7 +560,6 @@ func initInstanceStore(sqlStore db.DB, logger log.Logger, featureToggles feature
 		SQLStore: sqlStore,
 		Logger:   logger,
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStateCompressed) {
 		logger.Info("Using protobuf-based alert instance store")
 		instanceStore = protoInstanceStore
@@ -579,9 +574,7 @@ func initInstanceStore(sqlStore db.DB, logger log.Logger, featureToggles feature
 func initStatePersister(uaCfg setting.UnifiedAlertingSettings, cfg state.ManagerCfg, featureToggles featuremgmt.FeatureToggles) state.StatePersister {
 	logger := log.New("ngalert.state.manager.persist")
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	compressed := featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStateCompressed)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	periodic := featuremgmt.OpenFeatureIsEnabledGlobally(featureToggles, featuremgmt.FlagAlertingSaveStatePeriodic)
 
 	switch {
@@ -763,7 +756,6 @@ func configureNotificationHistorian(
 	l log.Logger,
 	tracer tracing.Tracer,
 ) (nfstatus.NotificationHistorian, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabled(ctx, featureToggles, featuremgmt.FlagAlertingNotificationHistory) || !cfg.Enabled {
 		met.Info.Set(0)
 		return nil, nil

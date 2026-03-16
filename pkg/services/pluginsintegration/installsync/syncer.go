@@ -114,9 +114,7 @@ func ProvideSyncer(
 }
 
 func (s *syncer) IsDisabled() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	syncEnabled := featuremgmt.OpenFeatureIsEnabled(context.Background(), s.featureToggles, featuremgmt.FlagPluginInstallAPISync)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	serviceLoadingEnabled := featuremgmt.OpenFeatureIsEnabled(context.Background(), s.featureToggles, featuremgmt.FlagPluginStoreServiceLoading)
 	return !syncEnabled || !serviceLoadingEnabled
 }

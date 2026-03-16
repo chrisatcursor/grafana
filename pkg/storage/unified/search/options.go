@@ -18,7 +18,6 @@ func NewSearchOptions(
 	indexMetrics *resource.BleveIndexMetrics,
 	ownsIndexFn func(key resource.NamespacedResource) (bool, error),
 ) (resource.SearchOptions, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if cfg.EnableSearch || featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		root := cfg.IndexPath
 		if root == "" {

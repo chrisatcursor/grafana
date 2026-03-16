@@ -66,7 +66,6 @@ func RegisterAPIService(
 	reg prometheus.Registerer,
 	pluginSources sources.Registry,
 ) (*DataSourceAPIBuilder, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagQueryServiceWithConnections) &&
 		!featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		return nil, nil
@@ -104,7 +103,6 @@ func RegisterAPIService(
 			datasources.GetDatasourceProvider(pluginJSON),
 			contextProvider,
 			accessControl,
-			//nolint:staticcheck // not yet migrated to OpenFeature
 			DataSourceAPIBuilderConfig{
 				LoadQueryTypes:         featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagDatasourceQueryTypes),
 				UseDualWriter:          featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagQueryServiceWithConnections),

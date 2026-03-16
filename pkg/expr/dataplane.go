@@ -70,7 +70,6 @@ func handleDataplaneFrames(ctx context.Context, tracer tracing.Tracer, features 
 	case data.KindTimeSeries:
 		return handleDataplaneTimeseries(frames)
 	case data.KindNumeric:
-		//nolint:staticcheck // not yet migrated to OpenFeature
 		sortMetrics := !featuremgmt.OpenFeatureIsEnabled(ctx, features, featuremgmt.FlagDisableNumericMetricsSortingInExpressions)
 		return handleDataplaneNumeric(frames, sortMetrics)
 	default:

@@ -92,7 +92,6 @@ func (d *AlertsRouter) SyncAndApplyConfigFromDatabase(ctx context.Context) error
 
 	d.logger.Debug("Attempting to sync admin configs", "count", len(cfgs))
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	disableExternal := featuremgmt.OpenFeatureIsEnabled(ctx, d.featureManager, featuremgmt.FlagAlertingDisableSendAlertsExternal)
 	orgsFound := make(map[int64]struct{}, len(cfgs))
 

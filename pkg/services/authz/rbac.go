@@ -55,7 +55,6 @@ func ProvideAuthZClient(
 	zanzanaClient zanzana.Client,
 	restConfig apiserver.RestConfigProvider,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	zanzanaEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana)
 
 	authCfg, err := readAuthzClientSettings(cfg)
@@ -63,12 +62,10 @@ func ProvideAuthZClient(
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAuthZGRPCServer) && authCfg.mode == clientModeCloud {
 		return nil, errors.New("authZGRPCServer feature toggle is required for cloud and grpc mode")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if zanzanaEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzanaNoLegacyClient) {
 		return zanzanaClient, nil
 	}
@@ -76,7 +73,6 @@ func ProvideAuthZClient(
 	// Provisioning uses mode 4 (read+write only to unified storage)
 	// For G12 launch, we can disable caching for this and find a more scalable solution soon
 	// most likely this would involve passing the RV (timestamp!) in each check method
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		authCfg.cacheTTL = 0
 	}
@@ -160,12 +156,10 @@ func ProvideAuthZClient(
 func ProvideStandaloneAuthZClient(
 	cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer, reg prometheus.Registerer,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAuthZGRPCServer) {
 		return nil, nil
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	zanzanaEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana)
 
 	zanzanaClient, err := ProvideStandaloneZanzanaClient(cfg, features, reg)
@@ -173,7 +167,6 @@ func ProvideStandaloneAuthZClient(
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if zanzanaEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzanaNoLegacyClient) {
 		return zanzanaClient, nil
 	}

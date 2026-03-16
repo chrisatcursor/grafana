@@ -78,7 +78,6 @@ func (s *OAuthTokenSync) SyncOauthTokenHook(ctx context.Context, id *authn.Ident
 	ctxLogger := s.log.FromContext(ctx).New("userID", userID)
 
 	cacheKey := fmt.Sprintf("token-check-%s", id.GetID())
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagImprovedExternalSessionHandling) {
 		cacheKey = fmt.Sprintf("token-check-%s-%d", id.GetID(), id.SessionToken.Id)
 	}

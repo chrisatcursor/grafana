@@ -442,9 +442,7 @@ func (s *service) start(ctx context.Context) error {
 	delegate := server
 
 	var runningServer *genericapiserver.GenericAPIServer
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	isKubernetesAggregatorEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagKubernetesAggregator)
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	isDataplaneAggregatorEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagDataplaneAggregator)
 
 	if isKubernetesAggregatorEnabled {

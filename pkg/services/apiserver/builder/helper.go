@@ -383,7 +383,6 @@ func installAPIGroupsForBuilder(g *genericapiserver.APIGroupInfo, group string, 
 	}
 
 	// if grafanaAPIServerWithExperimentalAPIs is not enabled, remove v0alpha1 resources unless explicitly allowed
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		if resources, ok := g.VersionedResourcesStorageMap["v0alpha1"]; ok {
 			for name := range resources {
