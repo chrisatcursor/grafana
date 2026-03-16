@@ -3,7 +3,7 @@ package features
 import (
 	"context"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 const (
@@ -14,5 +14,7 @@ const (
 )
 
 func IsEnabled(ctx context.Context, feature string) bool {
-	return backend.GrafanaConfigFromContext(ctx).FeatureToggles().IsEnabled(feature)
+	client := openfeature.NewDefaultClient()
+	enabled, _ := client.BooleanValue(ctx, feature, false, openfeature.TransactionContext(ctx))
+	return enabled
 }

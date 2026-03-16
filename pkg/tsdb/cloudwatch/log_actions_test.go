@@ -476,7 +476,7 @@ func Test_executeStartQuery(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -514,7 +514,7 @@ func Test_executeStartQuery(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -551,7 +551,7 @@ func Test_executeStartQuery(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -588,7 +588,7 @@ func Test_executeStartQuery(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -723,7 +723,7 @@ func Test_executeStartQuery(t *testing.T) {
 	t.Run("it always uses logGroups when feature flag is enabled and ignores log group names", func(t *testing.T) {
 		cli = fakeCWLogsClient{}
 		ds := newTestDatasource()
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -980,7 +980,7 @@ func Test_expandLogGroupsMacro(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
@@ -1009,7 +1009,7 @@ func Test_expandLogGroupsMacro(t *testing.T) {
 			ds.monitoringAccountCache.Store("us-east-1", true)
 		})
 
-		_, err := ds.QueryData(contextWithFeaturesEnabled(features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
+		_, err := ds.QueryData(contextWithFeaturesEnabled(t, features.FlagCloudWatchCrossAccountQuerying), &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{}},
 			Queries: []backend.DataQuery{
 				{
