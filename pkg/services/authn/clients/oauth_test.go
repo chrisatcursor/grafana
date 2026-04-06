@@ -2,15 +2,19 @@ package clients
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"golang.org/x/oauth2"
 
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -29,6 +33,28 @@ import (
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/setting"
 )
+
+var oauthOpenFeatureTestMutex sync.Mutex
+
+// setOAuthTestOpenFeatureFlags configures the global OpenFeature provider so Boolean evaluations
+// return true for the given flag keys (matching production static provider semantics).
+func setOAuthTestOpenFeatureFlags(t *testing.T, flagKeys ...string) {
+	t.Helper()
+	oauthOpenFeatureTestMutex.Lock()
+	static := make(map[string]memprovider.InMemoryFlag, len(flagKeys))
+	for _, key := range flagKeys {
+		static[key] = setting.NewInMemoryFlag(key, true)
+	}
+	err := featuremgmt.InitOpenFeature(featuremgmt.OpenFeatureConfig{
+		ProviderType: setting.StaticProviderType,
+		StaticFlags:  static,
+	})
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+		oauthOpenFeatureTestMutex.Unlock()
+	})
+}
 
 func TestOAuth_Authenticate(t *testing.T) {
 	type testCase struct {
@@ -326,6 +352,14 @@ func TestOAuth_Authenticate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
+			if len(tt.features) > 0 {
+				flagKeys := make([]string, 0, len(tt.features))
+				for _, f := range tt.features {
+					flagKeys = append(flagKeys, fmt.Sprintf("%v", f))
+				}
+				setOAuthTestOpenFeatureFlags(t, flagKeys...)
+			}
+
 			cfg := setting.NewCfg()
 			auth, err := cfg.Raw.NewSection("auth")
 			assert.NoError(t, err)
@@ -356,7 +390,7 @@ func TestOAuth_Authenticate(t *testing.T) {
 				},
 			}
 
-			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), cfg, nil, fakeSocialSvc, settingsProvider, featuremgmt.WithFeatures(tt.features...), tracing.InitializeTracerForTest())
+			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), cfg, nil, fakeSocialSvc, settingsProvider, tracing.InitializeTracerForTest())
 
 			identity, err := c.Authenticate(context.Background(), tt.req)
 			assert.ErrorIs(t, err, tt.expectedErr)
@@ -436,7 +470,7 @@ func TestOAuth_RedirectURL(t *testing.T) {
 
 			cfg := setting.NewCfg()
 
-			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), cfg, nil, fakeSocialSvc, &setting.OSSImpl{Cfg: cfg}, featuremgmt.WithFeatures(), tracing.InitializeTracerForTest())
+			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), cfg, nil, fakeSocialSvc, &setting.OSSImpl{Cfg: cfg}, tracing.InitializeTracerForTest())
 
 			redirect, err := c.RedirectURL(context.Background(), nil)
 			assert.ErrorIs(t, err, tt.expectedErr)
@@ -549,7 +583,7 @@ func TestOAuth_Logout(t *testing.T) {
 			fakeSocialSvc := &socialtest.FakeSocialService{
 				ExpectedAuthInfoProvider: tt.oauthCfg,
 			}
-			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), tt.cfg, mockService, fakeSocialSvc, &setting.OSSImpl{Cfg: tt.cfg}, featuremgmt.WithFeatures(), tracing.InitializeTracerForTest())
+			c := ProvideOAuth(authn.ClientWithPrefix("azuread"), tt.cfg, mockService, fakeSocialSvc, &setting.OSSImpl{Cfg: tt.cfg}, tracing.InitializeTracerForTest())
 
 			redirect, ok := c.Logout(context.Background(), &authn.Identity{ID: "1", Type: claims.TypeUser}, &usertoken.UserToken{})
 
@@ -609,7 +643,6 @@ func TestIsEnabled(t *testing.T) {
 				nil,
 				fakeSocialSvc,
 				&setting.OSSImpl{Cfg: cfg},
-				featuremgmt.WithFeatures(),
 				tracing.InitializeTracerForTest())
 			assert.Equal(t, tt.expected, c.IsEnabled())
 		})

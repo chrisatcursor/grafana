@@ -120,7 +120,7 @@ func ProvideRegistration(
 
 	for name := range socialService.GetOAuthProviders() {
 		clientName := authn.ClientWithPrefix(name)
-		authnSvc.RegisterClient(clients.ProvideOAuth(clientName, cfg, oauthTokenService, socialService, settingsProviderService, features, tracer))
+		authnSvc.RegisterClient(clients.ProvideOAuth(clientName, cfg, oauthTokenService, socialService, settingsProviderService, tracer))
 	}
 
 	if openfeature.NewDefaultClient().Boolean(context.Background(), featuremgmt.FlagProvisioning, false, openfeature.EvaluationContext{}) {

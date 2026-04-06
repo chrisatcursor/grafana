@@ -249,7 +249,7 @@ func (hs *HTTPServer) LoginPost(c *contextmodel.ReqContext) response.Response {
 	}
 
 	metrics.MApiLoginPost.Inc()
-	return authn.HandleLoginResponse(c.Req, c.Resp, hs.Cfg, identity, hs.ValidateRedirectTo, hs.Features)
+	return authn.HandleLoginResponse(c.Req, c.Resp, hs.Cfg, identity, hs.ValidateRedirectTo)
 }
 
 func (hs *HTTPServer) LoginPasswordless(c *contextmodel.ReqContext) response.Response {
@@ -261,7 +261,7 @@ func (hs *HTTPServer) LoginPasswordless(c *contextmodel.ReqContext) response.Res
 		}
 		return response.Err(err)
 	}
-	return authn.HandleLoginResponse(c.Req, c.Resp, hs.Cfg, identity, hs.ValidateRedirectTo, hs.Features)
+	return authn.HandleLoginResponse(c.Req, c.Resp, hs.Cfg, identity, hs.ValidateRedirectTo)
 }
 
 func (hs *HTTPServer) StartPasswordless(c *contextmodel.ReqContext) {
