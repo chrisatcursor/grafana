@@ -1,15 +1,15 @@
 package loki
 
 import (
-	"context"
 	"testing"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/tracing"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
 	"github.com/stretchr/testify/require"
+
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 )
 
 func TestSubscribeStream(t *testing.T) {
@@ -35,8 +35,7 @@ func TestSubscribeStream(t *testing.T) {
 	}
 
 	t.Run("when feature toggle is disabled", func(t *testing.T) {
-		// Create a context without the feature toggle enabled
-		ctx := context.Background()
+		ctx := initTestOpenFeatureProvider(t)
 
 		resp, err := service.SubscribeStream(ctx, req)
 
@@ -46,11 +45,7 @@ func TestSubscribeStream(t *testing.T) {
 	})
 
 	t.Run("when feature toggle is enabled", func(t *testing.T) {
-		// Create a context with the feature toggle enabled
-		cfg := backend.NewGrafanaCfg(map[string]string{
-			featuretoggles.EnabledFeatures: flagLokiExperimentalStreaming,
-		})
-		ctx := backend.WithGrafanaConfig(context.Background(), cfg)
+		ctx := initTestOpenFeatureProvider(t, featuremgmt.FlagLokiExperimentalStreaming)
 
 		resp, err := service.SubscribeStream(ctx, req)
 

@@ -8,8 +8,10 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	sdkhttpclient "github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
+	"github.com/open-feature/go-sdk/openfeature"
 
 	"github.com/grafana/grafana/pkg/promlib"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/prometheus/azureauth"
 )
 
@@ -68,7 +70,8 @@ func extendClientOpts(ctx context.Context, settings backend.DataSourceInstanceSe
 		return fmt.Errorf("failed to read Azure settings from Grafana: %v", err)
 	}
 
-	audienceOverride := backend.GrafanaConfigFromContext(ctx).FeatureToggles().IsEnabled("prometheusAzureOverrideAudience")
+	client := openfeature.NewDefaultClient()
+	audienceOverride, _ := client.BooleanValue(ctx, featuremgmt.FlagPrometheusAzureOverrideAudience, false, openfeature.TransactionContext(ctx))
 
 	// Set Azure authentication
 	if azureSettings.AzureAuthEnabled {

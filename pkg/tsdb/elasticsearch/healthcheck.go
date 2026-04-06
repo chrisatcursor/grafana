@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	es "github.com/grafana/grafana/pkg/tsdb/elasticsearch/client"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 const ErrorBodyMaxSize = 200
@@ -126,8 +128,8 @@ func (s *Service) CheckHealth(ctx context.Context, req *backend.CheckHealthReque
 	indexWarningMessage := ""
 
 	// validate index and time field
-	cfg := backend.GrafanaConfigFromContext(ctx)
-	crossClusterSearchEnabled := cfg.FeatureToggles().IsEnabled("elasticsearchCrossClusterSearch")
+	client := openfeature.NewDefaultClient()
+	crossClusterSearchEnabled, _ := client.BooleanValue(ctx, featuremgmt.FlagElasticsearchCrossClusterSearch, false, openfeature.TransactionContext(ctx))
 
 	if crossClusterSearchEnabled {
 		message, level := validateIndex(ctx, ds)

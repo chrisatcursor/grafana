@@ -6,8 +6,10 @@ import (
 	"strconv"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	es "github.com/grafana/grafana/pkg/tsdb/elasticsearch/client"
 	"github.com/grafana/grafana/pkg/tsdb/elasticsearch/simplejson"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // processQuery processes a single query and adds it to the multi-search request builder
@@ -23,8 +25,9 @@ func (e *elasticsearchDataQuery) processQuery(q *Query, ms *es.MultiSearchReques
 	filters := b.Query().Bool().Filter()
 	filters.AddDateRangeFilter(defaultTimeField, to, from, es.DateFormatEpochMS)
 	if q.QueryType != nil && *q.QueryType == "dsl" {
-		cfg := backend.GrafanaConfigFromContext(e.ctx)
-		if !cfg.FeatureToggles().IsEnabled("elasticsearchRawDSLQuery") {
+		client := openfeature.NewDefaultClient()
+		rawDSLEnabled, _ := client.BooleanValue(e.ctx, featuremgmt.FlagElasticsearchRawDSLQuery, false, openfeature.TransactionContext(e.ctx))
+		if !rawDSLEnabled {
 			return backend.DownstreamError(fmt.Errorf("raw DSL query feature is disabled. Enable the elasticsearchRawDSLQuery feature toggle to use this query type"))
 		}
 

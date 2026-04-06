@@ -12,10 +12,12 @@ import (
 
 	"github.com/grafana/dskit/concurrency"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/open-feature/go-sdk/openfeature"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/grafana/grafana/pkg/infra/log"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/tsdb/influxdb/influxql/buffered"
 	"github.com/grafana/grafana/pkg/tsdb/influxdb/influxql/querydata"
@@ -38,10 +40,10 @@ func Query(ctx context.Context, tracer trace.Tracer, dsInfo *models.DatasourceIn
 	response := backend.NewQueryDataResponse()
 	var err error
 
-	config := backend.GrafanaConfigFromContext(ctx)
+	ofClient := openfeature.NewDefaultClient()
 
 	// We are testing running of queries in parallel behind feature flag
-	if config.FeatureToggles().IsEnabled("influxdbRunQueriesInParallel") {
+	if ofClient.Boolean(ctx, featuremgmt.FlagInfluxdbRunQueriesInParallel, false, openfeature.TransactionContext(ctx)) {
 		concurrentQueryCount, err := req.PluginContext.GrafanaConfig.ConcurrentQueryCount()
 		if err != nil {
 			logger.Debug(fmt.Sprintf("Concurrent Query Count read/parse error: %v", err), "influxdbRunQueriesInParallel")
@@ -83,7 +85,7 @@ func Query(ctx context.Context, tracer trace.Tracer, dsInfo *models.DatasourceIn
 				return nil
 			}
 
-			resp, err := execute(ctx, tracer, dsInfo, logger, query, request, config.FeatureToggles().IsEnabled("influxqlStreamingParser"))
+			resp, err := execute(ctx, tracer, dsInfo, logger, query, request, ofClient.Boolean(ctx, featuremgmt.FlagInfluxqlStreamingParser, false, openfeature.TransactionContext(ctx)))
 
 			responseLock.Lock()
 			defer responseLock.Unlock()
@@ -128,7 +130,7 @@ func Query(ctx context.Context, tracer trace.Tracer, dsInfo *models.DatasourceIn
 				continue
 			}
 
-			resp, err := execute(ctx, tracer, dsInfo, logger, query, request, config.FeatureToggles().IsEnabled("influxqlStreamingParser"))
+			resp, err := execute(ctx, tracer, dsInfo, logger, query, request, ofClient.Boolean(ctx, featuremgmt.FlagInfluxqlStreamingParser, false, openfeature.TransactionContext(ctx)))
 
 			if err != nil {
 				response.Responses[query.RefID] = backend.DataResponse{Error: err}

@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/clients"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models/resources"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/services"
@@ -300,7 +300,7 @@ func (ds *DataSource) GetLogGroupsService(ctx context.Context, region string) (m
 	if err != nil {
 		return nil, err
 	}
-	return services.NewLogGroupsService(NewLogsAPI(awsConfig), features.IsEnabled(ctx, features.FlagCloudWatchCrossAccountQuerying)), nil
+	return services.NewLogGroupsService(NewLogsAPI(awsConfig), featureEnabled(ctx, featuremgmt.FlagCloudWatchCrossAccountQuerying)), nil
 }
 
 func (ds *DataSource) GetListMetricsService(ctx context.Context, region string) (models.ListMetricsProvider, error) {

@@ -13,10 +13,13 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
+
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 )
 
 func (s *Service) SubscribeStream(ctx context.Context, req *backend.SubscribeStreamRequest) (*backend.SubscribeStreamResponse, error) {
-	if !isFeatureEnabled(ctx, flagLokiExperimentalStreaming) {
+	if !openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagLokiExperimentalStreaming, false, openfeature.TransactionContext(ctx)) {
 		return &backend.SubscribeStreamResponse{
 			Status: backend.SubscribeStreamStatusPermissionDenied,
 		}, fmt.Errorf("streaming is not supported")

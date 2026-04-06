@@ -17,8 +17,6 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
-
 	"github.com/grafana/grafana/pkg/tsdb/azuremonitor/types"
 
 	"github.com/stretchr/testify/assert"
@@ -62,7 +60,7 @@ func TestNewInstanceSettings(t *testing.T) {
 		settings      backend.DataSourceInstanceSettings
 		expectedModel *types.DatasourceInfo
 		Err           require.ErrorAssertionFunc
-		setupContext  func(ctx context.Context) context.Context
+		setupContext  func(t *testing.T, ctx context.Context) context.Context
 	}{
 		{
 			name: "current user authentication disabled by feature toggle",
@@ -76,11 +74,9 @@ func TestNewInstanceSettings(t *testing.T) {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), "current user authentication is not enabled for azure monitor")
 			},
-			setupContext: func(ctx context.Context) context.Context {
-				featureToggles := backend.NewGrafanaCfg(map[string]string{
-					featuretoggles.EnabledFeatures: "", // No enabled features
-				})
-				return backend.WithGrafanaConfig(ctx, featureToggles)
+			setupContext: func(t *testing.T, ctx context.Context) context.Context {
+				initTestOpenFeatureProvider(t)
+				return ctx
 			},
 		},
 		{
@@ -140,7 +136,7 @@ func TestNewInstanceSettings(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
 			if tt.setupContext != nil {
-				ctx = tt.setupContext(ctx)
+				ctx = tt.setupContext(t, ctx)
 			}
 
 			factory := NewInstanceSettings(&httpclient.Provider{}, map[string]azDatasourceExecutor{}, log.DefaultLogger)

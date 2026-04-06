@@ -11,12 +11,10 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	es "github.com/grafana/grafana/pkg/tsdb/elasticsearch/client"
 	"github.com/stretchr/testify/assert"
 )
-
-var mockedCfg = backend.WithGrafanaConfig(context.Background(), backend.NewGrafanaCfg(map[string]string{featuretoggles.EnabledFeatures: "elasticsearchCrossClusterSearch"}))
 
 func Test_Healthcheck_OK(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `{"fields":{"timestamp":{"date":{"metadata_field":true}}}}`)
@@ -50,7 +48,7 @@ func Test_Healthcheck_Error(t *testing.T) {
 
 func Test_validateIndex_Warning_ErrorValidatingIndex(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `{"error":{"reason":"index_not_found"}}`)
-	res, _ := service.CheckHealth(mockedCfg, &backend.CheckHealthRequest{
+	res, _ := service.CheckHealth(initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchCrossClusterSearch), &backend.CheckHealthRequest{
 		PluginContext: backend.PluginContext{},
 		Headers:       nil,
 	})
@@ -60,7 +58,7 @@ func Test_validateIndex_Warning_ErrorValidatingIndex(t *testing.T) {
 
 func Test_validateIndex_Warning_ErrorValidatingIndex2(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `{"error":"not a map"}`)
-	res, _ := service.CheckHealth(mockedCfg, &backend.CheckHealthRequest{
+	res, _ := service.CheckHealth(initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchCrossClusterSearch), &backend.CheckHealthRequest{
 		PluginContext: backend.PluginContext{},
 		Headers:       nil,
 	})
@@ -70,7 +68,7 @@ func Test_validateIndex_Warning_ErrorValidatingIndex2(t *testing.T) {
 
 func Test_validateIndex_Warning_WrongTimestampType(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `{"fields":{"timestamp":{"float":{"metadata_field":true}}}}`)
-	res, _ := service.CheckHealth(mockedCfg, &backend.CheckHealthRequest{
+	res, _ := service.CheckHealth(initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchCrossClusterSearch), &backend.CheckHealthRequest{
 		PluginContext: backend.PluginContext{},
 		Headers:       nil,
 	})
@@ -79,7 +77,7 @@ func Test_validateIndex_Warning_WrongTimestampType(t *testing.T) {
 }
 func Test_validateIndex_Error_FailedToUnmarshalValidateResponse(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `\\\///{"fields":null}"`)
-	res, _ := service.CheckHealth(mockedCfg, &backend.CheckHealthRequest{
+	res, _ := service.CheckHealth(initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchCrossClusterSearch), &backend.CheckHealthRequest{
 		PluginContext: backend.PluginContext{},
 		Headers:       nil,
 	})
@@ -88,7 +86,7 @@ func Test_validateIndex_Error_FailedToUnmarshalValidateResponse(t *testing.T) {
 }
 func Test_validateIndex_Success_SuccessValidatingIndex(t *testing.T) {
 	service := GetMockService(http.StatusOK, "200 OK", `{"status":"green"}`, `{"fields":{"timestamp":{"date":{"metadata_field":true}}}}`)
-	res, _ := service.CheckHealth(mockedCfg, &backend.CheckHealthRequest{
+	res, _ := service.CheckHealth(initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchCrossClusterSearch), &backend.CheckHealthRequest{
 		PluginContext: backend.PluginContext{},
 		Headers:       nil,
 	})

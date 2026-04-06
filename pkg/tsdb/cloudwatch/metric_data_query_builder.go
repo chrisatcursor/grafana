@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	cloudwatchtypes "github.com/aws/aws-sdk-go-v2/service/cloudwatch/types"
 
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 )
 
@@ -34,7 +34,7 @@ func (ds *DataSource) buildMetricDataQuery(ctx context.Context, query *models.Cl
 		mdq.Expression = aws.String(query.SqlExpression)
 	case models.GMDApiModeInferredSearchExpression:
 		mdq.Expression = aws.String(buildSearchExpression(query, query.Statistic))
-		if features.IsEnabled(ctx, features.FlagCloudWatchNewLabelParsing) {
+		if featureEnabled(ctx, featuremgmt.FlagCloudWatchNewLabelParsing) {
 			mdq.Label = aws.String(buildSearchExpressionLabel(query))
 		}
 	case models.GMDApiModeMetricStat:

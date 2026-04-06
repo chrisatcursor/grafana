@@ -46,8 +46,7 @@ func queryData(ctx context.Context, dsInfo *datasourceInfo, req *backend.QueryDa
 			continue
 		}
 
-		cfg := backend.GrafanaConfigFromContext(ctx)
-		useGrpc := cfg.FeatureToggles().IsEnabled("jaegerEnableGrpcEndpoint")
+		useGrpc := jaegerGrpcEndpointEnabled(ctx)
 		// Handle "Search" query type
 		if query.QueryType == "search" {
 			// TODO: enable routing to gRPC when ready, currently pending on: https://github.com/jaegertracing/jaeger/issues/7594

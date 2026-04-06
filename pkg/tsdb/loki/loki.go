@@ -23,15 +23,13 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/httpclient"
 	scope "github.com/grafana/grafana/apps/scope/pkg/apis/scope/v0alpha1"
 
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/loki/kinds/dataquery"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 const (
-	flagLokiLogsDataplane         = "lokiLogsDataplane"
-	flagLokiRunQueriesInParallel  = "lokiRunQueriesInParallel"
-	flagLogQLScope                = "logQLScope"
-	flagLokiExperimentalStreaming = "lokiExperimentalStreaming"
-	fromAlertHeaderName           = "FromAlert"
+	fromAlertHeaderName = "FromAlert"
 )
 
 type Service struct {
@@ -188,11 +186,15 @@ func (s *Service) QueryData(ctx context.Context, req *backend.QueryDataRequest) 
 		return nil, err
 	}
 
+	ofClient := openfeature.NewDefaultClient()
+	tx := openfeature.TransactionContext(ctx)
 	responseOpts := ResponseOpts{
-		logsDataplane: isFeatureEnabled(ctx, flagLokiLogsDataplane),
+		logsDataplane: ofClient.Boolean(ctx, featuremgmt.FlagLokiLogsDataplane, false, tx),
 	}
 
-	return queryData(ctx, req, dsInfo, responseOpts, s.tracer, logger, isFeatureEnabled(ctx, flagLokiRunQueriesInParallel), isFeatureEnabled(ctx, flagLogQLScope))
+	return queryData(ctx, req, dsInfo, responseOpts, s.tracer, logger,
+		ofClient.Boolean(ctx, featuremgmt.FlagLokiRunQueriesInParallel, false, tx),
+		ofClient.Boolean(ctx, featuremgmt.FlagLogQLScope, false, tx))
 }
 
 func queryData(ctx context.Context, req *backend.QueryDataRequest, dsInfo *datasourceInfo, responseOpts ResponseOpts, tracer trace.Tracer, plog log.Logger, runInParallel bool, logQLScopes bool) (*backend.QueryDataResponse, error) {
@@ -306,8 +308,4 @@ func (s *Service) getDSInfo(ctx context.Context, pluginCtx backend.PluginContext
 	}
 
 	return instance, nil
-}
-
-func isFeatureEnabled(ctx context.Context, feature string) bool {
-	return backend.GrafanaConfigFromContext(ctx).FeatureToggles().IsEnabled(feature)
 }

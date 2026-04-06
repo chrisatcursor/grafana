@@ -16,6 +16,8 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/tracing"
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 // Used in logging to mark a stage
@@ -159,7 +161,7 @@ func (c *baseClientImpl) ExecuteMultisearch(r *MultiSearchRequest) (*MultiSearch
 		resSpan.End()
 	}()
 
-	improvedParsingEnabled := isFeatureEnabled(c.ctx, "elasticsearchImprovedParsing")
+	improvedParsingEnabled := openfeature.NewDefaultClient().Boolean(c.ctx, featuremgmt.FlagElasticsearchImprovedParsing, false, openfeature.TransactionContext(c.ctx))
 	msr, err := c.parser.parseMultiSearchResponse(res.Body, improvedParsingEnabled)
 	if err != nil {
 		return nil, err
@@ -212,10 +214,6 @@ func (c *baseClientImpl) getMultiSearchQueryParameters() string {
 
 func (c *baseClientImpl) MultiSearch() *MultiSearchRequestBuilder {
 	return NewMultiSearchRequestBuilder()
-}
-
-func isFeatureEnabled(ctx context.Context, feature string) bool {
-	return backend.GrafanaConfigFromContext(ctx).FeatureToggles().IsEnabled(feature)
 }
 
 // StreamMultiSearchResponse processes the JSON response in a streaming fashion

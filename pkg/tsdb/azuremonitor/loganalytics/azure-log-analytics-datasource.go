@@ -391,9 +391,7 @@ func (e *AzureLogAnalyticsDatasource) buildQuery(ctx context.Context, query back
 
 	if query.QueryType == string(dataquery.AzureQueryTypeAzureTraces) || query.QueryType == string(dataquery.AzureQueryTypeTraceExemplar) {
 		if query.QueryType == string(dataquery.AzureQueryTypeTraceExemplar) {
-			cfg := backend.GrafanaConfigFromContext(ctx)
-			hasPromExemplarsToggle := cfg.FeatureToggles().IsEnabled("azureMonitorPrometheusExemplars")
-			if !hasPromExemplarsToggle {
+			if !azureMonitorPrometheusExemplarsEnabled(ctx) {
 				return nil, backend.DownstreamError(fmt.Errorf("query type unsupported as azureMonitorPrometheusExemplars feature toggle is not enabled"))
 			}
 		}
@@ -477,7 +475,7 @@ func (e *AzureLogAnalyticsDatasource) executeQuery(ctx context.Context, query *A
 		return nil, err
 	}
 
-	logLimitDisabled := backend.GrafanaConfigFromContext(ctx).FeatureToggles().IsEnabled("azureMonitorDisableLogLimit")
+	logLimitDisabled := azureMonitorDisableLogLimitEnabled(ctx)
 
 	frame, err := ResponseTableToFrame(t, query.RefID, query.Query, query.QueryType, query.ResultFormat, logLimitDisabled)
 	if err != nil {

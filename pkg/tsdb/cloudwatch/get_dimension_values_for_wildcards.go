@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/clients"
-	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/features"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/models/resources"
 	"github.com/grafana/grafana/pkg/tsdb/cloudwatch/services"
@@ -14,7 +14,7 @@ import (
 )
 
 func shouldSkipFetchingWildcards(ctx context.Context, q *models.CloudWatchQuery) bool {
-	newLabelParsingEnabled := features.IsEnabled(ctx, features.FlagCloudWatchNewLabelParsing)
+	newLabelParsingEnabled := featureEnabled(ctx, featuremgmt.FlagCloudWatchNewLabelParsing)
 	if q.MetricQueryType == models.MetricQueryTypeSearch && (q.MatchExact || newLabelParsingEnabled) {
 		return true
 	}

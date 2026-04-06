@@ -31,10 +31,9 @@ func (s *Service) withDatasourceHandlerFunc(getHandler func(d *datasourceInfo) h
 
 func getServicesHandler(ds *datasourceInfo) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
-		cfg := backend.GrafanaConfigFromContext(r.Context())
 		var services []string
 		var err error
-		if cfg.FeatureToggles().IsEnabled("jaegerEnableGrpcEndpoint") {
+		if jaegerGrpcEndpointEnabled(r.Context()) {
 			services, err = ds.JaegerClient.GrpcServices()
 		} else {
 			services, err = ds.JaegerClient.Services()
@@ -45,11 +44,10 @@ func getServicesHandler(ds *datasourceInfo) http.HandlerFunc {
 
 func getOperationsHandler(ds *datasourceInfo) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
-		cfg := backend.GrafanaConfigFromContext(r.Context())
 		service := strings.TrimSpace(r.PathValue("service"))
 		var operations []string
 		var err error
-		if cfg.FeatureToggles().IsEnabled("jaegerEnableGrpcEndpoint") {
+		if jaegerGrpcEndpointEnabled(r.Context()) {
 			operations, err = ds.JaegerClient.GrpcOperations(service)
 		} else {
 			operations, err = ds.JaegerClient.Operations(service)

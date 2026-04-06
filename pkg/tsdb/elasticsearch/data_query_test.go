@@ -8,10 +8,10 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/featuretoggles"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	es "github.com/grafana/grafana/pkg/tsdb/elasticsearch/client"
 )
 
@@ -1915,11 +1915,7 @@ func TestRawDSLQuery(t *testing.T) {
 	from := time.Date(2018, 5, 15, 17, 50, 0, 0, time.UTC)
 	to := time.Date(2018, 5, 15, 17, 55, 0, 0, time.UTC)
 
-	// Create context with raw DSL query feature toggle enabled
-	cfg := backend.NewGrafanaCfg(map[string]string{
-		featuretoggles.EnabledFeatures: "elasticsearchRawDSLQuery",
-	})
-	ctx := backend.WithGrafanaConfig(context.Background(), cfg)
+	ctx := initTestOpenFeatureProvider(t, featuremgmt.FlagElasticsearchRawDSLQuery)
 
 	t.Run("With raw DSL query", func(t *testing.T) {
 		t.Run("Basic raw DSL query with aggregations", func(t *testing.T) {
