@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/matttproud/golang_protobuf_extensions/pbutil"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/prometheus/alertmanager/flushlog/flushlogpb"
 	"github.com/prometheus/alertmanager/nflog/nflogpb"
 	"github.com/prometheus/alertmanager/silence/silencepb"
@@ -511,6 +513,22 @@ type TestMultiOrgAlertmanagerOptions struct {
 
 type TestMultiOrgAlertmanagerOption func(*TestMultiOrgAlertmanagerOptions)
 
+func setNotifierFeatureFlags(t testing.TB, ft featuremgmt.FeatureToggles) {
+	t.Helper()
+
+	flags := map[string]memprovider.InMemoryFlag{}
+	if ft != nil {
+		for flag, enabled := range ft.GetEnabled(context.Background()) {
+			flags[flag] = setting.NewInMemoryFlag(flag, enabled)
+		}
+	}
+
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(flags)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
+}
+
 func WithOrgs(orgs []int64) TestMultiOrgAlertmanagerOption {
 	return func(opts *TestMultiOrgAlertmanagerOptions) {
 		opts.orgs = orgs
@@ -560,6 +578,8 @@ func NewTestMultiOrgAlertmanager(t *testing.T, opts ...TestMultiOrgAlertmanagerO
 	for _, opt := range opts {
 		opt(&options)
 	}
+
+	setNotifierFeatureFlags(t, options.featureToggles)
 
 	tmpDir := t.TempDir()
 	orgStore := NewFakeOrgStore(t, options.orgs)

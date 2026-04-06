@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/prometheus/alertmanager/pkg/labels"
 	prommodel "github.com/prometheus/common/model"
 	"github.com/stretchr/testify/mock"
@@ -41,6 +43,22 @@ import (
 const (
 	existingDSUID = "test-ds"
 )
+
+func setConvertPrometheusFeatureFlags(t *testing.T, features featuremgmt.FeatureToggles) {
+	t.Helper()
+
+	flags := map[string]memprovider.InMemoryFlag{}
+	if features != nil {
+		for flag, enabled := range features.GetEnabled(context.Background()) {
+			flags[flag] = setting.NewInMemoryFlag(flag, enabled)
+		}
+	}
+
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(flags)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
+}
 
 func TestRouteConvertPrometheusPostRuleGroup(t *testing.T) {
 	simpleGroup := apimodels.PrometheusRuleGroup{
@@ -1751,6 +1769,8 @@ func createConvertPrometheusSrv(t *testing.T, opts ...convertPrometheusSrvOption
 	for _, opt := range opts {
 		opt(&options)
 	}
+
+	setConvertPrometheusFeatureFlags(t, options.featureToggles)
 
 	ruleStore := fakes.NewRuleStore(t)
 	folder := randFolder()

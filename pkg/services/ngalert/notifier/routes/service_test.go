@@ -5,6 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/prometheus/alertmanager/config"
 	"github.com/prometheus/alertmanager/pkg/labels"
 	"github.com/stretchr/testify/assert"
@@ -23,6 +25,22 @@ import (
 
 func TestMain(m *testing.M) {
 	testsuite.Run(m)
+}
+
+func setRouteFeatureFlags(t *testing.T, features featuremgmt.FeatureToggles) {
+	t.Helper()
+
+	flags := map[string]memprovider.InMemoryFlag{}
+	if features != nil {
+		for flag, enabled := range features.GetEnabled(context.Background()) {
+			flags[flag] = setting.NewInMemoryFlag(flag, enabled)
+		}
+	}
+
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(flags)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
 }
 
 const importedConfigYaml = `
@@ -99,6 +117,7 @@ func TestGetManagedRoute(t *testing.T) {
 			featuremgmt.FlagAlertingMultiplePolicies,
 			featuremgmt.FlagAlertingImportAlertmanagerAPI,
 		)
+		setRouteFeatureFlags(t, features)
 
 		sut := createServiceSut(configStore, provStore, features)
 
@@ -130,6 +149,7 @@ func TestGetManagedRoute(t *testing.T) {
 			featuremgmt.FlagAlertingMultiplePolicies,
 			featuremgmt.FlagAlertingImportAlertmanagerAPI,
 		)
+		setRouteFeatureFlags(t, features)
 
 		sut := createServiceSut(configStore, provStore, features)
 
@@ -159,6 +179,7 @@ func TestGetManagedRoute(t *testing.T) {
 			featuremgmt.FlagAlertingMultiplePolicies,
 			featuremgmt.FlagAlertingImportAlertmanagerAPI,
 		)
+		setRouteFeatureFlags(t, features)
 
 		sut := createServiceSut(configStore, provStore, features)
 
@@ -178,6 +199,7 @@ func TestGetManagedRoute(t *testing.T) {
 			featuremgmt.FlagAlertingMultiplePolicies,
 			featuremgmt.FlagAlertingImportAlertmanagerAPI,
 		)
+		setRouteFeatureFlags(t, features)
 
 		sut := createServiceSut(configStore, provStore, features)
 

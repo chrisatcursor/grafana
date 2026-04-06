@@ -12,6 +12,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/prometheus/alertmanager/api/v2/models"
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/require"
@@ -21,8 +23,21 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/ngalert/eval"
 	ngModels "github.com/grafana/grafana/pkg/services/ngalert/models"
+	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
 )
+
+func setStateFeatureFlags(t *testing.T, flags ...string) {
+	t.Helper()
+	m := map[string]memprovider.InMemoryFlag{}
+	for _, flag := range flags {
+		m[flag] = setting.NewInMemoryFlag(flag, true)
+	}
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(m)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
+}
 
 func Test_StateToPostableAlert(t *testing.T) {
 	appURL := &url.URL{
@@ -107,6 +122,7 @@ func Test_StateToPostableAlert(t *testing.T) {
 				require.Equal(t, strfmt.DateTime(alertState.StartsAt), result.StartsAt)
 
 				// feature flag is enabled
+				setStateFeatureFlags(t, featuremgmt.FlagAlertRuleUseFiredAtForStartsAt)
 				result = StateToPostableAlert(alertState, appURL, featuremgmt.WithFeatures(featuremgmt.FlagAlertRuleUseFiredAtForStartsAt))
 				require.Equal(t, strfmt.DateTime(*alertState.FiredAt), result.StartsAt)
 			})

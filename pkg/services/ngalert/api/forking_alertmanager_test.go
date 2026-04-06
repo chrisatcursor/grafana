@@ -69,6 +69,7 @@ func TestAlertmanagerApiHandler_isExtraConfig(t *testing.T) {
 			} else {
 				features = featuremgmt.WithFeatures()
 			}
+			setConvertPrometheusFeatureFlags(t, features)
 
 			handler := &AlertmanagerApiHandler{
 				FeatureManager: features,
@@ -95,6 +96,7 @@ func TestAlertmanagerApiHandler_ExtraConfigRouting(t *testing.T) {
 		ctx.Req = web.SetURLParams(req, map[string]string{
 			":DatasourceUID": "~grafana-with-extra-config",
 		})
+		setConvertPrometheusFeatureFlags(t, featuremgmt.WithFeatures(featuremgmt.FlagAlertingImportAlertmanagerUI))
 
 		handler := &AlertmanagerApiHandler{
 			FeatureManager: featuremgmt.WithFeatures(featuremgmt.FlagAlertingImportAlertmanagerUI),
@@ -118,6 +120,7 @@ func TestAlertmanagerApiHandler_ExtraConfigRouting(t *testing.T) {
 		ctx.Req = web.SetURLParams(req, map[string]string{
 			":DatasourceUID": "~grafana-with-extra-config",
 		})
+		setConvertPrometheusFeatureFlags(t, featuremgmt.WithFeatures(featuremgmt.FlagAlertingImportAlertmanagerUI))
 
 		handler := &AlertmanagerApiHandler{
 			FeatureManager: featuremgmt.WithFeatures(featuremgmt.FlagAlertingImportAlertmanagerUI),

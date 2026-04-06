@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	alertingNotify "github.com/grafana/alerting/notify"
-	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/stretchr/testify/require"
+
+	"github.com/grafana/grafana/pkg/services/featuremgmt"
 )
 
 func TestGetDispatchTimer(t *testing.T) {
@@ -29,6 +30,7 @@ func TestGetDispatchTimer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			features := featuremgmt.WithFeatures(featuremgmt.FlagAlertingSyncDispatchTimer, tt.featureFlagValue)
+			setNotifierFeatureFlags(t, features)
 			result := GetDispatchTimer(features)
 			require.Equal(t, tt.expected, result)
 		})

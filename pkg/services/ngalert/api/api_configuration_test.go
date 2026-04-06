@@ -125,6 +125,7 @@ func TestExternalAlertmanagerChoice(t *testing.T) {
 
 func createAPIAdminSut(t *testing.T,
 	datasources []*datasources.DataSource, features featuremgmt.FeatureToggles) ConfigSrv {
+	setConvertPrometheusFeatureFlags(t, features)
 	return ConfigSrv{
 		datasourceService: &fakeDatasources.FakeDataSourceService{
 			DataSources: datasources,

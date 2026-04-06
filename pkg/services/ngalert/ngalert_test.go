@@ -14,6 +14,9 @@ import (
 	"github.com/golang/snappy"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/loki/pkg/push"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
+	oftesting "github.com/open-feature/go-sdk/openfeature/testing"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
@@ -37,6 +40,26 @@ import (
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
 )
+
+var ngalertTestProvider = oftesting.NewTestProvider()
+
+func TestMain(m *testing.M) {
+	_ = openfeature.SetProviderAndWait(ngalertTestProvider)
+	m.Run()
+	openfeature.Shutdown()
+}
+
+func setNgalertTestFlags(t *testing.T, flags ...string) {
+	t.Helper()
+	static := make(map[string]memprovider.InMemoryFlag, len(flags))
+	for _, flag := range flags {
+		static[flag] = setting.NewInMemoryFlag(flag, true)
+	}
+	ngalertTestProvider.UsingFlags(t, static)
+	t.Cleanup(func() {
+		ngalertTestProvider.Cleanup()
+	})
+}
 
 func Test_subscribeToFolderChanges(t *testing.T) {
 	getRecordedCommand := func(ruleStore *fakes.RuleStore) []fakes.GenericRecordedQuery {
@@ -319,6 +342,7 @@ grafana_alerting_state_history_info{backend="noop"} 0
 
 func TestConfigureNotificationHistorian(t *testing.T) {
 	t.Run("do not fail initialization if pinging Loki fails", func(t *testing.T) {
+		setNgalertTestFlags(t, featuremgmt.FlagAlertingNotificationHistory)
 		reg := prometheus.NewRegistry()
 		met := metrics.NewNotificationHistorianMetrics(reg)
 		logger := log.NewNopLogger()
@@ -366,6 +390,7 @@ grafana_alerting_notification_history_info 1
 
 		for _, tc := range testCases {
 			t.Run(tc.name, func(t *testing.T) {
+				setNgalertTestFlags(t)
 				reg := prometheus.NewRegistry()
 				met := metrics.NewNotificationHistorianMetrics(reg)
 				logger := log.NewNopLogger()
@@ -423,6 +448,14 @@ func TestInitInstanceStore(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			flags := make([]string, 0, 2)
+			if tt.ft.IsEnabled(context.Background(), featuremgmt.FlagAlertingSaveStateCompressed) {
+				flags = append(flags, featuremgmt.FlagAlertingSaveStateCompressed)
+			}
+			if tt.ft.IsEnabled(context.Background(), featuremgmt.FlagAlertingSaveStatePeriodic) {
+				flags = append(flags, featuremgmt.FlagAlertingSaveStatePeriodic)
+			}
+			setNgalertTestFlags(t, flags...)
 			instanceStore, instanceReader := initInstanceStore(sqlStore, logger, tt.ft)
 			assert.IsType(t, tt.expectedInstanceStoreType, instanceStore)
 			assert.IsType(t, &state.MultiInstanceReader{}, instanceReader)
@@ -476,6 +509,14 @@ func TestInitStatePersister(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			flags := make([]string, 0, 2)
+			if tt.ft.IsEnabled(context.Background(), featuremgmt.FlagAlertingSaveStateCompressed) {
+				flags = append(flags, featuremgmt.FlagAlertingSaveStateCompressed)
+			}
+			if tt.ft.IsEnabled(context.Background(), featuremgmt.FlagAlertingSaveStatePeriodic) {
+				flags = append(flags, featuremgmt.FlagAlertingSaveStatePeriodic)
+			}
+			setNgalertTestFlags(t, flags...)
 			statePersister := initStatePersister(ua, cfg, tt.ft)
 			assert.IsType(t, tt.expectedStatePersisterType, statePersister)
 		})

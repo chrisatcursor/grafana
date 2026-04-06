@@ -12,6 +12,8 @@ import (
 
 	"github.com/benbjohnson/clock"
 	"github.com/go-openapi/strfmt"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	models2 "github.com/prometheus/alertmanager/api/v2/models"
 	"github.com/stretchr/testify/require"
 
@@ -26,9 +28,24 @@ import (
 	"github.com/grafana/grafana/pkg/services/ngalert/notifier"
 	"github.com/grafana/grafana/pkg/services/ngalert/store"
 	fake_secrets "github.com/grafana/grafana/pkg/services/secrets/fakes"
+	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/util/testutil"
 )
+
+func setSenderFeatureFlags(t *testing.T, features featuremgmt.FeatureToggles) {
+	t.Helper()
+	flags := map[string]memprovider.InMemoryFlag{}
+	if features != nil {
+		for flag, enabled := range features.GetEnabled(context.Background()) {
+			flags[flag] = setting.NewInMemoryFlag(flag, enabled)
+		}
+	}
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(flags)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
+}
 
 func TestIntegrationSendingToExternalAlertmanager(t *testing.T) {
 	testutil.SkipIntegrationTestInShortMode(t)
@@ -59,8 +76,10 @@ func TestIntegrationSendingToExternalAlertmanager(t *testing.T) {
 			"implementation":             "prometheus",
 		}),
 	}
+	features := featuremgmt.WithFeatures()
+	setSenderFeatureFlags(t, features)
 	alertsRouter := NewAlertsRouter(moa, fakeAdminConfigStore, mockedClock, appUrl, map[int64]struct{}{}, 10*time.Minute,
-		&fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds1}}, fake_secrets.NewFakeSecretsService(), featuremgmt.WithFeatures(), false)
+		&fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds1}}, fake_secrets.NewFakeSecretsService(), features, false)
 
 	mockedGetAdminConfigurations.Return([]*models.AdminConfiguration{
 		{OrgID: ruleKey.OrgID, SendAlertsTo: models.AllAlertmanagers},
@@ -129,8 +148,10 @@ func TestIntegrationSendingToExternalAlertmanager_WithMultipleOrgs(t *testing.T)
 		}),
 	}
 	fakeDs := &fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds1}}
+	features := featuremgmt.WithFeatures()
+	setSenderFeatureFlags(t, features)
 	alertsRouter := NewAlertsRouter(moa, fakeAdminConfigStore, mockedClock, appUrl, map[int64]struct{}{}, 10*time.Minute,
-		fakeDs, fake_secrets.NewFakeSecretsService(), featuremgmt.WithFeatures(), false)
+		fakeDs, fake_secrets.NewFakeSecretsService(), features, false)
 
 	mockedGetAdminConfigurations.Return([]*models.AdminConfiguration{
 		{OrgID: ruleKey1.OrgID, SendAlertsTo: models.AllAlertmanagers},
@@ -288,8 +309,10 @@ func TestChangingAlertmanagersChoice(t *testing.T) {
 			"implementation":             "prometheus",
 		}),
 	}
+	features := featuremgmt.WithFeatures()
+	setSenderFeatureFlags(t, features)
 	alertsRouter := NewAlertsRouter(moa, fakeAdminConfigStore, mockedClock, appUrl, map[int64]struct{}{},
-		10*time.Minute, &fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds}}, fake_secrets.NewFakeSecretsService(), featuremgmt.WithFeatures(), false)
+		10*time.Minute, &fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds}}, fake_secrets.NewFakeSecretsService(), features, false)
 
 	mockedGetAdminConfigurations.Return([]*models.AdminConfiguration{
 		{OrgID: ruleKey.OrgID, SendAlertsTo: models.AllAlertmanagers},
@@ -389,9 +412,11 @@ func TestAlertmanagersChoiceWithDisableExternalFeatureToggle(t *testing.T) {
 		alerts.PostableAlerts = append(alerts.PostableAlerts, alert)
 	}
 
+	features := featuremgmt.WithFeatures(featuremgmt.FlagAlertingDisableSendAlertsExternal)
+	setSenderFeatureFlags(t, features)
 	alertsRouter := NewAlertsRouter(moa, fakeAdminConfigStore, mockedClock, appUrl, map[int64]struct{}{},
 		10*time.Minute, &fake_ds.FakeDataSourceService{DataSources: []*datasources.DataSource{&ds}},
-		fake_secrets.NewFakeSecretsService(), featuremgmt.WithFeatures(featuremgmt.FlagAlertingDisableSendAlertsExternal), false)
+		fake_secrets.NewFakeSecretsService(), features, false)
 
 	// Test that we only send to the internal Alertmanager even though the configuration specifies AllAlertmanagers.
 
@@ -952,8 +977,10 @@ func TestSendBroadcastAlerts(t *testing.T) {
 			fakeAdminConfigStore := &store.AdminConfigurationStoreMock{}
 			fakeAdminConfigStore.EXPECT().GetAdminConfigurations().Return(nil, nil)
 
+			features := featuremgmt.WithFeatures()
+			setSenderFeatureFlags(t, features)
 			alertsRouter := NewAlertsRouter(moa, fakeAdminConfigStore, mockedClock, appUrl, map[int64]struct{}{},
-				10*time.Minute, &fake_ds.FakeDataSourceService{}, fake_secrets.NewFakeSecretsService(), featuremgmt.WithFeatures(), tc.broadcastAlerts)
+				10*time.Minute, &fake_ds.FakeDataSourceService{}, fake_secrets.NewFakeSecretsService(), features, tc.broadcastAlerts)
 
 			require.NoError(t, alertsRouter.SyncAndApplyConfigFromDatabase(context.Background()))
 

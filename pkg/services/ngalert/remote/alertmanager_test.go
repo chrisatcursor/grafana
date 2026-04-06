@@ -21,6 +21,8 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	amv2 "github.com/prometheus/alertmanager/api/v2/models"
 	"github.com/prometheus/alertmanager/config"
 	"github.com/prometheus/alertmanager/pkg/labels"
@@ -55,6 +57,20 @@ import (
 	"github.com/grafana/grafana/pkg/util"
 	"github.com/grafana/grafana/pkg/util/testutil"
 )
+
+func setRemoteFeatureFlags(t *testing.T, features featuremgmt.FeatureToggles) {
+	t.Helper()
+	flags := map[string]memprovider.InMemoryFlag{}
+	if features != nil {
+		for flag, enabled := range features.GetEnabled(context.Background()) {
+			flags[flag] = setting.NewInMemoryFlag(flag, enabled)
+		}
+	}
+	require.NoError(t, openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(flags)))
+	t.Cleanup(func() {
+		_ = openfeature.SetProviderAndWait(openfeature.NoopProvider{})
+	})
+}
 
 //go:embed test-data/*.*
 var testData embed.FS
@@ -647,6 +663,7 @@ func TestCompareAndSendConfiguration(t *testing.T) {
 
 			if test.enabledMultipleRoutes {
 				am.features = featuremgmt.WithFeatures(featuremgmt.FlagAlertingMultiplePolicies)
+				setRemoteFeatureFlags(tt, am.features)
 			}
 
 			// Adding the autogenFn after creating the Alertmanager

@@ -561,6 +561,7 @@ func TestRoutePostTestTemplates(t *testing.T) {
 
 func createSut(t *testing.T) AlertmanagerSrv {
 	t.Helper()
+	setConvertPrometheusFeatureFlags(t, featuremgmt.WithFeatures())
 
 	configs := map[int64]*ngmodels.AlertConfiguration{
 		1: {AlertmanagerConfiguration: validConfig, OrgID: 1},

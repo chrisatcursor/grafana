@@ -401,7 +401,12 @@ func (ng *AlertNG) init() error {
 		Log:                            log.New("ngalert.state.manager"),
 		ResolvedRetention:              ng.Cfg.UnifiedAlerting.ResolvedAlertRetention,
 
-		IgnorePendingForNoDataAndError: ng.Cfg.IsFeatureToggleEnabled(featuremgmt.FlagAlertingIgnorePendingForNoDataAndError),
+		IgnorePendingForNoDataAndError: openfeature.NewDefaultClient().Boolean(
+			context.Background(),
+			featuremgmt.FlagAlertingIgnorePendingForNoDataAndError,
+			false,
+			openfeature.EvaluationContext{},
+		),
 	}
 	statePersister := initStatePersister(ng.Cfg.UnifiedAlerting, stateManagerCfg, ng.FeatureToggles)
 	ng.stateManager = state.NewManager(stateManagerCfg, statePersister)

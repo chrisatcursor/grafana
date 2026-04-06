@@ -121,7 +121,7 @@ func TestService_GetInhibitionRules(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			sut, store := createInhibitionRuleSvcSut(tc.enableImported)
+			sut, store := createInhibitionRuleSvcSut(t, tc.enableImported)
 			revision := createTestConfig(t, tc.grafanaRules, tc.importedRules)
 			store.GetFn = func(ctx context.Context, orgID int64) (*legacy_storage.ConfigRevision, error) {
 				return revision, nil
@@ -167,7 +167,7 @@ func TestService_GetInhibitionRule(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			sut, store := createInhibitionRuleSvcSut(true)
+			sut, store := createInhibitionRuleSvcSut(t, true)
 			revision := createTestConfig(t, tc.grafanaRules, tc.importedRules)
 			store.GetFn = func(ctx context.Context, orgID int64) (*legacy_storage.ConfigRevision, error) {
 				return revision, nil
@@ -242,7 +242,7 @@ func TestService_UpdateInhibitionRule(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			sut, store := createInhibitionRuleSvcSut(true)
+			sut, store := createInhibitionRuleSvcSut(t, true)
 			revision := createTestConfig(t, tc.grafanaRules, tc.importedRules)
 			store.GetFn = func(ctx context.Context, orgID int64) (*legacy_storage.ConfigRevision, error) {
 				return revision, nil
@@ -292,7 +292,7 @@ func TestService_DeleteInhibitionRule(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			sut, store := createInhibitionRuleSvcSut(true)
+			sut, store := createInhibitionRuleSvcSut(t, true)
 			revision := createTestConfig(t, tc.grafanaRules, tc.importedRules)
 			store.GetFn = func(ctx context.Context, orgID int64) (*legacy_storage.ConfigRevision, error) {
 				return revision, nil
@@ -319,7 +319,7 @@ func TestService_DeleteInhibitionRule(t *testing.T) {
 
 // Test helpers
 
-func createInhibitionRuleSvcSut(enableImported bool) (*Service, *legacy_storage.AlertmanagerConfigStoreFake) {
+func createInhibitionRuleSvcSut(t *testing.T, enableImported bool) (*Service, *legacy_storage.AlertmanagerConfigStoreFake) {
 	store := &legacy_storage.AlertmanagerConfigStoreFake{}
 	logger := log.NewNopLogger()
 	var ff featuremgmt.FeatureToggles

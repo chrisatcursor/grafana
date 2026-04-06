@@ -148,10 +148,10 @@ func (cfg *Cfg) readPluginSettings(iniFile *ini.File) error {
 		for _, plugin := range defaultPreinstallPlugins {
 			preinstallPluginsAsync[plugin.ID] = plugin
 		}
-		if cfg.IsFeatureToggleEnabled("grafanaAdvisor") { // Use literal string to avoid circular dependency
+		if cfg.IsFeatureToggleEnabled("grafanaAdvisor") {
 			preinstallPluginsAsync["grafana-advisor-app"] = InstallPlugin{"grafana-advisor-app", "", ""}
 		}
-		if cfg.IsFeatureToggleEnabled("interactiveLearning") { // Use literal string to avoid circular dependency
+		if cfg.IsFeatureToggleEnabled("interactiveLearning") {
 			preinstallPluginsAsync["grafana-pathfinder-app"] = InstallPlugin{"grafana-pathfinder-app", "", ""}
 		}
 		cfg.processPreinstallPlugins(rawInstallPluginsAsync, preinstallPluginsAsync)
