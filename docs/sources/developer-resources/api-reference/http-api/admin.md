@@ -302,6 +302,68 @@ Content-Type: application/json
 }
 ```
 
+## Unified storage migration status
+
+`GET /api/admin/unified-storage/migration-status`
+
+Returns unified storage data migration status (registered migration definitions, SQL migration log state, and per-resource migration configuration: `group` and `resource`).
+
+Only works with Basic Authentication (username and password). See [introduction](/docs/grafana/<GRAFANA_VERSION>/http_api/admin/#admin-api) for an explanation.
+
+**Required permissions**
+
+See note in the [introduction](#admin-api) for an explanation.
+
+| Action            | Scope |
+| ----------------- | ----- |
+| server.stats:read | n/a   |
+
+**Example Request**:
+
+```http
+GET /api/admin/unified-storage/migration-status
+Accept: application/json
+Content-Type: application/json
+```
+
+**Example Response**:
+
+```http
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+  "disableDataMigrations": false,
+  "storageType": "sql",
+  "migrations": [
+    {
+      "id": "dashboards_v1",
+      "migrationId": "000001_dashboards",
+      "logRecorded": true,
+      "logSuccess": true,
+      "logTimestamp": "2025-01-15T12:00:00Z"
+    }
+  ],
+  "resources": [
+    {
+      "group": "dashboard.grafana.app",
+      "resource": "dashboards",
+      "configKey": "dashboards.unified",
+      "enableMigration": true,
+      "dualWriterMode": 2,
+      "resolvedStorageMode": "dual-write"
+    }
+  ]
+}
+```
+
+The response body matches the `MigrationAdminStatus` shape:
+
+- **`disableDataMigrations`** — whether data migrations are disabled for this instance.
+- **`storageType`** — configured unified storage backend type.
+- **`migrations`** — each item is a `MigrationDefinitionStatus`: **`id`**, **`migrationId`**, **`logRecorded`**, and when present **`logSuccess`**, **`logTimestamp`** (from the SQL migration log).
+- **`resources`** — each item is a `ResourceMigrationStatus`: **`group`**, **`resource`**, **`configKey`**, **`enableMigration`**, **`dualWriterMode`**, **`resolvedStorageMode`**.
+
 ## Grafana Usage Report preview
 
 `GET /api/admin/usage-report-preview`

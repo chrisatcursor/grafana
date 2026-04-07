@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+	"encoding/json"
 	"io"
 	"net/http"
 	"testing"
@@ -14,8 +16,22 @@ import (
 	"github.com/grafana/grafana/pkg/services/stats"
 	"github.com/grafana/grafana/pkg/services/stats/statstest"
 	"github.com/grafana/grafana/pkg/setting"
+	unifiedmigration "github.com/grafana/grafana/pkg/storage/unified/migrations/contract"
 	"github.com/grafana/grafana/pkg/web/webtest"
 )
+
+// fakeMigrationAdminStatusProvider implements unifiedmigration.MigrationAdminStatusProvider for API tests.
+type fakeMigrationAdminStatusProvider struct {
+	status *unifiedmigration.MigrationAdminStatus
+	err    error
+}
+
+func (f *fakeMigrationAdminStatusProvider) GetMigrationAdminStatus(ctx context.Context) (*unifiedmigration.MigrationAdminStatus, error) {
+	if f.err != nil {
+		return nil, f.err
+	}
+	return f.status, nil
+}
 
 func TestAPI_AdminGetSettings(t *testing.T) {
 	type testCase struct {
@@ -101,10 +117,11 @@ func TestAPI_AdminGetSettings(t *testing.T) {
 
 func TestAdmin_AccessControl(t *testing.T) {
 	type testCase struct {
-		desc         string
-		url          string
-		permissions  []accesscontrol.Permission
-		expectedCode int
+		desc                string
+		url                 string
+		permissions         []accesscontrol.Permission
+		expectedCode        int
+		assertMigrationJSON bool
 	}
 
 	tests := []testCase{
@@ -148,6 +165,27 @@ func TestAdmin_AccessControl(t *testing.T) {
 				},
 			},
 		},
+		{
+			expectedCode: http.StatusOK,
+			desc:         "AdminGetUnifiedStorageMigrationStatus should return 200 for user with server.stats:read",
+			url:          "/api/admin/unified-storage/migration-status",
+			permissions: []accesscontrol.Permission{
+				{
+					Action: accesscontrol.ActionServerStatsRead,
+				},
+			},
+			assertMigrationJSON: true,
+		},
+		{
+			expectedCode: http.StatusForbidden,
+			desc:         "AdminGetUnifiedStorageMigrationStatus should return 403 for user without required permissions",
+			url:          "/api/admin/unified-storage/migration-status",
+			permissions: []accesscontrol.Permission{
+				{
+					Action: "wrong",
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -156,17 +194,47 @@ func TestAdmin_AccessControl(t *testing.T) {
 			fakeStatsService.ExpectedAdminStats = &stats.AdminStats{}
 			fakeAnonService := anontest.NewFakeService()
 			fakeAnonService.ExpectedCountDevices = 0
+			migrationStatus := &unifiedmigration.MigrationAdminStatus{
+				DisableDataMigrations: true,
+				StorageType:           "sql",
+				Migrations: []unifiedmigration.MigrationDefinitionStatus{
+					{ID: "def-1", MigrationID: "mig-1", LogRecorded: false},
+				},
+				Resources: []unifiedmigration.ResourceMigrationStatus{
+					{
+						Group:               "dashboard.grafana.app",
+						Resource:            "dashboards",
+						ConfigKey:           "unified_storage.dashboards",
+						EnableMigration:     false,
+						DualWriterMode:      0,
+						ResolvedStorageMode: "sql",
+					},
+				},
+			}
 			server := SetupAPITestServer(t, func(hs *HTTPServer) {
 				hs.Cfg = setting.NewCfg()
 				hs.SQLStore = dbtest.NewFakeDB()
 				hs.SettingsProvider = &setting.OSSImpl{Cfg: hs.Cfg}
 				hs.statsService = fakeStatsService
 				hs.anonService = fakeAnonService
+				hs.migrationAdminStatus = &fakeMigrationAdminStatusProvider{status: migrationStatus}
 			})
 
 			res, err := server.Send(webtest.RequestWithSignedInUser(server.NewGetRequest(tt.url), userWithPermissions(1, tt.permissions)))
 			require.NoError(t, err)
 			assert.Equal(t, tt.expectedCode, res.StatusCode)
+			if tt.assertMigrationJSON {
+				body, readErr := io.ReadAll(res.Body)
+				require.NoError(t, readErr)
+				var payload map[string]json.RawMessage
+				require.NoError(t, json.Unmarshal(body, &payload))
+				for _, key := range []string{"disableDataMigrations", "storageType", "migrations", "resources"} {
+					_, ok := payload[key]
+					assert.True(t, ok, "response JSON should include key %q", key)
+				}
+				assert.Equal(t, json.RawMessage("true"), payload["disableDataMigrations"])
+				assert.Equal(t, json.RawMessage(`"sql"`), payload["storageType"])
+			}
 			require.NoError(t, res.Body.Close())
 		})
 	}

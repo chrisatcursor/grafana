@@ -11,6 +11,7 @@ import (
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
 	"github.com/grafana/grafana/pkg/services/stats"
 	"github.com/grafana/grafana/pkg/setting"
+	unifiedmigration "github.com/grafana/grafana/pkg/storage/unified/migrations/contract"
 )
 
 // swagger:route GET /admin/settings admin adminGetSettings
@@ -52,7 +53,7 @@ func (hs *HTTPServer) AdminGetVerboseSettings(c *contextmodel.ReqContext) respon
 // Fetch Grafana Stats.
 //
 // Only works with Basic Authentication (username and password). See introduction for an explanation.
-// If you are running Grafana Enterprise and have Fine-grained access control enabled, you need to have a permission with action `server:stats:read`.
+// If you are running Grafana Enterprise and have Fine-grained access control enabled, you need to have a permission with action `server.stats:read`.
 //
 // Responses:
 // 200: adminGetStatsResponse
@@ -72,6 +73,26 @@ func (hs *HTTPServer) AdminGetStats(c *contextmodel.ReqContext) response.Respons
 	adminStats.ActiveDevices = devicesCount
 
 	return response.JSON(http.StatusOK, adminStats)
+}
+
+// swagger:route GET /admin/unified-storage/migration-status admin adminGetUnifiedStorageMigrationStatus
+//
+// Fetch unified storage migration status.
+//
+// Only works with Basic Authentication (username and password). See introduction for an explanation.
+// If you are running Grafana Enterprise and have Fine-grained access control enabled, you need to have a permission with action `server.stats:read`.
+//
+// Responses:
+// 200: adminGetUnifiedStorageMigrationStatusResponse
+// 401: unauthorisedError
+// 403: forbiddenError
+// 500: internalServerError
+func (hs *HTTPServer) AdminGetUnifiedStorageMigrationStatus(c *contextmodel.ReqContext) response.Response {
+	status, err := hs.migrationAdminStatus.GetMigrationAdminStatus(c.Req.Context())
+	if err != nil {
+		return response.Error(http.StatusInternalServerError, "Failed to get unified storage migration status", err)
+	}
+	return response.JSON(http.StatusOK, status)
 }
 
 func (hs *HTTPServer) getAuthorizedSettings(ctx context.Context, user identity.Requester, bag setting.SettingsBag) (setting.SettingsBag, error) {
@@ -170,4 +191,10 @@ type GetSettingsResponse struct {
 type GetStatsResponse struct {
 	// in:body
 	Body stats.AdminStats `json:"body"`
+}
+
+// swagger:response adminGetUnifiedStorageMigrationStatusResponse
+type GetUnifiedStorageMigrationStatusResponse struct {
+	// in:body
+	Body *unifiedmigration.MigrationAdminStatus `json:"body"`
 }
