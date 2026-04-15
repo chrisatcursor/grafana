@@ -43,12 +43,12 @@ function createOpenFeatureBackedFeatureToggles(featureToggles: FeatureToggles): 
         return Reflect.get(target, prop, receiver);
       }
 
-      // Keep prototype methods (for example toString) and non-toggle properties untouched.
-      if (!Object.prototype.hasOwnProperty.call(target, prop)) {
+      // Keep prototype methods (for example toString) untouched.
+      if (Object.prototype.hasOwnProperty.call(Object.prototype, prop)) {
         return Reflect.get(target, prop, receiver);
       }
 
-      const fallback = target[prop] ?? false;
+      const fallback = target[prop] === true;
 
       try {
         return openFeatureClient.getBooleanValue(prop, fallback);
