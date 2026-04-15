@@ -111,12 +111,11 @@ func (fm *FeatureManager) IsEnabledGlobally(flag string) bool {
 // GetEnabled returns a map containing only the features that are enabled
 func (fm *FeatureManager) GetEnabled(ctx context.Context) map[string]bool {
 	enabled := make(map[string]bool, len(fm.enabled))
-	for key, val := range fm.flags {
+	for key := range fm.flags {
 		fallback := fm.enabled[key]
 		if fm.evaluateFlag(ctx, key, fallback) {
 			enabled[key] = true
 		}
-		_ = val
 	}
 	return enabled
 }
