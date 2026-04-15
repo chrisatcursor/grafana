@@ -627,6 +627,24 @@ module.exports = [
     },
   },
   {
+    name: 'grafana/openfeature-migration',
+    files: ['public/app/**/*.{ts,tsx}'],
+    ignores: [
+      ...commonTestIgnores,
+      ...enterpriseIgnores,
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: 'MemberExpression[object.name="config"][property.name="featureToggles"]',
+          message:
+            'config.featureToggles is deprecated. Use OpenFeature React hooks (useBooleanFlagValue from @openfeature/react-sdk) in React components, or getFeatureFlagClient() from @grafana/runtime/internal for non-React code.',
+        },
+      ],
+    },
+  },
+  {
     files: [...commonTestIgnores],
     ignores: [
       // FIXME: Remove once all enterprise issues are fixed -

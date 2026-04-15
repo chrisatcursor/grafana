@@ -28,14 +28,34 @@ Use the OpenFeature client for all new backend feature flags.
 - Always perform flag evaluation at runtime, not during service startup, to ensure correct and up-to-date flag values.
 - Do not cache or store flag values globally -- evaluate flags when needed, especially in request or handler logic.
 
-#### In Grafana code:
+#### Using helper functions (recommended)
+
+For convenience, you can use the helper functions in `pkg/services/featuremgmt`:
+
+```go
+import "github.com/grafana/grafana/pkg/services/featuremgmt"
+
+// Simple boolean check
+if featuremgmt.BoolValue(ctx, featuremgmt.FlagMyFeature, false) {
+    // feature is enabled
+}
+
+// For multiple flag checks
+if featuremgmt.AnyEnabledOF(ctx, featuremgmt.FlagFeatureA, featuremgmt.FlagFeatureB) {
+    // at least one feature is enabled
+}
+```
+
+#### Using the OpenFeature client directly
+
+For more advanced use cases, you can use the OpenFeature client directly:
 
 ```go
 import "github.com/open-feature/go-sdk/openfeature"
 
 client := openfeature.NewDefaultClient()
 
-if client.Boolean(ctx, MyTestFlag, false, openfeature.TransactionContext(ctx)) {
+if client.Boolean(ctx, featuremgmt.FlagMyFeature, false, openfeature.TransactionContext(ctx)) {
     ...
 }
 ```
@@ -156,4 +176,73 @@ Add the feature toggle to the feature_toggle section in your custom.ini, for exa
 ```
 [feature_toggles]
 localeFormatPreference=true
+```
+
+## Migration from deprecated APIs
+
+### Backend: Migrating from FeatureToggles interface
+
+The `FeatureToggles` interface (`IsEnabled`/`IsEnabledGlobally`) is deprecated. Migrate to OpenFeature:
+
+**Before (deprecated):**
+```go
+// Don't use this pattern anymore
+if features.IsEnabled(ctx, featuremgmt.FlagMyFeature) {
+    // ...
+}
+```
+
+**After (recommended):**
+```go
+// Use the helper function
+if featuremgmt.BoolValue(ctx, featuremgmt.FlagMyFeature, false) {
+    // ...
+}
+
+// Or use OpenFeature directly
+client := openfeature.NewDefaultClient()
+if client.Boolean(ctx, featuremgmt.FlagMyFeature, false, openfeature.TransactionContext(ctx)) {
+    // ...
+}
+```
+
+### Frontend: Migrating from config.featureToggles
+
+The `config.featureToggles` pattern is deprecated. Migrate to OpenFeature React hooks:
+
+**Before (deprecated):**
+```tsx
+import { config } from '@grafana/runtime';
+
+function MyComponent() {
+  if (config.featureToggles.myFeature) {
+    return <NewUI />;
+  }
+  return <OldUI />;
+}
+```
+
+**After (recommended):**
+```tsx
+import { useBooleanFlagValue } from '@openfeature/react-sdk';
+
+function MyComponent() {
+  const myFeature = useBooleanFlagValue('myFeature', false);
+  
+  if (myFeature) {
+    return <NewUI />;
+  }
+  return <OldUI />;
+}
+```
+
+For non-React contexts:
+```ts
+import { getFeatureFlagClient } from '@grafana/runtime/internal';
+
+function doSomething() {
+  if (getFeatureFlagClient().getBooleanValue('myFeature', false)) {
+    // ...
+  }
+}
 ```
