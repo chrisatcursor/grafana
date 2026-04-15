@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/open-feature/go-sdk/openfeature"
+	"github.com/open-feature/go-sdk/openfeature/memprovider"
 	"github.com/stretchr/testify/require"
 )
 
@@ -64,5 +66,24 @@ func TestFeatureManager(t *testing.T) {
 		require.True(t, ft.IsEnabledGlobally("a"))
 		require.False(t, ft.IsEnabledGlobally("b"))
 		require.False(t, ft.IsEnabledGlobally("c"))
+	})
+}
+
+func TestFeatureManagerOpenFeatureBridge(t *testing.T) {
+	t.Run("IsEnabled evaluates via OpenFeature", func(t *testing.T) {
+		err := openfeature.SetProviderAndWait(memprovider.NewInMemoryProvider(map[string]memprovider.InMemoryFlag{
+			"bridgeFlag": {
+				State:          memprovider.Enabled,
+				DefaultVariant: "on",
+				Variants: map[string]any{
+					"on": true,
+				},
+			},
+		}))
+		require.NoError(t, err)
+
+		ft := WithManager("bridgeFlag", false)
+		require.True(t, ft.IsEnabled(context.Background(), "bridgeFlag"))
+		require.True(t, ft.IsEnabledGlobally("bridgeFlag"))
 	})
 }

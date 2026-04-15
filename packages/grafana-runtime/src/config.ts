@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+import { OpenFeature } from '@openfeature/react-sdk';
 
 import {
   AppPluginConfig as AppPluginConfigGrafanaData,
@@ -27,6 +28,36 @@ import {
   GrafanaConfig,
   CurrentUserDTO,
 } from '@grafana/data';
+
+// Must match the Grafana core OpenFeature domain in packages/grafana-runtime/src/internal/openFeature/index.ts
+const GRAFANA_CORE_OPEN_FEATURE_DOMAIN = 'internal-grafana-core';
+
+const openFeatureClient = OpenFeature.getClient(GRAFANA_CORE_OPEN_FEATURE_DOMAIN);
+
+function createOpenFeatureBackedFeatureToggles(featureToggles: FeatureToggles): FeatureToggles {
+  const staticFeatureToggles = { ...featureToggles } as Record<string, boolean | undefined>;
+
+  return new Proxy(staticFeatureToggles, {
+    get(target, prop, receiver) {
+      if (typeof prop !== 'string') {
+        return Reflect.get(target, prop, receiver);
+      }
+
+      // Keep prototype methods (for example toString) and non-toggle properties untouched.
+      if (!Object.prototype.hasOwnProperty.call(target, prop)) {
+        return Reflect.get(target, prop, receiver);
+      }
+
+      const fallback = target[prop] ?? false;
+
+      try {
+        return openFeatureClient.getBooleanValue(prop, fallback);
+      } catch {
+        return fallback;
+      }
+    },
+  }) as FeatureToggles;
+}
 
 /**
  * @deprecated Use the type from `@grafana/data`
@@ -288,6 +319,7 @@ export class GrafanaBootConfig {
 
     overrideFeatureTogglesFromUrl(this);
     overrideFeatureTogglesFromLocalStorage(this);
+    this.featureToggles = createOpenFeatureBackedFeatureToggles(this.featureToggles);
 
     this.bootData.settings.featureToggles = this.featureToggles;
 

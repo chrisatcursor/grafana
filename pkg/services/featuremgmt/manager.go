@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/grafana/grafana/pkg/infra/log"
+	"github.com/open-feature/go-sdk/openfeature"
 )
 
 var (
@@ -99,21 +100,23 @@ func (fm *FeatureManager) update() {
 
 // IsEnabled checks if a feature is enabled
 func (fm *FeatureManager) IsEnabled(ctx context.Context, flag string) bool {
-	return fm.enabled[flag]
+	return fm.evaluateFlag(ctx, flag, fm.enabled[flag])
 }
 
 // IsEnabledGlobally checks if a feature is for all tenants
 func (fm *FeatureManager) IsEnabledGlobally(flag string) bool {
-	return fm.enabled[flag]
+	return fm.evaluateFlag(context.Background(), flag, fm.enabled[flag])
 }
 
 // GetEnabled returns a map containing only the features that are enabled
 func (fm *FeatureManager) GetEnabled(ctx context.Context) map[string]bool {
 	enabled := make(map[string]bool, len(fm.enabled))
-	for key, val := range fm.enabled {
-		if val {
+	for key, val := range fm.flags {
+		fallback := fm.enabled[key]
+		if fm.evaluateFlag(ctx, key, fallback) {
 			enabled[key] = true
 		}
+		_ = val
 	}
 	return enabled
 }
@@ -125,6 +128,19 @@ func (fm *FeatureManager) GetFlags() []FeatureFlag {
 		v = append(v, *value)
 	}
 	return v
+}
+
+func (fm *FeatureManager) evaluateFlag(ctx context.Context, flag string, fallback bool) bool {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	enabled, err := openfeature.NewDefaultClient().BooleanValue(ctx, flag, fallback, openfeature.TransactionContext(ctx))
+	if err != nil {
+		return fallback
+	}
+
+	return enabled
 }
 
 // ############# Test Functions #############
