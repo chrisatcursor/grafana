@@ -36,7 +36,7 @@ describe('GrafanaBootConfig feature toggles', () => {
       getBooleanValue,
     } as unknown as ReturnType<typeof OpenFeature.getClient>);
 
-    const { config } = await import('./config');
+    const { config } = await import('../config');
 
     expect(config.featureToggles.queryServiceFromUI).toBe(false);
     expect(getBooleanValue).toHaveBeenCalledWith('queryServiceFromUI', false);
@@ -51,7 +51,7 @@ describe('GrafanaBootConfig feature toggles', () => {
       getBooleanValue,
     } as unknown as ReturnType<typeof OpenFeature.getClient>);
 
-    const { config } = await import('./config');
+    const { config } = await import('../config');
 
     expect(config.featureToggles.useSessionStorageForRedirection).toBe(true);
     expect(getBooleanValue).toHaveBeenCalledWith('useSessionStorageForRedirection', true);
