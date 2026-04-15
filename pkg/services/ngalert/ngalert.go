@@ -201,12 +201,9 @@ func (ng *AlertNG) init() error {
 	var opts []notifier.Option
 	moaLogger := log.New("ngalert.multiorg.alertmanager")
 	crypto := notifier.NewCrypto(ng.SecretsService, ng.store, moaLogger)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remotePrimary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemotePrimary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondary := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondary)
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	remoteSecondaryWithRemoteState := ng.FeatureToggles.IsEnabled(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState)
+	remotePrimary := featuremgmt.BoolValue(initCtx, featuremgmt.FlagAlertmanagerRemotePrimary, false)
+	remoteSecondary := featuremgmt.BoolValue(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondary, false)
+	remoteSecondaryWithRemoteState := featuremgmt.BoolValue(initCtx, featuremgmt.FlagAlertmanagerRemoteSecondaryWithRemoteState, false)
 	if remotePrimary || remoteSecondary || remoteSecondaryWithRemoteState {
 		m := ng.Metrics.GetRemoteAlertmanagerMetrics()
 		smtpCfg := remoteClient.SmtpConfig{
@@ -221,7 +218,7 @@ func (ng *AlertNG) init() error {
 			StaticHeaders:  ng.Cfg.Smtp.StaticHeaders,
 		}
 		runtimeConfig := remoteClient.RuntimeConfig{
-			DispatchTimer: notifier.GetDispatchTimer(ng.FeatureToggles).String(),
+			DispatchTimer: notifier.GetDispatchTimer(initCtx).String(),
 		}
 
 		cfg := remote.AlertmanagerConfig{

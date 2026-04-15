@@ -19,6 +19,7 @@ import (
 
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 	apimodels "github.com/grafana/grafana/pkg/services/ngalert/api/tooling/definitions"
 	"github.com/grafana/grafana/pkg/services/ngalert/metrics"
 	ngmodels "github.com/grafana/grafana/pkg/services/ngalert/models"
@@ -133,7 +134,7 @@ func NewAlertmanager(ctx context.Context, orgID int64, cfg *setting.Cfg, store A
 	}
 	l := log.New("ngalert.notifier")
 
-	dispatchTimer := GetDispatchTimer(featureToggles)
+	dispatchTimer := GetDispatchTimer(ctx)
 
 	var flushLogOptions *maintenanceOptions
 	if dispatchTimer == alertingNotify.DispatchTimerSync {
@@ -386,8 +387,7 @@ func (am *alertmanager) applyConfig(ctx context.Context, cfg *apimodels.Postable
 	amConfig := mergeResult.Config
 
 	// Add extra route as managed route to the configuration.
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if am.features.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies) {
+	if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAlertingMultiplePolicies, false, openfeature.TransactionContext(ctx)) {
 		managed := maps.Clone(cfg.ManagedRoutes)
 		if managed == nil {
 			managed = make(map[string]*apimodels.Route)

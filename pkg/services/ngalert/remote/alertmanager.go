@@ -36,6 +36,7 @@ import (
 	"github.com/grafana/grafana/pkg/infra/log"
 	"github.com/grafana/grafana/pkg/infra/tracing"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
+	"github.com/open-feature/go-sdk/openfeature"
 	apimodels "github.com/grafana/grafana/pkg/services/ngalert/api/tooling/definitions"
 	"github.com/grafana/grafana/pkg/services/ngalert/metrics"
 	"github.com/grafana/grafana/pkg/services/ngalert/models"
@@ -340,8 +341,7 @@ func (am *Alertmanager) buildConfiguration(ctx context.Context, raw []byte, crea
 	amConfig := mergeResult.Config
 
 	// Add managed routes and extra route as managed route to the configuration.
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if am.features.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies) {
+	if openfeature.NewDefaultClient().Boolean(ctx, featuremgmt.FlagAlertingMultiplePolicies, false, openfeature.TransactionContext(ctx)) {
 		managed := maps.Clone(c.ManagedRoutes)
 		if managed == nil {
 			managed = make(map[string]*apimodels.Route)
