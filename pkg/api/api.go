@@ -118,6 +118,7 @@ func (hs *HTTPServer) registerRoutes() {
 	r.Get("/admin/orgs", authorizeInOrg(ac.UseGlobalOrg, ac.OrgsAccessEvaluator), hs.Index)
 	r.Get("/admin/orgs/edit/:id", authorizeInOrg(ac.UseGlobalOrg, ac.OrgsAccessEvaluator), hs.Index)
 	r.Get("/admin/stats", authorize(ac.EvalPermission(ac.ActionServerStatsRead)), hs.Index)
+	r.Get("/admin/feature-flags", authorize(ac.EvalPermission(ac.ActionServerStatsRead)), hs.Index)
 	r.Get("/admin/provisioning", reqOrgAdmin, hs.Index)
 	r.Get("/admin/provisioning/*", reqOrgAdmin, hs.Index)
 

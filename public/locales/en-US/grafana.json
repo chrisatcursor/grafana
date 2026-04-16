@@ -234,6 +234,10 @@
     "settings": {
       "info-description": "These system settings are defined in grafana.ini or custom.ini (or overridden in ENV variables). To change these you currently need to restart Grafana."
     },
+    "feature-flag-dashboard": {
+      "info": "Values reflect this Grafana process. Changes to many flags require a configuration update and restart.",
+      "table-placeholder": "Feature flag details will appear here after the admin API is connected."
+    },
     "un-themed-org-row": {
       "confirmText-confirm-removal": "Confirm removal"
     },
@@ -11311,6 +11315,10 @@
     },
     "explore": {
       "title": "Explore"
+    },
+    "feature-toggles": {
+      "subtitle": "View registered feature toggles and their effective state",
+      "title": "Feature flags"
     },
     "frontend": {
       "subtitle": "Gain real user monitoring insights",
