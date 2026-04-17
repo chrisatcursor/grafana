@@ -22,7 +22,7 @@ This guide explains the **`pkg/services/auth`** Go package in the Grafana reposi
 
 Before you begin, ensure you have the following:
 
-- **Familiarity with Go** and Grafana's backend layout under `pkg/services/`.
+- **Familiarity with Go** and the layout of the Grafana backend under `pkg/services/`.
 - **A local Grafana development setup** as described in the [developer guide](https://github.com/grafana/grafana/blob/main/contribute/developer-guide.md).
 - **Basic understanding of Grafana sign-in flows** at the product level; refer to [Configure Grafana](/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/) for end-user configuration.
 
@@ -51,7 +51,7 @@ The following table summarizes the main areas under `pkg/services/auth`:
 | `external_session.go` | **`ExternalSession`** model and **`ExternalSessionStore`** for OAuth/OIDC-linked session rows. |
 | `authimpl/` | Default implementation of **`UserTokenService`** (database-backed session tokens, rotation, revocation). |
 | `idimpl/` | Default implementation of **`IDService`** (caching, signing, hooks into **authn**). |
-| `jwt/` | **`JWTService`** for verifying JWTs when JWT authentication is enabled. |
+| `jwt/` | **`JWTService`** for verifying JSON Web Tokens when JWT authentication is enabled. |
 | `gcomsso/` | Grafana.com SSO logout hook (enterprise/cloud-related flows). |
 | `authtest/` | Fakes and mocks for tests. |
 
@@ -129,7 +129,7 @@ func IssuePluginToken(ctx context.Context, id auth.IDService, req identity.Reque
 
 ## JWT verification (`jwt` package)
 
-When **[JWT authentication](/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/jwt/)** is enabled, Grafana uses **`jwt.AuthService`** (implementing **`jwt.JWTService`**) to **verify** incoming JWTs against configured keys and claim expectations. The service is constructed with **`jwt.ProvideService`**; if JWT auth is disabled in configuration, initialization is a no-op.
+When **[JWT authentication](/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/jwt/)** is enabled, Grafana uses **`jwt.AuthService`** (implementing **`jwt.JWTService`**) to **verify** incoming JSON Web Tokens against configured keys and claim expectations. The service is constructed with **`jwt.ProvideService`**; if JWT auth is disabled in configuration, initialization is a no-op.
 
 For tests, **`jwt.NewFakeJWTService`** lets you stub **`Verify`** without standing up keys.
 
