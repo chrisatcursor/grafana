@@ -234,6 +234,22 @@
     "settings": {
       "info-description": "These system settings are defined in grafana.ini or custom.ini (or overridden in ENV variables). To change these you currently need to restart Grafana."
     },
+    "feature-flag-dashboard": {
+      "attr-dev": "Dev",
+      "attr-frontend": "Frontend",
+      "attr-restart": "Restart",
+      "column-attributes": "Attributes",
+      "column-description": "Description",
+      "column-enabled": "Enabled",
+      "column-name": "Name",
+      "column-stage": "Stage",
+      "enabled-no": "No",
+      "enabled-yes": "Yes",
+      "info": "Values reflect this Grafana process. Changes to many flags require a configuration update and restart.",
+      "load-error": "Could not load feature toggles. Try again later.",
+      "loading": "Loading feature toggles…",
+      "search-placeholder": "Search by name, description, stage, or owner"
+    },
     "un-themed-org-row": {
       "confirmText-confirm-removal": "Confirm removal"
     },
@@ -11311,6 +11327,10 @@
     },
     "explore": {
       "title": "Explore"
+    },
+    "feature-toggles": {
+      "subtitle": "View registered feature toggles and their effective state",
+      "title": "Feature flags"
     },
     "frontend": {
       "subtitle": "Gain real user monitoring insights",
