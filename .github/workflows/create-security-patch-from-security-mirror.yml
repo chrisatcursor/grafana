@@ -17,8 +17,8 @@ on:
 jobs:
   trigger_downstream_create_security_patch:
     concurrency: create-patch-${{ github.ref_name }}
-    uses: grafana/security-patch-actions/.github/workflows/create-patch.yml@main # zizmor: ignore[unpinned-uses]
     if: github.repository == 'grafana/grafana-security-mirror'
+    uses: grafana/security-patch-actions/.github/workflows/create-patch.yml@main # zizmor: ignore[unpinned-uses]
     with:
       repo: "${{ github.repository }}"
       src_ref: "${{ github.head_ref }}" # this is the source branch name, Ex: "feature/newthing"
@@ -27,3 +27,11 @@ jobs:
       patch_prefix: "${{ github.event.pull_request.number }}"
       sender: "${{ github.event.pull_request.user.login }}"
     secrets: inherit # zizmor: ignore[secrets-inherit]
+
+  # GitHub reports "workflow failure" if every job is skipped; keep forks green when this file is present.
+  skip_outside_security_mirror:
+    if: github.repository != 'grafana/grafana-security-mirror'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip
+        run: echo "Skipping create-security-patch (repository is not grafana/grafana-security-mirror)"

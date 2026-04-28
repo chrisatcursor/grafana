@@ -10,6 +10,9 @@ concurrency:
   group: pr-commands-${{ github.event.number }}
 jobs:
   main:
+    # Same as pr-checks: commands auto-labels (e.g. area/backend for pkg changes) require labels
+    # that exist on grafana/grafana but not on typical forks.
+    if: github.repository == 'grafana/grafana'
     permissions:
       contents: read
       pull-requests: write
