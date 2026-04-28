@@ -372,13 +372,6 @@ export const navIndex: NavIndex = {
             url: '/admin/settings',
           },
           {
-            id: 'feature-flags',
-            text: 'Feature toggles',
-            subTitle: 'View registered feature toggles and whether they are enabled',
-            icon: 'gf-intersect',
-            url: '/admin/feature-toggles',
-          },
-          {
             id: 'upgrading',
             text: 'Stats and license',
             icon: 'unlock',
@@ -473,13 +466,6 @@ export const navIndex: NavIndex = {
         url: '/admin/settings',
       },
       {
-        id: 'feature-flags',
-        text: 'Feature toggles',
-        subTitle: 'View registered feature toggles and whether they are enabled',
-        icon: 'gf-intersect',
-        url: '/admin/feature-toggles',
-      },
-      {
         id: 'upgrading',
         text: 'Stats and license',
         icon: 'unlock',
@@ -507,13 +493,6 @@ export const navIndex: NavIndex = {
     subTitle: 'View the settings defined in your Grafana config',
     icon: 'sliders-v-alt',
     url: '/admin/settings',
-  },
-  'feature-flags': {
-    id: 'feature-flags',
-    text: 'Feature toggles',
-    subTitle: 'View registered feature toggles and whether they are enabled',
-    icon: 'gf-intersect',
-    url: '/admin/feature-toggles',
   },
   upgrading: {
     id: 'upgrading',
