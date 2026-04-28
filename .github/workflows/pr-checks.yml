@@ -28,7 +28,9 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    # pr-checks applies triage labels (e.g. area/backend) that exist on grafana/grafana but are
+    # typically not created on personal forks; skip to avoid "label is not defined" failures.
+    if: github.event.pull_request.draft == false && github.repository == 'grafana/grafana'
     steps:
       - name: Checkout Actions
         uses: actions/checkout@v5
