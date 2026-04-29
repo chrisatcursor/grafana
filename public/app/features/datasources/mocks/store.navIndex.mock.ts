@@ -1924,6 +1924,12 @@ export const navIndex: NavIndex = {
         url: '/admin/settings',
       },
       {
+        id: 'feature-flags',
+        text: 'Feature toggles',
+        icon: 'gf-intersect',
+        url: '/admin/feature-toggles',
+      },
+      {
         id: 'admin-plugins',
         text: 'Plugins',
         icon: 'plug',
@@ -1968,6 +1974,12 @@ export const navIndex: NavIndex = {
           text: 'Settings',
           icon: 'sliders-v-alt',
           url: '/admin/settings',
+        },
+        {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
         },
         {
           id: 'admin-plugins',
@@ -2017,6 +2029,12 @@ export const navIndex: NavIndex = {
           url: '/admin/settings',
         },
         {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
+        },
+        {
           id: 'admin-plugins',
           text: 'Plugins',
           icon: 'plug',
@@ -2062,6 +2080,65 @@ export const navIndex: NavIndex = {
           text: 'Settings',
           icon: 'sliders-v-alt',
           url: '/admin/settings',
+        },
+        {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
+        },
+        {
+          id: 'admin-plugins',
+          text: 'Plugins',
+          icon: 'plug',
+          url: '/admin/plugins',
+        },
+        {
+          id: 'upgrading',
+          text: 'Stats and license',
+          icon: 'unlock',
+          url: '/admin/upgrading',
+        },
+      ],
+    },
+  },
+  'feature-flags': {
+    id: 'feature-flags',
+    text: 'Feature toggles',
+    icon: 'gf-intersect',
+    url: '/admin/feature-toggles',
+    parentItem: {
+      id: 'admin',
+      text: 'Server Admin',
+      subTitle: 'Manage all users and orgs',
+      icon: 'shield',
+      url: '/admin/users',
+      sortWeight: -1200,
+      hideFromTabs: true,
+      children: [
+        {
+          id: 'global-users',
+          text: 'Users',
+          icon: 'user',
+          url: '/admin/users',
+        },
+        {
+          id: 'global-orgs',
+          text: 'Orgs',
+          icon: 'building',
+          url: '/admin/orgs',
+        },
+        {
+          id: 'server-settings',
+          text: 'Settings',
+          icon: 'sliders-v-alt',
+          url: '/admin/settings',
+        },
+        {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
         },
         {
           id: 'admin-plugins',
@@ -2111,6 +2188,12 @@ export const navIndex: NavIndex = {
           url: '/admin/settings',
         },
         {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
+        },
+        {
           id: 'admin-plugins',
           text: 'Plugins',
           icon: 'plug',
@@ -2156,6 +2239,12 @@ export const navIndex: NavIndex = {
           text: 'Settings',
           icon: 'sliders-v-alt',
           url: '/admin/settings',
+        },
+        {
+          id: 'feature-flags',
+          text: 'Feature toggles',
+          icon: 'gf-intersect',
+          url: '/admin/feature-toggles',
         },
         {
           id: 'admin-plugins',
