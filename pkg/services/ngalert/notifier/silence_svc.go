@@ -166,7 +166,11 @@ func (s *SilenceService) WithAccessControlMetadata(ctx context.Context, user ide
 	}
 
 	if len(permissions) != len(silences) {
-		s.log.Warn("failed to get metadata for all silences")
+		s.log.Warn(
+			"Did not receive access-control metadata for every silence; some silences will be returned without permission information",
+			"requested", len(silences),
+			"received", len(permissions),
+		)
 	}
 
 	for _, silence := range silencesWithMetadata {

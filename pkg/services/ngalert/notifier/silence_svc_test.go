@@ -14,6 +14,7 @@ import (
 	ngfakes "github.com/grafana/grafana/pkg/services/ngalert/tests/fakes"
 
 	"github.com/grafana/grafana/pkg/apimachinery/identity"
+	"github.com/grafana/grafana/pkg/infra/log"
 	ac "github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/ngalert/accesscontrol/fakes"
 	"github.com/grafana/grafana/pkg/services/ngalert/models"
@@ -53,6 +54,32 @@ func TestWithAccessControlMetadata(t *testing.T) {
 		for _, silence := range silencesWithMetadata {
 			assert.Equal(t, response[silence.Silence], *silence.Metadata.Permissions)
 		}
+	})
+
+	t.Run("Partial metadata response only attaches permissions to silences present in the response", func(t *testing.T) {
+		freshSilences := []*models.SilenceWithMetadata{
+			{Silence: util.Pointer(models.SilenceGen()())},
+			{Silence: util.Pointer(models.SilenceGen()())},
+			{Silence: util.Pointer(models.SilenceGen()())},
+		}
+		authz := fakes.FakeSilenceService{}
+		response := map[*models.Silence]models.SilencePermissionSet{
+			freshSilences[0].Silence: randPerm(),
+			freshSilences[2].Silence: randPerm(),
+		}
+		authz.SilenceAccessFunc = func(ctx context.Context, user identity.Requester, silences []*models.Silence) (map[*models.Silence]models.SilencePermissionSet, error) {
+			return response, nil
+		}
+		svc := SilenceService{
+			authz: &authz,
+			log:   log.NewNopLogger(),
+		}
+
+		require.NoError(t, svc.WithAccessControlMetadata(context.Background(), user, freshSilences...))
+
+		assert.Equal(t, response[freshSilences[0].Silence], *freshSilences[0].Metadata.Permissions)
+		assert.Equal(t, response[freshSilences[2].Silence], *freshSilences[2].Metadata.Permissions)
+		assert.NotNil(t, freshSilences[1].Metadata.Permissions, "silence missing from the authz response should still have permissions populated as a safe default")
 	})
 }
 
