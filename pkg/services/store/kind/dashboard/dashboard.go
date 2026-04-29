@@ -85,13 +85,14 @@ func (d *datasourceVariableLookup) add(templateVariable templateVariable) {
 }
 
 func unique(refs []DataSourceRef) []DataSourceRef {
-	var uniqueRefs []DataSourceRef
-	uidPresence := make(map[string]bool)
+	seen := make(map[string]struct{}, len(refs))
+	uniqueRefs := make([]DataSourceRef, 0, len(refs))
 	for _, ref := range refs {
-		if !uidPresence[ref.UID] {
-			uidPresence[ref.UID] = true
-			uniqueRefs = append(uniqueRefs, ref)
+		if _, ok := seen[ref.UID]; ok {
+			continue
 		}
+		seen[ref.UID] = struct{}{}
+		uniqueRefs = append(uniqueRefs, ref)
 	}
 	return uniqueRefs
 }
@@ -405,31 +406,27 @@ func checkAndSkipUnexpectedElement(iter *jsoniter.Iterator, jsonPath string, log
 	return false
 }
 
-func valueTypesToString(allowedValues ...jsoniter.ValueType) string {
-	expected := strings.Builder{}
-	for ix, a := range allowedValues {
-		if ix > 0 {
-			expected.WriteString(", ")
-		}
+// valueTypeNames maps jsoniter value types to the names used in error logs.
+// Anything not present is rendered as "unknown: <int>" by valueTypesToString.
+var valueTypeNames = map[jsoniter.ValueType]string{
+	jsoniter.NilValue:    "null",
+	jsoniter.StringValue: "string",
+	jsoniter.NumberValue: "number",
+	jsoniter.BoolValue:   "bool",
+	jsoniter.ArrayValue:  "array",
+	jsoniter.ObjectValue: "object",
+}
 
-		switch a {
-		case jsoniter.NilValue:
-			expected.WriteString("null")
-		case jsoniter.StringValue:
-			expected.WriteString("string")
-		case jsoniter.NumberValue:
-			expected.WriteString("number")
-		case jsoniter.BoolValue:
-			expected.WriteString("bool")
-		case jsoniter.ArrayValue:
-			expected.WriteString("array")
-		case jsoniter.ObjectValue:
-			expected.WriteString("object")
-		default:
-			expected.WriteString(fmt.Sprintf("unknown: %d", a))
+func valueTypesToString(allowedValues ...jsoniter.ValueType) string {
+	names := make([]string, len(allowedValues))
+	for i, a := range allowedValues {
+		if name, ok := valueTypeNames[a]; ok {
+			names[i] = name
+			continue
 		}
+		names[i] = fmt.Sprintf("unknown: %d", a)
 	}
-	return expected.String()
+	return strings.Join(names, ", ")
 }
 
 func panelRequiresDatasource(panel PanelSummaryInfo) bool {
