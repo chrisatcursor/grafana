@@ -133,3 +133,24 @@ Build a specific plugin: `yarn workspace @grafana-plugins/<name> dev`
 - **Config**: Defaults in `conf/defaults.ini`, overrides in `conf/custom.ini`.
 - **Database migrations**: Live in `pkg/services/sqlstore/migrations/`. Test with `make devenv sources=postgres_tests,mysql_tests` then `make test-go-integration-postgres`.
 - **CI sharding**: Backend tests use `SHARD`/`SHARDS` env vars for parallelization.
+
+## Cursor Cloud specific instructions
+
+### Environment
+
+- **Node.js**: v24 (per `.nvmrc`). Installed via nvm; `nvm use` activates it. Corepack is enabled to provide Yarn 4.11.0.
+- **Go**: 1.26.0 (per `go.mod`). Pre-installed in the VM.
+- **Yarn**: 4.11.0 via corepack. Uses `nodeLinker: node-modules` (see `.yarnrc.yml`). Scripts are disabled (`enableScripts: false`).
+
+### Running services
+
+- **Backend**: `make run` starts the Go server via `air` (hot-reload) on `localhost:3000`. Default login is `admin`/`admin`. Uses embedded SQLite3 — no external DB needed.
+- **Frontend**: `yarn start` runs webpack in watch mode, compiling assets to `public/build/`. The Go backend serves these files. It is not a separate HTTP server. Initial build takes ~2 minutes.
+- Run both processes in parallel for full development mode.
+
+### Gotchas
+
+- `make lint-go` may time out in constrained VM environments due to the size of the codebase. For targeted linting, run `golangci-lint run --config .golangci.yml ./pkg/services/yourpackage/...` directly.
+- `yarn install --immutable` will warn about disabled build scripts (e.g., `tree-sitter`). These warnings are safe to ignore.
+- The first `make run` invocation downloads and compiles the `air` tool, which may make it appear to exit quickly. The actual Grafana server starts shortly after.
+- If frontend `yarn start` shows type-checking errors after pulling updates, delete `tsconfig.tsbuildinfo` and retry.
