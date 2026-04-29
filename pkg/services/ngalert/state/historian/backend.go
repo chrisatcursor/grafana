@@ -22,18 +22,14 @@ const (
 )
 
 func ParseBackendType(s string) (BackendType, error) {
-	norm := strings.ToLower(strings.TrimSpace(s))
-
-	types := map[BackendType]struct{}{
-		BackendTypeAnnotations: {},
-		BackendTypeLoki:        {},
-		BackendTypeMultiple:    {},
-		BackendTypePrometheus:  {},
-		BackendTypeNoop:        {},
-	}
-	p := BackendType(norm)
-	if _, ok := types[p]; !ok {
+	switch p := BackendType(strings.ToLower(strings.TrimSpace(s))); p {
+	case BackendTypeAnnotations,
+		BackendTypeLoki,
+		BackendTypeMultiple,
+		BackendTypePrometheus,
+		BackendTypeNoop:
+		return p, nil
+	default:
 		return "", fmt.Errorf("unrecognized state history backend: %s", p)
 	}
-	return p, nil
 }
