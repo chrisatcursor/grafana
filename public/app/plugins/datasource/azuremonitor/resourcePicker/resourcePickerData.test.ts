@@ -158,7 +158,7 @@ describe('AzureMonitor resourcePickerData', () => {
       });
     });
 
-    it('throws an error if it does not recieve data from arg', async () => {
+    it('throws an error if it does not receive data from arg', async () => {
       const mockResponse = { data: [] };
       const { resourcePickerData } = createResourcePickerData([mockResponse]);
       try {
