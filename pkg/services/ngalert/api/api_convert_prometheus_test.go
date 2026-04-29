@@ -2493,6 +2493,65 @@ func TestFormatMergeMatchers(t *testing.T) {
 	})
 }
 
+func TestTrimmedHeader(t *testing.T) {
+	const headerName = "X-Test-Header"
+
+	testCases := []struct {
+		name        string
+		headerValue string
+		setHeader   bool
+		expected    string
+	}{
+		{
+			name:        "value without whitespace returned as-is",
+			headerValue: "abc-123",
+			setHeader:   true,
+			expected:    "abc-123",
+		},
+		{
+			name:        "leading and trailing whitespace is trimmed",
+			headerValue: "   abc-123\t\n",
+			setHeader:   true,
+			expected:    "abc-123",
+		},
+		{
+			name:        "internal whitespace is preserved",
+			headerValue: "  hello world  ",
+			setHeader:   true,
+			expected:    "hello world",
+		},
+		{
+			name:        "whitespace-only value collapses to empty string",
+			headerValue: " \t \n",
+			setHeader:   true,
+			expected:    "",
+		},
+		{
+			name:        "explicitly empty header returns empty string",
+			headerValue: "",
+			setHeader:   true,
+			expected:    "",
+		},
+		{
+			name:      "missing header returns empty string",
+			setHeader: false,
+			expected:  "",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			rc := createRequestCtx()
+			rc.Req.Header.Del(headerName)
+			if tc.setHeader {
+				rc.Req.Header.Set(headerName, tc.headerValue)
+			}
+
+			require.Equal(t, tc.expected, trimmedHeader(rc, headerName))
+		})
+	}
+}
+
 func TestRouteConvertPrometheusDeleteAlertmanagerConfig(t *testing.T) {
 	const identifier = "test-config"
 	const orgID = int64(1)
