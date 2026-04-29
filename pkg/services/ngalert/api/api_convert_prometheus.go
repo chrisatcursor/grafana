@@ -397,7 +397,7 @@ func (srv *ConvertPrometheusSrv) RouteConvertPrometheusPostRuleGroups(c *context
 	// By default the target datasource is the same as the query datasource,
 	// but if the header "X-Grafana-Alerting-Target-Datasource-UID" is present, we use that instead.
 	tds := ds
-	if uid := strings.TrimSpace(c.Req.Header.Get(targetDatasourceUIDHeader)); uid != "" {
+	if uid := trimmedHeader(c, targetDatasourceUIDHeader); uid != "" {
 		tds, err = srv.datasourceCache.GetDatasourceByUID(c.Req.Context(), uid, c.SignedInUser, c.SkipDSCache)
 		if err != nil {
 			logger.Error("Failed to get target datasource for recording rules", "datasource_uid", uid, "error", err)
@@ -817,8 +817,7 @@ func trimmedHeader(c *contextmodel.ReqContext, name string) string {
 // getWorkingFolderUID returns the value of the folderUIDHeader
 // if present. Otherwise, it returns the UID of the root folder.
 func getWorkingFolderUID(c *contextmodel.ReqContext) string {
-	folderUID := strings.TrimSpace(c.Req.Header.Get(folderUIDHeader))
-	if folderUID != "" {
+	if folderUID := trimmedHeader(c, folderUIDHeader); folderUID != "" {
 		return folderUID
 	}
 	return folder.RootFolderUID
