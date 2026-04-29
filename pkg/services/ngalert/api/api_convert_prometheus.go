@@ -805,6 +805,15 @@ func successfulResponse() response.Response {
 	})
 }
 
+// trimmedHeader returns the value of the named header with leading and
+// trailing whitespace removed. It is a small wrapper around
+// c.Req.Header.Get + strings.TrimSpace that exists to keep the many
+// header-reading helpers in this package consistent and to give us a
+// single hook for future logging or metrics on header reads.
+func trimmedHeader(c *contextmodel.ReqContext, name string) string {
+	return strings.TrimSpace(c.Req.Header.Get(name))
+}
+
 // getWorkingFolderUID returns the value of the folderUIDHeader
 // if present. Otherwise, it returns the UID of the root folder.
 func getWorkingFolderUID(c *contextmodel.ReqContext) string {
