@@ -88,7 +88,6 @@ func (hs *HTTPServer) setIndexViewData(c *contextmodel.ReqContext) (*dtos.IndexV
 	}
 
 	var regionalFormat string
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), hs.Features, featuremgmt.FlagLocaleFormatPreference) {
 		regionalFormat = "en"
 

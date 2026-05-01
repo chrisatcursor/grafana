@@ -54,7 +54,6 @@ func RequestMetrics(features featuremgmt.FeatureToggles, cfg *setting.Cfg, promR
 		Buckets:   sizeDefBuckets, // 100B ... ~1MB
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	// the recommended default value from the prom_client
 	// https://github.com/prometheus/client_golang/blob/main/prometheus/histogram.go#L411
 	// Giving this variable a value means the client will expose a native
