@@ -592,8 +592,7 @@ func (srv *ConvertPrometheusSrv) convertToGrafanaRuleGroup(
 }
 
 func (srv *ConvertPrometheusSrv) RouteConvertPrometheusPostAlertmanagerConfig(c *contextmodel.ReqContext, amCfg apimodels.AlertmanagerUserConfig) response.Response {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !srv.featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(srv.featureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI) {
 		return response.Error(http.StatusNotImplemented, "Not Implemented", nil)
 	}
 
@@ -666,8 +665,7 @@ func (srv *ConvertPrometheusSrv) RouteConvertPrometheusPostAlertmanagerConfig(c 
 }
 
 func (srv *ConvertPrometheusSrv) RouteConvertPrometheusGetAlertmanagerConfig(c *contextmodel.ReqContext) response.Response {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !srv.featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(srv.featureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI) {
 		return response.Error(http.StatusNotImplemented, "Not Implemented", nil)
 	}
 
@@ -716,8 +714,7 @@ func (srv *ConvertPrometheusSrv) RouteConvertPrometheusGetAlertmanagerConfig(c *
 }
 
 func (srv *ConvertPrometheusSrv) RouteConvertPrometheusDeleteAlertmanagerConfig(c *contextmodel.ReqContext) response.Response {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !srv.featureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(srv.featureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI) {
 		return response.Error(http.StatusNotImplemented, "Not Implemented", nil)
 	}
 

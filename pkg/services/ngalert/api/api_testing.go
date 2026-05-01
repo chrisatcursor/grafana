@@ -78,8 +78,7 @@ func (srv TestingApiSrv) RouteTestGrafanaRuleConfig(c *contextmodel.ReqContext, 
 		return response.ErrOrFallback(http.StatusInternalServerError, "failed to authorize access to rule group", err)
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.featureManager.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingQueryOptimization) {
+	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), srv.featureManager, featuremgmt.FlagAlertingQueryOptimization) {
 		if _, err := store.OptimizeAlertQueries(rule.Data); err != nil {
 			return ErrResp(http.StatusInternalServerError, err, "Failed to optimize query")
 		}
@@ -178,8 +177,7 @@ func (srv TestingApiSrv) RouteEvalQueries(c *contextmodel.ReqContext, cmd apimod
 	}
 
 	var optimizations []store.Optimization
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if srv.featureManager.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingQueryOptimization) {
+	if featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), srv.featureManager, featuremgmt.FlagAlertingQueryOptimization) {
 		var err error
 		optimizations, err = store.OptimizeAlertQueries(cond.Data)
 		if err != nil {
@@ -224,8 +222,7 @@ func addOptimizedQueryWarnings(evalResults *backend.QueryDataResponse, optimizat
 }
 
 func (srv TestingApiSrv) BacktestAlertRule(c *contextmodel.ReqContext, cmd apimodels.BacktestConfig) response.Response {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !srv.featureManager.IsEnabled(c.Req.Context(), featuremgmt.FlagAlertingBacktesting) {
+	if !featuremgmt.OpenFeatureIsEnabled(c.Req.Context(), srv.featureManager, featuremgmt.FlagAlertingBacktesting) {
 		return ErrResp(http.StatusNotFound, nil, "Backgtesting API is not enabled")
 	}
 

@@ -442,14 +442,12 @@ func (nps *Service) managedRoutesEnabled() bool {
 	if nps.FeatureToggles == nil {
 		return false
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies)
+	return featuremgmt.OpenFeatureIsEnabledGlobally(nps.FeatureToggles, featuremgmt.FlagAlertingMultiplePolicies)
 }
 
 func (nps *Service) includeImported() bool {
 	if nps.FeatureToggles == nil {
 		return false
 	}
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return nps.FeatureToggles.IsEnabledGlobally(featuremgmt.FlagAlertingImportAlertmanagerAPI)
+	return featuremgmt.OpenFeatureIsEnabledGlobally(nps.FeatureToggles, featuremgmt.FlagAlertingImportAlertmanagerAPI)
 }

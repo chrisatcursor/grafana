@@ -340,8 +340,7 @@ func (am *Alertmanager) buildConfiguration(ctx context.Context, raw []byte, crea
 	amConfig := mergeResult.Config
 
 	// Add managed routes and extra route as managed route to the configuration.
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if am.features.IsEnabledGlobally(featuremgmt.FlagAlertingMultiplePolicies) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(am.features, featuremgmt.FlagAlertingMultiplePolicies) {
 		managed := maps.Clone(c.ManagedRoutes)
 		if managed == nil {
 			managed = make(map[string]*apimodels.Route)
