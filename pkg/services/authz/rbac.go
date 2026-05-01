@@ -55,29 +55,25 @@ func ProvideAuthZClient(
 	zanzanaClient zanzana.Client,
 	restConfig apiserver.RestConfigProvider,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	zanzanaEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana)
 
 	authCfg, err := readAuthzClientSettings(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) && authCfg.mode == clientModeCloud {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAuthZGRPCServer) && authCfg.mode == clientModeCloud {
 		return nil, errors.New("authZGRPCServer feature toggle is required for cloud and grpc mode")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzanaNoLegacyClient) {
 		return zanzanaClient, nil
 	}
 
 	// Provisioning uses mode 4 (read+write only to unified storage)
 	// For G12 launch, we can disable caching for this and find a more scalable solution soon
 	// most likely this would involve passing the RV (timestamp!) in each check method
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagProvisioning) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagProvisioning) {
 		authCfg.cacheTTL = 0
 	}
 
@@ -160,21 +156,18 @@ func ProvideAuthZClient(
 func ProvideStandaloneAuthZClient(
 	cfg *setting.Cfg, features featuremgmt.FeatureToggles, tracer trace.Tracer, reg prometheus.Registerer,
 ) (authlib.AccessClient, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !features.IsEnabledGlobally(featuremgmt.FlagAuthZGRPCServer) {
+	if !featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAuthZGRPCServer) {
 		return nil, nil
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	zanzanaEnabled := features.IsEnabledGlobally(featuremgmt.FlagZanzana)
+	zanzanaEnabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzana)
 
 	zanzanaClient, err := ProvideStandaloneZanzanaClient(cfg, features, reg)
 	if err != nil {
 		return nil, err
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if zanzanaEnabled && features.IsEnabledGlobally(featuremgmt.FlagZanzanaNoLegacyClient) {
+	if zanzanaEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagZanzanaNoLegacyClient) {
 		return zanzanaClient, nil
 	}
 

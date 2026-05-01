@@ -165,8 +165,7 @@ func (s *Service) getUserPermissions(ctx context.Context, user identity.Requeste
 	// permission assigned to user will be returned, only for org role.
 	userID, _ := identity.UserIdentifier(user.GetID())
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	excludeRedundant := s.features.IsEnabledGlobally(featuremgmt.FlagExcludeRedundantManagedPermissions)
+	excludeRedundant := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagExcludeRedundantManagedPermissions)
 
 	dbPermissions, err := s.store.GetUserPermissions(ctx, accesscontrol.GetUserPermissionsQuery{
 		OrgID:                              user.GetOrgID(),
@@ -195,8 +194,7 @@ func (s *Service) getBasicRolePermissions(ctx context.Context, role string, orgI
 	}
 	s.rolesMu.RUnlock()
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	excludeRedundant := s.features.IsEnabledGlobally(featuremgmt.FlagExcludeRedundantManagedPermissions)
+	excludeRedundant := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagExcludeRedundantManagedPermissions)
 
 	// Fetch managed role permissions assigned to basic roles
 	dbPermissions, err := s.store.GetBasicRolesPermissions(ctx, accesscontrol.GetUserPermissionsQuery{
@@ -214,8 +212,7 @@ func (s *Service) getTeamsPermissions(ctx context.Context, teamIDs []int64, orgI
 	ctx, span := tracer.Start(ctx, "accesscontrol.acimpl.getTeamsPermissions")
 	defer span.End()
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	excludeRedundant := s.features.IsEnabledGlobally(featuremgmt.FlagExcludeRedundantManagedPermissions)
+	excludeRedundant := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagExcludeRedundantManagedPermissions)
 
 	teamPermissions, err := s.store.GetTeamsPermissions(ctx, accesscontrol.GetUserPermissionsQuery{
 		TeamIDs:                            teamIDs,
@@ -245,8 +242,7 @@ func (s *Service) getUserDirectPermissions(ctx context.Context, user identity.Re
 		}
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	excludeRedundant := s.features.IsEnabledGlobally(featuremgmt.FlagExcludeRedundantManagedPermissions)
+	excludeRedundant := featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagExcludeRedundantManagedPermissions)
 
 	permissions, err := s.store.GetUserPermissions(ctx, accesscontrol.GetUserPermissionsQuery{
 		OrgID:                              user.GetOrgID(),
@@ -817,8 +813,7 @@ func (s *Service) SaveExternalServiceRole(ctx context.Context, cmd accesscontrol
 	ctx, span := tracer.Start(ctx, "accesscontrol.acimpl.SaveExternalServiceRole")
 	defer span.End()
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.cfg.ManagedServiceAccountsEnabled || !s.features.IsEnabled(ctx, featuremgmt.FlagExternalServiceAccounts) {
+	if !s.cfg.ManagedServiceAccountsEnabled || !featuremgmt.OpenFeatureIsEnabled(ctx, s.features, featuremgmt.FlagExternalServiceAccounts) {
 		s.log.Debug("Registering an external service role is behind a feature flag, enable it to use this feature.")
 		return nil
 	}
@@ -834,8 +829,7 @@ func (s *Service) DeleteExternalServiceRole(ctx context.Context, externalService
 	ctx, span := tracer.Start(ctx, "accesscontrol.acimpl.DeleteExternalServiceRole")
 	defer span.End()
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if !s.cfg.ManagedServiceAccountsEnabled || !s.features.IsEnabled(ctx, featuremgmt.FlagExternalServiceAccounts) {
+	if !s.cfg.ManagedServiceAccountsEnabled || !featuremgmt.OpenFeatureIsEnabled(ctx, s.features, featuremgmt.FlagExternalServiceAccounts) {
 		s.log.Debug("Deleting an external service role is behind a feature flag, enable it to use this feature.")
 		return nil
 	}
