@@ -242,7 +242,7 @@ func NewAPIService(ac authlib.AccessClient, features featuremgmt.FeatureToggles,
 }
 
 func (b *DashboardsAPIBuilder) GetGroupVersions() []schema.GroupVersion {
-	if featuremgmt.AnyEnabled(b.features, featuremgmt.FlagDashboardNewLayouts) {
+	if featuremgmt.OpenFeatureAnyEnabledGlobally(b.features, featuremgmt.FlagDashboardNewLayouts) {
 		// If dashboards v2 is enabled, we want to use v2beta1 as the default API version.
 		return []schema.GroupVersion{
 			dashv2beta1.DashboardResourceInfo.GroupVersion(),
@@ -611,8 +611,7 @@ func (b *DashboardsAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *genericapiserver
 
 	// Split dashboards when they are large
 	var largeObjects apistore.LargeObjectSupport
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if b.features.IsEnabledGlobally(featuremgmt.FlagUnifiedStorageBigObjectsSupport) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagUnifiedStorageBigObjectsSupport) {
 		largeObjects = NewDashboardLargeObjectSupport(opts.Scheme, opts.StorageOpts.BlobThresholdBytes)
 		storageOpts.LargeObjectSupport = largeObjects
 	}
@@ -768,8 +767,7 @@ func (b *DashboardsAPIBuilder) storageForVersion(
 	}
 
 	// Expose read library panels
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if libraryPanels != nil && b.features.IsEnabledGlobally(featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
+	if libraryPanels != nil && featuremgmt.OpenFeatureIsEnabledGlobally(b.features, featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		legacyLibraryStore := &LibraryPanelStore{
 			Access:       b.legacy.Access,
 			ResourceInfo: *libraryPanels,

@@ -47,8 +47,7 @@ func ProvideAppInstaller(
 ) (*AppInstaller, error) {
 	metrics.MustRegister(registerer)
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagPluginStoreServiceLoading) {
 		if err := registerAccessControlRoles(accessControlService); err != nil {
 			return nil, fmt.Errorf("registering access control roles: %w", err)
 		}
