@@ -70,8 +70,7 @@ func handleDataplaneFrames(ctx context.Context, tracer tracing.Tracer, features 
 	case data.KindTimeSeries:
 		return handleDataplaneTimeseries(frames)
 	case data.KindNumeric:
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		sortMetrics := !features.IsEnabled(ctx, featuremgmt.FlagDisableNumericMetricsSortingInExpressions)
+		sortMetrics := !featuremgmt.OpenFeatureIsEnabled(ctx, features, featuremgmt.FlagDisableNumericMetricsSortingInExpressions)
 		return handleDataplaneNumeric(frames, sortMetrics)
 	default:
 		return mathexp.Results{}, fmt.Errorf("kind %s (type %s) not supported by server side expressions", t.Kind(), t)
