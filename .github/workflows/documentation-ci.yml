@@ -8,7 +8,29 @@ on:
 permissions: {}
 
 jobs:
+  # The Vale action applies the `type/docs` label to documentation PRs. Forks (and some
+  # fresh repos) often do not copy Grafana's default labels, which makes `gh pr edit
+  # --add-label type/docs` fail with "label ... is not defined". Create it once if missing.
+  ensure-docs-label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Ensure type/docs label exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REPO="${{ github.repository }}"
+          if gh label list -R "$REPO" --json name --jq '.[].name' | grep -qx 'type/docs'; then
+            echo "Label type/docs already exists."
+          else
+            echo "Creating label type/docs for documentation pull requests."
+            gh label create -R "$REPO" 'type/docs' --color '5319E7' --description 'Documentation changes'
+          fi
+
   vale:
+    needs: ensure-docs-label
     runs-on: ubuntu-latest
     permissions:
       contents: read

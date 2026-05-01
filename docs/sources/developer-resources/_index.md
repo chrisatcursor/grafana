@@ -37,6 +37,12 @@ Learn about the following Grafana APIs:
 - [Synthetic Monitoring API](./api-reference/synthetic-monitoring-api/)
 - [Tracing API](./api-reference/tracing-api/)
 
+## Backend packages
+
+If you contribute to the Grafana Go backend, refer to the following guides:
+
+- [Auth module developer guide](./auth-module/) — session tokens, identity tokens, and JWT helpers in `pkg/services/auth`.
+
 ## Other resources
 
 You might also find the following resources to be helpful:
