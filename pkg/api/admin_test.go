@@ -1,18 +1,22 @@
 package api
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/grafana/grafana/pkg/infra/db/dbtest"
 	"github.com/grafana/grafana/pkg/services/accesscontrol"
 	"github.com/grafana/grafana/pkg/services/anonymous/anontest"
 	"github.com/grafana/grafana/pkg/services/stats"
 	"github.com/grafana/grafana/pkg/services/stats/statstest"
+	"github.com/grafana/grafana/pkg/storage/unified/migrations"
+	"github.com/grafana/grafana/pkg/storage/unified/migrations/contract"
 	"github.com/grafana/grafana/pkg/setting"
 	"github.com/grafana/grafana/pkg/web/webtest"
 )
@@ -130,6 +134,26 @@ func TestAdmin_AccessControl(t *testing.T) {
 		},
 		{
 			expectedCode: http.StatusOK,
+			desc:         "AdminGetUnifiedStorageMigrationStatus should return 200 for user with server.stats:read",
+			url:          "/api/admin/unified-storage/migration-status",
+			permissions: []accesscontrol.Permission{
+				{
+					Action: accesscontrol.ActionServerStatsRead,
+				},
+			},
+		},
+		{
+			expectedCode: http.StatusForbidden,
+			desc:         "AdminGetUnifiedStorageMigrationStatus should return 403 without server.stats:read",
+			url:          "/api/admin/unified-storage/migration-status",
+			permissions: []accesscontrol.Permission{
+				{
+					Action: "wrong",
+				},
+			},
+		},
+		{
+			expectedCode: http.StatusOK,
 			desc:         "AdminGetSettings should return 200 for user with correct permissions",
 			url:          "/api/admin/settings",
 			permissions: []accesscontrol.Permission{
@@ -162,6 +186,8 @@ func TestAdmin_AccessControl(t *testing.T) {
 				hs.SettingsProvider = &setting.OSSImpl{Cfg: hs.Cfg}
 				hs.statsService = fakeStatsService
 				hs.anonService = fakeAnonService
+				hs.migrationStatusReader = noopMigrationStatusReader{}
+				hs.migrationRegistry = testMigrationRegistry(t)
 			})
 
 			res, err := server.Send(webtest.RequestWithSignedInUser(server.NewGetRequest(tt.url), userWithPermissions(1, tt.permissions)))
@@ -170,4 +196,28 @@ func TestAdmin_AccessControl(t *testing.T) {
 			require.NoError(t, res.Body.Close())
 		})
 	}
+}
+
+type noopMigrationStatusReader struct{}
+
+func (noopMigrationStatusReader) GetStorageMode(_ context.Context, _ schema.GroupResource) (contract.StorageMode, error) {
+	return contract.StorageModeLegacy, nil
+}
+
+func (noopMigrationStatusReader) GetMigrationStorageDetails(_ context.Context, _ schema.GroupResource) (contract.MigrationStorageDetails, error) {
+	return contract.MigrationStorageDetails{Mode: contract.StorageModeLegacy}, nil
+}
+
+func testMigrationRegistry(t *testing.T) *migrations.MigrationRegistry {
+	t.Helper()
+	reg := migrations.NewMigrationRegistry()
+	reg.Register(migrations.MigrationDefinition{
+		ID:          "test-def",
+		MigrationID: "test-migration-id",
+		Resources: []migrations.ResourceInfo{
+			{GroupResource: schema.GroupResource{Group: "playlist.grafana.app", Resource: "playlists"}},
+		},
+		Migrators: map[schema.GroupResource]migrations.MigratorFunc{},
+	})
+	return reg
 }

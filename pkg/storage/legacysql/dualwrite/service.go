@@ -46,6 +46,14 @@ func (f *fakeMigrationStatusReader) GetStorageMode(_ context.Context, gr schema.
 	return mode, nil
 }
 
+func (f *fakeMigrationStatusReader) GetMigrationStorageDetails(ctx context.Context, gr schema.GroupResource) (unifiedmigrations.MigrationStorageDetails, error) {
+	mode, err := f.GetStorageMode(ctx, gr)
+	if err != nil {
+		return unifiedmigrations.MigrationStorageDetails{}, err
+	}
+	return unifiedmigrations.MigrationStorageDetails{Mode: mode}, nil
+}
+
 // NewFakeMigrationStatusReader creates a MigrationStatusReader for tests.
 // Accepts pairs of (GroupResource string, StorageMode). Resources not listed default to Legacy.
 // Example: NewFakeMigrationStatusReader("dashboards.dashboard.grafana.app", contract.StorageModeUnified)
