@@ -862,8 +862,7 @@ func (s *Service) getDescendantCountsFromApiServer(ctx context.Context, q *folde
 		return nil, folder.ErrBadRequest.Errorf("invalid orgID")
 	}
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if s.features.IsEnabledGlobally(featuremgmt.FlagK8SFolderCounts) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(s.features, featuremgmt.FlagK8SFolderCounts) {
 		return s.unifiedStore.(*FolderUnifiedStoreImpl).CountFolderContent(ctx, q.OrgID, *q.UID)
 	}
 
