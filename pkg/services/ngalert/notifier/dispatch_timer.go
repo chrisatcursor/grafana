@@ -7,8 +7,7 @@ import (
 
 // GetDispatchTimer returns the appropriate dispatch timer based on feature toggles.
 func GetDispatchTimer(features featuremgmt.FeatureToggles) (dt alertingNotify.DispatchTimer) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	enabled := features.IsEnabledGlobally(featuremgmt.FlagAlertingSyncDispatchTimer)
+	enabled := featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagAlertingSyncDispatchTimer)
 	if enabled {
 		dt = alertingNotify.DispatchTimerSync
 	}

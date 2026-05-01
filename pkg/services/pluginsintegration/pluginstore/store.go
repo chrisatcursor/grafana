@@ -40,8 +40,7 @@ type Service struct {
 
 func ProvideService(pluginRegistry registry.Service, pluginSources sources.Registry,
 	pluginLoader loader.Service, features featuremgmt.FeatureToggles) (*Service, error) {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagPluginStoreServiceLoading) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagPluginStoreServiceLoading) {
 		s := New(pluginRegistry, pluginLoader, pluginSources)
 		s.loadOnStartup = true
 		return s, nil

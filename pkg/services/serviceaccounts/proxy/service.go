@@ -38,8 +38,7 @@ func ProvideServiceAccountsProxy(
 	s := &ServiceAccountsProxy{
 		log:            log.New("serviceaccounts.proxy"),
 		proxiedService: proxiedService,
-		//nolint:staticcheck // not yet migrated to OpenFeature
-		isProxyEnabled: cfg.ManagedServiceAccountsEnabled && features.IsEnabledGlobally(featuremgmt.FlagExternalServiceAccounts),
+		isProxyEnabled: cfg.ManagedServiceAccountsEnabled && featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagExternalServiceAccounts),
 	}
 
 	serviceaccountsAPI := api.NewServiceAccountsAPI(cfg, s, ac, accesscontrolService, routeRegister, permissionService, features)

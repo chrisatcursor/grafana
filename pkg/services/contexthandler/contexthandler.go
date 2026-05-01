@@ -104,7 +104,6 @@ func (h *ContextHandler) setRequestContext(ctx context.Context) context.Context 
 	ctx, span := tracing.Start(ctx, "ContextHandler.setRequestContext")
 	defer span.End()
 
-	//nolint:staticcheck // not yet migrated to OpenFeature
 	reqContext := &contextmodel.ReqContext{
 		Context: web.FromContext(ctx),
 		SignedInUser: &user.SignedInUser{
@@ -114,7 +113,7 @@ func (h *ContextHandler) setRequestContext(ctx context.Context) context.Context 
 		AllowAnonymous:            false,
 		SkipDSCache:               false,
 		Logger:                    log.New("context"),
-		UseSessionStorageRedirect: h.features.IsEnabledGlobally(featuremgmt.FlagUseSessionStorageForRedirection),
+		UseSessionStorageRedirect: featuremgmt.OpenFeatureIsEnabledGlobally(h.features, featuremgmt.FlagUseSessionStorageForRedirection),
 	}
 
 	// inject ReqContext in the context

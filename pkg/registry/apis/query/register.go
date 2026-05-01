@@ -71,8 +71,7 @@ func NewQueryAPIBuilder(
 ) (*QueryAPIBuilder, error) {
 	// Include well typed query definitions
 	var queryTypes *datasourceV0.QueryTypeDefinitionList
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	if features.IsEnabledGlobally(featuremgmt.FlagDatasourceQueryTypes) {
+	if featuremgmt.OpenFeatureIsEnabledGlobally(features, featuremgmt.FlagDatasourceQueryTypes) {
 		// Read the expression query definitions
 		raw, err := expr.QueryTypeDefinitionListJSON()
 		if err != nil {
@@ -119,7 +118,7 @@ func RegisterAPIService(
 	legacyDatasourceLookup service.LegacyDataSourceLookup,
 	exprService *expr.Service,
 ) (*QueryAPIBuilder, error) {
-	if !featuremgmt.AnyEnabled(features,
+	if !featuremgmt.OpenFeatureAnyEnabledGlobally(features,
 		featuremgmt.FlagQueryService,
 		featuremgmt.FlagGrafanaAPIServerWithExperimentalAPIs) {
 		return nil, nil // skip registration unless explicitly added (or all experimental are added)
