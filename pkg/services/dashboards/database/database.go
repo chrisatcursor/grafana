@@ -67,8 +67,7 @@ func ProvideDashboardStore(sqlStore db.DB, cfg *setting.Cfg, features featuremgm
 }
 
 func (d *dashboardStore) emitEntityEvent() bool {
-	//nolint:staticcheck // not yet migrated to OpenFeature
-	return d.features != nil && d.features.IsEnabledGlobally(featuremgmt.FlagPanelTitleSearch)
+	return d.features != nil && featuremgmt.OpenFeatureIsEnabledGlobally(d.features, featuremgmt.FlagPanelTitleSearch)
 }
 
 func (d *dashboardStore) GetDashboardsByLibraryPanelUID(ctx context.Context, libraryPanelUID string, orgID int64) ([]*dashboards.DashboardRef, error) {
