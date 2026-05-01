@@ -108,6 +108,8 @@ import (
 	"github.com/grafana/grafana/pkg/services/tag"
 	"github.com/grafana/grafana/pkg/services/team"
 	tempUser "github.com/grafana/grafana/pkg/services/temp_user"
+	unifiedmigrations "github.com/grafana/grafana/pkg/storage/unified/migrations"
+	migrationcontract "github.com/grafana/grafana/pkg/storage/unified/migrations/contract"
 	"github.com/grafana/grafana/pkg/services/updatemanager"
 	"github.com/grafana/grafana/pkg/services/user"
 	"github.com/grafana/grafana/pkg/services/validations"
@@ -224,6 +226,8 @@ type HTTPServer struct {
 	htmlHandlerRequestsDuration     *prometheus.HistogramVec
 	dsConfigHandlerRequestsDuration *prometheus.HistogramVec
 	dsConnectionClient              datasource.ConnectionClient
+	migrationStatusReader           migrationcontract.MigrationStatusReader
+	migrationRegistry               *unifiedmigrations.MigrationRegistry
 }
 
 type TLSCerts struct {
@@ -274,6 +278,8 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	statsService stats.Service, authnService authn.Service, pluginsCDNService *pluginscdn.Service, promGatherer prometheus.Gatherer,
 	starApi *starApi.API, promRegister prometheus.Registerer, clientConfigProvider grafanaapiserver.DirectRestConfigProvider, anonService anonymous.Service,
 	userVerifier user.Verifier, pluginPreinstall pluginchecker.Preinstall,
+	migrationStatusReader migrationcontract.MigrationStatusReader,
+	migrationRegistry *unifiedmigrations.MigrationRegistry,
 ) (*HTTPServer, error) {
 	web.Env = cfg.Env
 	m := web.New()
@@ -387,6 +393,8 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 			Help:      "Duration of requests handled by datasource configuration handlers",
 		}, []string{"handler"}),
 		dsConnectionClient: datasource.NewConnectionClient(cfg, clientConfigProvider),
+		migrationStatusReader: migrationStatusReader,
+		migrationRegistry:     migrationRegistry,
 	}
 
 	promRegister.MustRegister(hs.htmlHandlerRequestsDuration)

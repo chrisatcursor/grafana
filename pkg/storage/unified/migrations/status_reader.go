@@ -48,13 +48,24 @@ func ProvideMigrationStatusReader(
 //  3. Config Mode4/Mode5 → Unified (temporary fallback for cloud backfill transition)
 //  4. Otherwise → Legacy
 func (r *migrationStatusReader) GetStorageMode(ctx context.Context, gr schema.GroupResource) (contract.StorageMode, error) {
+	d, err := r.GetMigrationStorageDetails(ctx, gr)
+	if err != nil {
+		return contract.StorageModeLegacy, err
+	}
+	return d.Mode, nil
+}
+
+// GetMigrationStorageDetails implements MigrationStatusReader.
+func (r *migrationStatusReader) GetMigrationStorageDetails(ctx context.Context, gr schema.GroupResource) (contract.MigrationStorageDetails, error) {
+	out := contract.MigrationStorageDetails{}
 	// Check config for explicit DualWrite modes (Mode1, Mode2, Mode3).
 	// This takes priority because it's an explicit operational decision — cloud may want
 	// to hold a resource in dual-write even after data has been synced.
 	configKey := gr.Resource + "." + gr.Group
 	if config, found := r.cfg.UnifiedStorage[configKey]; found {
 		if config.DualWriterMode >= rest.Mode1 && config.DualWriterMode <= rest.Mode3 {
-			return contract.StorageModeDualWrite, nil
+			out.Mode = contract.StorageModeDualWrite
+			return out, nil
 		}
 	}
 
@@ -66,8 +77,10 @@ func (r *migrationStatusReader) GetStorageMode(ctx context.Context, gr schema.Gr
 			// If the migration log query fails (e.g., table not created yet),
 			// log and fall through to the config fallback rather than failing hard.
 			logger.Warn("Failed to check migration log, falling back to config", "resource", gr.String(), "error", err)
+			out.MigrationLogError = err.Error()
 		} else if exists {
-			return contract.StorageModeUnified, nil
+			out.Mode = contract.StorageModeUnified
+			return out, nil
 		}
 	}
 
@@ -75,11 +88,13 @@ func (r *migrationStatusReader) GetStorageMode(ctx context.Context, gr schema.Gr
 	// This is temporary and will be removed once all environments backfill the migration log.
 	if config, found := r.cfg.UnifiedStorage[configKey]; found {
 		if config.DualWriterMode >= rest.Mode4 {
-			return contract.StorageModeUnified, nil
+			out.Mode = contract.StorageModeUnified
+			return out, nil
 		}
 	}
 
-	return contract.StorageModeLegacy, nil
+	out.Mode = contract.StorageModeLegacy
+	return out, nil
 }
 
 // findDefinition locates the MigrationDefinition that contains the given GroupResource.

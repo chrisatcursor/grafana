@@ -385,6 +385,15 @@ export function getAppRoutes(): RouteDescriptor[] {
         () => import(/* webpackChunkName: "ServerStats" */ 'app/features/admin/ServerStats')
       ),
     },
+    {
+      path: '/admin/unified-storage/migration',
+      component: SafeDynamicImport(
+        () =>
+          import(
+            /* webpackChunkName: "UnifiedStorageMigrationPage" */ 'app/features/admin/unified-storage/UnifiedStorageMigrationPage'
+          )
+      ),
+    },
     config.cloudMigrationEnabled && {
       path: '/admin/migrate-to-cloud',
       roles: () => contextSrv.evaluatePermission([AccessControlAction.MigrationAssistantMigrate]),

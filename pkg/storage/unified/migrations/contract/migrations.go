@@ -48,6 +48,13 @@ func (m StorageMode) String() string {
 	}
 }
 
+// MigrationStorageDetails is the resolved storage mode plus optional diagnostics
+// when the migration log could not be read.
+type MigrationStorageDetails struct {
+	Mode              StorageMode
+	MigrationLogError string
+}
+
 // MigrationStatusReader provides a way to determine the storage mode for a resource.
 // This is the single source of truth for determining whether a resource should use
 // legacy storage, dual-write mode, or unified storage.
@@ -59,4 +66,7 @@ func (m StorageMode) String() string {
 //  4. Otherwise → Legacy
 type MigrationStatusReader interface {
 	GetStorageMode(ctx context.Context, gr schema.GroupResource) (StorageMode, error)
+	// GetMigrationStorageDetails returns the same mode as GetStorageMode and surfaces
+	// MigrationLogError when the unifiedstorage_migration_log lookup failed (degraded reporting).
+	GetMigrationStorageDetails(ctx context.Context, gr schema.GroupResource) (MigrationStorageDetails, error)
 }

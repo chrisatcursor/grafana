@@ -44,6 +44,15 @@ func (s *ServiceImpl) getAdminNode(c *contextmodel.ReqContext) (*navtree.NavLink
 			Text: "Organizations", SubTitle: "Isolated instances of Grafana running on the same server", Id: "global-orgs", Url: s.cfg.AppSubURL + "/admin/orgs", Icon: "building",
 		})
 	}
+	if hasAccess(ac.EvalPermission(ac.ActionServerStatsRead)) {
+		generalNodeLinks = append(generalNodeLinks, &navtree.NavLink{
+			Text:     "Unified storage migration",
+			Id:       "unified-storage-migration",
+			SubTitle: "View storage mode per resource for unified storage data migration",
+			Url:      s.cfg.AppSubURL + "/admin/unified-storage/migration",
+			Icon:     "database",
+		})
+	}
 	if hasAccess(cloudmigration.MigrationAssistantAccess) && s.cfg.CloudMigration.Enabled {
 		generalNodeLinks = append(generalNodeLinks, &navtree.NavLink{
 			Text:     "Migrate to Grafana Cloud",
