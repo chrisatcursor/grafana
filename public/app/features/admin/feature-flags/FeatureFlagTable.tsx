@@ -1,7 +1,19 @@
 import { useMemo } from 'react';
 
+import { css } from '@emotion/css';
+
+import { GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
-import { Badge, InteractiveTable, Text, type CellProps, type Column } from '@grafana/ui';
+import {
+  Badge,
+  Icon,
+  InteractiveTable,
+  Text,
+  Tooltip,
+  useStyles2,
+  type CellProps,
+  type Column,
+} from '@grafana/ui';
 
 import type { FeatureToggleStatusDTO } from './types';
 
@@ -14,6 +26,7 @@ interface Props {
 }
 
 export function FeatureFlagTable({ toggles }: Props) {
+  const styles = useStyles2(getStyles);
   const columns: Array<Column<Row>> = useMemo(
     () => [
       {
@@ -59,14 +72,26 @@ export function FeatureFlagTable({ toggles }: Props) {
         header: () => <Trans i18nKey="admin.feature-flags.column-attributes">Attributes</Trans>,
         cell: ({ row: { original } }: Cell) => (
           <Text color="secondary">
-            {[original.frontendOnly && 'Frontend', original.requiresRestart && 'Restart']
+            {[original.frontendOnly && 'Frontend', original.requiresRestart && 'Restart', original.hideFromDocs && 'Internal']
               .filter(Boolean)
               .join(' · ') || '—'}
           </Text>
         ),
       },
+      {
+        id: 'warning',
+        header: () => <Trans i18nKey="admin.feature-flags.column-warning">Warning</Trans>,
+        cell: ({ row: { original } }: Cell) =>
+          original.warning ? (
+            <Tooltip content={original.warning}>
+              <Icon name="exclamation-triangle" size="lg" className={styles.warningIcon} />
+            </Tooltip>
+          ) : (
+            <Text color="secondary">—</Text>
+          ),
+      },
     ],
-    []
+    [styles.warningIcon]
   );
 
   return <InteractiveTable columns={columns} data={toggles} getRowId={(row) => row.name} />;
@@ -84,3 +109,9 @@ function StageBadge({ stage }: { stage: string }) {
 
   return <Badge text={stage || 'unknown'} color={color} />;
 }
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  warningIcon: css({
+    color: theme.colors.error.text,
+  }),
+});
