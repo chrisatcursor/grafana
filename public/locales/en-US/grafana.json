@@ -242,13 +242,16 @@
       "column-description": "Description",
       "column-enabled": "Enabled",
       "column-name": "Name",
+      "column-owner": "Owner",
       "column-stage": "Stage",
+      "empty-list": "No feature toggles were returned.",
       "enabled-no": "No",
       "enabled-yes": "Yes",
       "info": "Values reflect this Grafana process. Changes to many flags require a configuration update and restart.",
       "load-error": "Could not load feature toggles. Try again later.",
       "loading": "Loading feature toggles…",
-      "search-placeholder": "Search by name, description, stage, or owner"
+      "no-search-matches": "No flags match your search.",
+      "search-placeholder": "Search by name, description, stage, owner, expression, or warning"
     },
     "un-themed-org-row": {
       "confirmText-confirm-removal": "Confirm removal"

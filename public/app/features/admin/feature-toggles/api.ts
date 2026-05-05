@@ -13,6 +13,26 @@ export interface FeatureFlagAdminDTO {
   warning?: string;
 }
 
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null;
+}
+
+function isFeatureFlagAdminList(data: unknown): data is FeatureFlagAdminDTO[] {
+  if (!Array.isArray(data)) {
+    return false;
+  }
+  for (const item of data) {
+    if (!isRecord(item) || typeof item.name !== 'string') {
+      return false;
+    }
+  }
+  return true;
+}
+
 export const getFeatureTogglesAdmin = async (): Promise<FeatureFlagAdminDTO[]> => {
-  return getBackendSrv().get('/api/admin/feature-toggles');
+  const data: unknown = await getBackendSrv().get('/api/admin/feature-toggles');
+  if (!isFeatureFlagAdminList(data)) {
+    throw new Error('Invalid feature toggles response');
+  }
+  return data;
 };

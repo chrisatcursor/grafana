@@ -8,6 +8,7 @@ import {
   Badge,
   CellProps,
   Column,
+  EmptyState,
   Icon,
   Input,
   InteractiveTable,
@@ -20,15 +21,17 @@ import {
 
 import { FeatureFlagAdminDTO, getFeatureTogglesAdmin } from './api';
 
-function nameMatchesQuery(row: FeatureFlagAdminDTO, q: string): boolean {
+function rowMatchesQuery(row: FeatureFlagAdminDTO, q: string): boolean {
   if (!q) {
     return true;
   }
   const needle = q.toLowerCase();
   return (
-    row.name.toLowerCase().includes(needle) ||
-    row.description.toLowerCase().includes(needle) ||
-    row.stage.toLowerCase().includes(needle) ||
+    (row.name ?? '').toLowerCase().includes(needle) ||
+    (row.description ?? '').toLowerCase().includes(needle) ||
+    (row.stage ?? '').toLowerCase().includes(needle) ||
+    (row.expression ?? '').toLowerCase().includes(needle) ||
+    (row.warning && row.warning.toLowerCase().includes(needle)) ||
     (row.owner && row.owner.toLowerCase().includes(needle))
   );
 }
@@ -42,7 +45,7 @@ export function FeatureFlagTable() {
     if (!rows) {
       return [];
     }
-    return rows.filter((r) => nameMatchesQuery(r, filter.trim()));
+    return rows.filter((r) => rowMatchesQuery(r, filter.trim()));
   }, [rows, filter]);
 
   const columns = useMemo<Array<Column<FeatureFlagAdminDTO>>>(
@@ -70,6 +73,15 @@ export function FeatureFlagTable() {
         header: t('admin.feature-flag-dashboard.column-stage', 'Stage'),
         sortType: 'alphanumeric',
         disableGrow: true,
+      },
+      {
+        id: 'owner',
+        header: t('admin.feature-flag-dashboard.column-owner', 'Owner'),
+        sortType: 'alphanumeric',
+        disableGrow: true,
+        cell: (cell: CellProps<FeatureFlagAdminDTO>) => (
+          <Text color="secondary">{cell.row.original.owner ?? '—'}</Text>
+        ),
       },
       {
         id: 'enabled',
@@ -130,19 +142,34 @@ export function FeatureFlagTable() {
     );
   }
 
+  if (!rows?.length) {
+    return (
+      <EmptyState
+        variant="not-found"
+        message={t('admin.feature-flag-dashboard.empty-list', 'No feature toggles were returned.')}
+      />
+    );
+  }
+
   return (
     <Stack direction="column" gap={2}>
       <Input
         width={50}
         placeholder={t(
           'admin.feature-flag-dashboard.search-placeholder',
-          'Search by name, description, stage, or owner'
+          'Search by name, description, stage, owner, expression, or warning'
         )}
         value={filter}
         onChange={(e) => setFilter(e.currentTarget.value)}
         prefix={<Icon name="search" />}
       />
-      <InteractiveTable data={filtered} columns={columns} getRowId={(row) => row.name} pageSize={50} />
+      {filtered.length === 0 ? (
+        <Text color="secondary">
+          {t('admin.feature-flag-dashboard.no-search-matches', 'No flags match your search.')}
+        </Text>
+      ) : (
+        <InteractiveTable data={filtered} columns={columns} getRowId={(row) => row.name} pageSize={50} />
+      )}
     </Stack>
   );
 }

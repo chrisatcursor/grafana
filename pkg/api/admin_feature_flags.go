@@ -8,7 +8,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 )
 
-// swagger:route GET /admin/feature-toggles admin adminGetFeatureToggles
+// swagger:route GET /api/admin/feature-toggles admin adminGetFeatureToggles
 //
 // # List registered feature toggles and their effective state
 //
