@@ -8,7 +8,7 @@ import { render as testRender, screen, waitFor, testWithFeatureToggles } from 't
 import { selectors } from '@grafana/e2e-selectors';
 import { config, setBackendSrv } from '@grafana/runtime';
 import server, { setupMockServer } from '@grafana/test-utils/server';
-import { getFolderFixtures } from '@grafana/test-utils/unstable';
+import { getFolderFixtures, setTestFlags } from '@grafana/test-utils/unstable';
 import { backendSrv } from 'app/core/services/backend_srv';
 import { contextSrv } from 'app/core/services/context_srv';
 
@@ -402,7 +402,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
 
   describe('Template dashboard modal', () => {
     beforeEach(() => {
-      config.featureToggles.dashboardTemplates = true;
+      setTestFlags({ dashboardTemplates: true });
       server.use(
         http.get('/api/gnet/dashboards', () => {
           return HttpResponse.json({
@@ -422,6 +422,10 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
       );
     });
 
+    afterEach(() => {
+      setTestFlags({ dashboardTemplates: false });
+    });
+
     it('should show TemplateDashboard modal when the feature flag is enabled', async () => {
       render(<BrowseDashboardsPage queryParams={{}} />, {
         historyOptions: { initialEntries: [`/dashboards?templateDashboards=true`] },
@@ -430,7 +434,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     });
 
     it('should not show TemplateDashboard modal when the feature flag is disabled', async () => {
-      config.featureToggles.dashboardTemplates = false;
+      setTestFlags({ dashboardTemplates: false });
       render(<BrowseDashboardsPage queryParams={{}} />, {
         historyOptions: { initialEntries: [`/dashboards?templateDashboards=true`] },
       });

@@ -1,12 +1,12 @@
 import { css } from '@emotion/css';
-import { useBooleanFlagValue } from '@openfeature/react-sdk';
 import { memo, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom-v5-compat';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { GrafanaTheme2 } from '@grafana/data';
-import { config, reportInteraction } from '@grafana/runtime';
+import { reportInteraction } from '@grafana/runtime';
 import { FilterInput, useStyles2, Text, Stack } from '@grafana/ui';
+import { OpenFeatureGate, useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { useGetFolderQueryFacade, useUpdateFolder } from 'app/api/clients/folder/v1beta1/hooks';
 import { Page } from 'app/core/components/Page/Page';
 import { useDispatch } from 'app/types/store';
@@ -41,8 +41,8 @@ const BrowseDashboardsPage = memo(({ queryParams }: { queryParams: Record<string
   const location = useLocation();
   const search = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const { isReadOnlyRepo } = useGetResourceRepositoryView({ folderName: folderUID });
-  const isRecentlyViewedEnabledValue = useBooleanFlagValue('recentlyViewedDashboards', false);
-  const isExperimentRecentlyViewedDashboards = useBooleanFlagValue('experimentRecentlyViewedDashboards', false);
+  const isRecentlyViewedEnabledValue = useGrafanaBooleanFlag('recentlyViewedDashboards', false);
+  const isExperimentRecentlyViewedDashboards = useGrafanaBooleanFlag('experimentRecentlyViewedDashboards', false);
   const isRecentlyViewedEnabled = !folderUID && isRecentlyViewedEnabledValue;
 
   useEffect(() => {
@@ -202,7 +202,9 @@ const BrowseDashboardsPage = memo(({ queryParams }: { queryParams: Record<string
             }
           </AutoSizer>
         </div>
-        {config.featureToggles.dashboardTemplates && <TemplateDashboardModal />}
+        <OpenFeatureGate flag="dashboardTemplates">
+          <TemplateDashboardModal />
+        </OpenFeatureGate>
       </Page.Contents>
     </Page>
   );
