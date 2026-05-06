@@ -17,7 +17,9 @@ function filterToggles(toggles: FeatureToggleStatusDTO[], query: string): Featur
     return toggles;
   }
   return toggles.filter((row) => {
-    const haystack = `${row.name} ${row.description ?? ''} ${row.stage} ${row.warning ?? ''}`.toLowerCase();
+    const enabledLabel = row.enabled ? 'on' : 'off';
+    const haystack =
+      `${row.name} ${row.description ?? ''} ${row.stage} ${row.warning ?? ''} ${enabledLabel}`.toLowerCase();
     return haystack.includes(q);
   });
 }
@@ -55,7 +57,17 @@ export default function FeatureFlagsPage() {
       .catch((err: unknown) => {
         if (!cancelled) {
           const message = isFetchError(err)
-            ? (err.data?.message as string | undefined) ?? err.message
+            ? (() => {
+                const data = err.data as { message?: unknown } | undefined;
+                const m = data?.message;
+                if (typeof m === 'string') {
+                  return m;
+                }
+                if (m != null) {
+                  return String(m);
+                }
+                return err.message;
+              })()
             : t('admin.feature-flags.load-error', 'Failed to load feature toggles.');
           setError(message);
           setToggles(null);
@@ -113,12 +125,14 @@ export default function FeatureFlagsPage() {
 
           {!loading && !error && toggles && toggles.length > 0 && (
             <>
-              <Field label={t('admin.feature-flags.filter-label', 'Filter')} description="">
+              <Field label={t('admin.feature-flags.filter-label', 'Filter')}>
                 <Input
+                  type="search"
                   width={50}
                   placeholder={t('admin.feature-flags.filter-placeholder', 'Search by name, description, stage…')}
                   value={filter}
                   onChange={(e) => setFilter(e.currentTarget.value)}
+                  aria-label={t('admin.feature-flags.filter-aria', 'Filter feature toggles')}
                 />
               </Field>
 

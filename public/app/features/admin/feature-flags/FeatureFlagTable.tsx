@@ -72,7 +72,11 @@ export function FeatureFlagTable({ toggles }: Props) {
         header: () => <Trans i18nKey="admin.feature-flags.column-attributes">Attributes</Trans>,
         cell: ({ row: { original } }: Cell) => (
           <Text color="secondary">
-            {[original.frontendOnly && 'Frontend', original.requiresRestart && 'Restart', original.hideFromDocs && 'Internal']
+            {[
+              original.frontendOnly && t('admin.feature-flags.attr-frontend', 'Frontend'),
+              original.requiresRestart && t('admin.feature-flags.attr-restart', 'Restart'),
+              original.hideFromDocs && t('admin.feature-flags.attr-internal', 'Internal'),
+            ]
               .filter(Boolean)
               .join(' · ') || '—'}
           </Text>
@@ -84,7 +88,12 @@ export function FeatureFlagTable({ toggles }: Props) {
         cell: ({ row: { original } }: Cell) =>
           original.warning ? (
             <Tooltip content={original.warning}>
-              <Icon name="exclamation-triangle" size="lg" className={styles.warningIcon} />
+              <Icon
+                name="exclamation-triangle"
+                size="lg"
+                className={styles.warningIcon}
+                aria-label={original.warning}
+              />
             </Tooltip>
           ) : (
             <Text color="secondary">—</Text>
@@ -103,11 +112,11 @@ function StageBadge({ stage }: { stage: string }) {
       ? 'blue'
       : stage === 'deprecated'
         ? 'red'
-        : stage === 'experimental' || stage === 'privatePreview'
+        : stage === 'experimental' || stage === 'privatePreview' || stage === 'preview'
           ? 'orange'
           : 'purple';
 
-  return <Badge text={stage || 'unknown'} color={color} />;
+  return <Badge text={stage || t('admin.feature-flags.stage-unknown', 'unknown')} color={color} />;
 }
 
 const getStyles = (theme: GrafanaTheme2) => ({
