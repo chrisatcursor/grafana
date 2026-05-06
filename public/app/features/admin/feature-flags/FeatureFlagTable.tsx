@@ -1,0 +1,126 @@
+import { useMemo } from 'react';
+
+import { css } from '@emotion/css';
+
+import { GrafanaTheme2 } from '@grafana/data';
+import { Trans, t } from '@grafana/i18n';
+import {
+  Badge,
+  Icon,
+  InteractiveTable,
+  Text,
+  Tooltip,
+  useStyles2,
+  type CellProps,
+  type Column,
+} from '@grafana/ui';
+
+import type { FeatureToggleStatusDTO } from './types';
+
+type Row = FeatureToggleStatusDTO;
+
+type Cell<T extends keyof Row = keyof Row> = CellProps<Row, Row[T]>;
+
+interface Props {
+  toggles: Row[];
+}
+
+export function FeatureFlagTable({ toggles }: Props) {
+  const styles = useStyles2(getStyles);
+  const columns: Array<Column<Row>> = useMemo(
+    () => [
+      {
+        id: 'name',
+        header: () => <Trans i18nKey="admin.feature-flags.column-name">Name</Trans>,
+        cell: ({ row: { original } }: Cell<'name'>) => (
+          <Text element="span" weight="medium">
+            {original.name}
+          </Text>
+        ),
+        sortType: 'string',
+      },
+      {
+        id: 'stage',
+        header: () => <Trans i18nKey="admin.feature-flags.column-stage">Stage</Trans>,
+        cell: ({ row: { original } }: Cell<'stage'>) => <StageBadge stage={original.stage} />,
+      },
+      {
+        id: 'enabled',
+        header: () => <Trans i18nKey="admin.feature-flags.column-enabled">Enabled</Trans>,
+        cell: ({ row: { original } }: Cell<'enabled'>) => (
+          <Badge
+            text={
+              original.enabled
+                ? t('admin.feature-flags.enabled-on', 'On')
+                : t('admin.feature-flags.enabled-off', 'Off')
+            }
+            color={original.enabled ? 'green' : 'red'}
+          />
+        ),
+      },
+      {
+        id: 'description',
+        header: () => <Trans i18nKey="admin.feature-flags.column-description">Description</Trans>,
+        cell: ({ row: { original } }: Cell<'description'>) => (
+          <Text color="secondary" truncate>
+            {original.description ?? '—'}
+          </Text>
+        ),
+      },
+      {
+        id: 'attributes',
+        header: () => <Trans i18nKey="admin.feature-flags.column-attributes">Attributes</Trans>,
+        cell: ({ row: { original } }: Cell) => (
+          <Text color="secondary">
+            {[
+              original.frontendOnly && t('admin.feature-flags.attr-frontend', 'Frontend'),
+              original.requiresRestart && t('admin.feature-flags.attr-restart', 'Restart'),
+              original.hideFromDocs && t('admin.feature-flags.attr-internal', 'Internal'),
+            ]
+              .filter(Boolean)
+              .join(' · ') || '—'}
+          </Text>
+        ),
+      },
+      {
+        id: 'warning',
+        header: () => <Trans i18nKey="admin.feature-flags.column-warning">Warning</Trans>,
+        cell: ({ row: { original } }: Cell) =>
+          original.warning ? (
+            <Tooltip content={original.warning}>
+              <Icon
+                name="exclamation-triangle"
+                size="lg"
+                className={styles.warningIcon}
+                aria-label={original.warning}
+              />
+            </Tooltip>
+          ) : (
+            <Text color="secondary">—</Text>
+          ),
+      },
+    ],
+    [styles.warningIcon]
+  );
+
+  return <InteractiveTable columns={columns} data={toggles} getRowId={(row) => row.name} />;
+}
+
+function StageBadge({ stage }: { stage: string }) {
+  const color =
+    stage === 'GA' || stage === 'generalAvailability'
+      ? 'blue'
+      : stage === 'deprecated'
+        ? 'red'
+        : stage === 'experimental' || stage === 'privatePreview' || stage === 'preview'
+          ? 'orange'
+          : 'purple';
+
+  return <Badge text={stage || t('admin.feature-flags.stage-unknown', 'unknown')} color={color} />;
+}
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  warningIcon: css({
+    color: theme.colors.error.text,
+  }),
+});

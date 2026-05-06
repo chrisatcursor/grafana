@@ -127,6 +127,15 @@ func (fm *FeatureManager) GetFlags() []FeatureFlag {
 	return v
 }
 
+// GetWarnings returns a copy of non-fatal warnings for known flags (for example unknown keys in config).
+func (fm *FeatureManager) GetWarnings() map[string]string {
+	out := make(map[string]string, len(fm.warnings))
+	for k, v := range fm.warnings {
+		out[k] = v
+	}
+	return out
+}
+
 // ############# Test Functions #############
 
 func WithFeatures(spec ...any) FeatureToggles {
