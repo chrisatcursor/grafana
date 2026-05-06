@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import { render } from 'test/test-utils';
 
-import { config } from '@grafana/runtime';
+import { setTestFlags } from '@grafana/test-utils/unstable';
 import { ManagerKind } from 'app/features/apiserver/types';
 import { useIsProvisionedInstance } from 'app/features/provisioning/hooks/useIsProvisionedInstance';
 import { FolderDTO } from 'app/types/folders';
@@ -138,7 +138,11 @@ describe('NewActionsButton', () => {
 
   describe('Dashboard from template button', () => {
     beforeEach(() => {
-      config.featureToggles.dashboardTemplates = true;
+      setTestFlags({ dashboardTemplates: true });
+    });
+
+    afterEach(() => {
+      setTestFlags({ dashboardTemplates: false });
     });
 
     it('should show a `Dashboard from template` button when the feature flag is enabled', async () => {
@@ -147,7 +151,7 @@ describe('NewActionsButton', () => {
     });
 
     it('should not show a `Dashboard from template` button when the feature flag is disabled', async () => {
-      config.featureToggles.dashboardTemplates = false;
+      setTestFlags({ dashboardTemplates: false });
       await renderAndOpen();
       expect(screen.queryByRole('link', { name: 'Dashboard from template' })).not.toBeInTheDocument();
     });

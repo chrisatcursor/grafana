@@ -117,14 +117,13 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     });
 
     it('shows the "Recently deleted" button when restore is enabled', async () => {
-      const previousFlag = config.featureToggles.restoreDashboards;
-      config.featureToggles.restoreDashboards = true;
+      setTestFlags({ restoreDashboards: true });
 
       render(<BrowseDashboardsPage queryParams={{}} />);
       await screen.findByPlaceholderText('Search for dashboards and folders');
       expect(await screen.findByRole('link', { name: 'Recently deleted' })).toBeInTheDocument();
 
-      config.featureToggles.restoreDashboards = previousFlag;
+      setTestFlags({ restoreDashboards: false });
     });
 
     it('does not show the "New" button if the user does not have permissions', async () => {
@@ -207,7 +206,12 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     describe('folder owner', () => {
       testWithFeatureToggles({ enable: ['foldersAppPlatformAPI', 'teamFolders'] });
       beforeEach(() => {
+        setTestFlags({ teamFolders: true, foldersAppPlatformAPI: true });
         jest.spyOn(contextSrv, 'hasRole').mockReturnValue(true);
+      });
+
+      afterEach(() => {
+        setTestFlags({ teamFolders: false, foldersAppPlatformAPI: false });
       });
 
       it('allows choosing a team to own the folder', async () => {

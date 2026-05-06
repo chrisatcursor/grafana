@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 import { Trans, t } from '@grafana/i18n';
-import { config, reportInteraction } from '@grafana/runtime';
+import { reportInteraction } from '@grafana/runtime';
 import { Button, Drawer, Stack, Text } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { appEvents } from 'app/core/app_events';
 import { ManagerKind } from 'app/features/apiserver/types';
 import { BulkDeleteProvisionedResource } from 'app/features/provisioning/components/BulkActions/BulkDeleteProvisionedResource';
@@ -31,6 +32,9 @@ export interface Props {
 }
 
 export function BrowseActions({ folderDTO }: Props) {
+  const provisioningEnabled = useGrafanaBooleanFlag('provisioning', false);
+  const restoreDashboardsEnabled = useGrafanaBooleanFlag('restoreDashboards', false);
+
   const [showBulkDeleteProvisionedResource, setShowBulkDeleteProvisionedResource] = useState(false);
   const [showBulkMoveProvisionedResource, setShowBulkMoveProvisionedResource] = useState(false);
 
@@ -41,7 +45,6 @@ export function BrowseActions({ folderDTO }: Props) {
   const [moveFolders] = useMoveMultipleFoldersMutationFacade();
   const [moveDashboards] = useMoveDashboardsMutation();
   const [, stateManager] = useSearchStateManager();
-  const provisioningEnabled = config.featureToggles.provisioning;
 
   const { hasProvisioned, hasNonProvisioned } = useSelectionProvisioningStatus(
     selectedItems,
@@ -64,7 +67,7 @@ export function BrowseActions({ folderDTO }: Props) {
     const selectedFolders = Object.keys(selectedItems.folder).filter((uid) => selectedItems.folder[uid]);
     await deleteDashboards({ dashboardUIDs: selectedDashboards });
     await deleteFolders({ folderUIDs: selectedFolders });
-    trackAction('delete', selectedItems);
+    trackAction('delete', selectedItems, restoreDashboardsEnabled);
     onActionComplete();
   };
 
@@ -74,7 +77,7 @@ export function BrowseActions({ folderDTO }: Props) {
 
     await moveFolders({ folderUIDs: selectedFolders, destinationUID });
     await moveDashboards({ dashboardUIDs: selectedDashboards, destinationUID });
-    trackAction('move', selectedItems);
+    trackAction('move', selectedItems, restoreDashboardsEnabled);
     onActionComplete();
   };
 
@@ -201,7 +204,11 @@ const actionMap = {
   delete: 'grafana_manage_dashboards_item_deleted',
 } as const;
 
-function trackAction(action: keyof typeof actionMap, selectedItems: Omit<DashboardTreeSelection, 'panel' | '$all'>) {
+function trackAction(
+  action: keyof typeof actionMap,
+  selectedItems: Omit<DashboardTreeSelection, 'panel' | '$all'>,
+  restoreDashboardsEnabled: boolean
+) {
   const selectedDashboards = Object.keys(selectedItems.dashboard).filter((uid) => selectedItems.dashboard[uid]);
   const selectedFolders = Object.keys(selectedItems.folder).filter((uid) => selectedItems.folder[uid]);
 
@@ -211,6 +218,6 @@ function trackAction(action: keyof typeof actionMap, selectedItems: Omit<Dashboa
       dashboard: selectedDashboards.length,
     },
     source: 'tree_actions',
-    restore_enabled: Boolean(config.featureToggles.restoreDashboards),
+    restore_enabled: restoreDashboardsEnabled,
   });
 }

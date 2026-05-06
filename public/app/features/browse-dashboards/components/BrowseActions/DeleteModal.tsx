@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 import { Trans, t } from '@grafana/i18n';
-import { config, reportInteraction } from '@grafana/runtime';
+import { reportInteraction } from '@grafana/runtime';
 import { Alert, ConfirmModal, Space, Text } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { useGetAffectedItems, useGetFolderQueryFacade } from 'app/api/clients/folder/v1beta1/hooks';
 
 import { DashboardTreeSelection } from '../../types';
@@ -18,6 +19,7 @@ export interface Props {
 }
 
 export const DeleteModal = ({ onConfirm, onDismiss, selectedItems, ...props }: Props) => {
+  const restoreDashboardsEnabled = useGrafanaBooleanFlag('restoreDashboards', false);
   const { data } = useGetAffectedItems(selectedItems);
   const deleteIsInvalid = Boolean(data && (data.alertrules || data.library_elements));
   const [isDeleting, setIsDeleting] = useState(false);
@@ -39,7 +41,7 @@ export const DeleteModal = ({ onConfirm, onDismiss, selectedItems, ...props }: P
         folder: Object.keys(selectedItems.folder).length,
       },
       source: 'browse_dashboards',
-      restore_enabled: Boolean(config.featureToggles.restoreDashboards),
+      restore_enabled: restoreDashboardsEnabled,
     });
     setIsDeleting(true);
     try {
@@ -55,7 +57,7 @@ export const DeleteModal = ({ onConfirm, onDismiss, selectedItems, ...props }: P
     <ConfirmModal
       body={
         <>
-          {config.featureToggles.restoreDashboards && (
+          {restoreDashboardsEnabled && (
             <>
               <DeletedDashboardsInfo target="folder" />
               <Space v={2} />

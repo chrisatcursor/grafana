@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom-v5-compat';
 import { locationUtil } from '@grafana/data';
 import { config, getDataSourceSrv, locationService, reportInteraction } from '@grafana/runtime';
 import { Button, Drawer, Dropdown, Icon, Menu, MenuItem } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { OwnerReference } from 'app/api/clients/folder/v1beta1';
 import { useCreateFolder } from 'app/api/clients/folder/v1beta1/hooks';
 import { useAppNotification } from 'app/core/copy/appNotification';
@@ -50,6 +51,7 @@ export default function CreateNewButton({
   const [showNewFolderDrawer, setShowNewFolderDrawer] = useState(false);
   const notifyApp = useAppNotification();
   const isProvisionedInstance = useIsProvisionedInstance();
+  const dashboardTemplatesEnabled = useGrafanaBooleanFlag('dashboardTemplates', false);
 
   const handleVisibleChange = () => {
     if (!isOpen) {
@@ -61,7 +63,7 @@ export default function CreateNewButton({
   };
 
   let renderPreBuiltDashboardAction = false;
-  if (config.featureToggles.dashboardTemplates) {
+  if (dashboardTemplatesEnabled) {
     const testDataSources = getDataSourceSrv().getList({ type: 'grafana-testdata-datasource' });
     renderPreBuiltDashboardAction = testDataSources.length > 0;
   }

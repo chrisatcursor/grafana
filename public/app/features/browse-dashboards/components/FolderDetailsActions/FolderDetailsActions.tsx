@@ -7,6 +7,7 @@ import { GrafanaTheme2 } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { config, reportInteraction } from '@grafana/runtime';
 import { LinkButton, Stack, Text, useStyles2 } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { CombinedFolder, useGetFolderQueryFacade } from 'app/api/clients/folder/v1beta1/hooks';
 import { OwnerReference } from 'app/core/components/OwnerReferences/OwnerReference';
 import { contextSrv } from 'app/core/services/context_srv';
@@ -18,6 +19,9 @@ import CreateNewButton from '../CreateNewButton';
 import { FolderActionsButton } from '../FolderActionsButton';
 
 export const FolderDetailsActions = ({ folderDTO }: { folderDTO?: CombinedFolder }) => {
+  const teamFoldersEnabled = useGrafanaBooleanFlag('teamFolders', false);
+  const restoreDashboardsEnabled = useGrafanaBooleanFlag('restoreDashboards', false);
+
   // Fetch the root (aka general) folder if we're not in a specific folder
   const { data: rootFolderDTO } = useGetFolderQueryFacade(folderDTO ? undefined : 'general');
   const { isReadOnlyRepo, repoType } = useGetResourceRepositoryView({ folderName: folderDTO?.uid });
@@ -33,10 +37,10 @@ export const FolderDetailsActions = ({ folderDTO }: { folderDTO?: CombinedFolder
 
   return (
     <Stack alignItems="center">
-      {canReadTeams && config.featureToggles.teamFolders && folderDTO && 'ownerReferences' in folderDTO && (
+      {canReadTeams && teamFoldersEnabled && folderDTO && 'ownerReferences' in folderDTO && (
         <FolderOwners ownerReferences={folderDTO.ownerReferences} />
       )}
-      {config.featureToggles.restoreDashboards && (
+      {restoreDashboardsEnabled && (
         <LinkButton
           variant="secondary"
           href={config.appSubUrl + '/dashboard/recently-deleted'}

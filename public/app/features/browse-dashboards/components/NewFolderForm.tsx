@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
-import { config, reportInteraction } from '@grafana/runtime';
+import { reportInteraction } from '@grafana/runtime';
 import { Box, Button, Checkbox, Field, Icon, Input, Space, Stack, Tooltip } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { OwnerReference } from 'app/api/clients/folder/v1beta1';
 import { FolderDTO } from 'app/types/folders';
 
@@ -24,7 +25,7 @@ interface FormModel {
 const initialFormModel: FormModel = { folderName: '' };
 
 export function NewFolderForm({ onCancel, onConfirm, parentFolder }: Props) {
-  const showFolderOwnerSelector = config.featureToggles.teamFolders;
+  const showFolderOwnerSelector = useGrafanaBooleanFlag('teamFolders', false);
   const {
     handleSubmit,
     register,

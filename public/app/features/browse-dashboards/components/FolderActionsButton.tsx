@@ -4,6 +4,7 @@ import { AppEvents } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config, locationService, reportInteraction } from '@grafana/runtime';
 import { Button, Drawer, Dropdown, Icon, Menu, MenuItem, Text } from '@grafana/ui';
+import { useGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { appEvents } from 'app/core/app_events';
 import { Permissions } from 'app/core/components/AccessControl/Permissions';
 import { FolderOwnerModal } from 'app/core/components/OwnerReferences/FolderOwnerModal';
@@ -38,6 +39,7 @@ export function FolderActionsButton({ folder, repoType, isReadOnlyRepo }: Props)
   const [moveFolder] = useMoveFolderMutationFacade();
   const isProvisionedInstance = useIsProvisionedInstance();
   const deleteFolder = useDeleteFolderMutationFacade();
+  const teamFoldersEnabled = useGrafanaBooleanFlag('teamFolders', false);
 
   const isAdmin = contextSrv.hasRole('Admin') || contextSrv.isGrafanaAdmin;
 
@@ -144,7 +146,7 @@ export function FolderActionsButton({ folder, repoType, isReadOnlyRepo }: Props)
   const deleteLabel = t('browse-dashboards.folder-actions-button.delete', 'Delete this folder');
 
   // For now, only admins can manage folder owners
-  const showManageOwners = config.featureToggles.teamFolders && isAdmin && !isProvisionedFolder;
+  const showManageOwners = teamFoldersEnabled && isAdmin && !isProvisionedFolder;
 
   const menu = (
     <Menu>
