@@ -61,7 +61,11 @@ export function FeatureFlagTable() {
               <Text weight="medium">{row.name}</Text>
               {row.warning ? (
                 <Tooltip content={row.warning}>
-                  <Icon name="exclamation-triangle" className={styles.warnIcon} />
+                  <Icon
+                    name="exclamation-triangle"
+                    className={styles.warnIcon}
+                    aria-label={row.warning}
+                  />
                 </Tooltip>
               ) : null}
             </Stack>
@@ -102,7 +106,7 @@ export function FeatureFlagTable() {
         header: t('admin.feature-flag-dashboard.column-description', 'Description'),
         sortType: 'alphanumeric',
         cell: (cell: CellProps<FeatureFlagAdminDTO>) => (
-          <Text color="secondary">{cell.row.original.description}</Text>
+          <Text color="secondary">{cell.row.original.description ?? ''}</Text>
         ),
       },
       {
