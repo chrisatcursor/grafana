@@ -23,6 +23,7 @@ import { makeRowID } from '../utils/dashboards';
 
 import CheckboxCell from './CheckboxCell';
 import CheckboxHeaderCell from './CheckboxHeaderCell';
+import { LastViewedCell } from './LastViewedCell';
 import { NameCell } from './NameCell';
 import { TagsCell } from './TagsCell';
 import { useCustomFlexLayout } from './customFlexTableLayout';
@@ -97,6 +98,13 @@ export function DashboardsTree({
       Cell: (props: DashboardsTreeCellProps) => <NameCell {...props} onFolderClick={onFolderClick} />,
     };
 
+    const lastViewedColumn: DashboardsTreeColumn = {
+      id: 'lastViewed',
+      width: 2,
+      Header: t('browse-dashboards.dashboards-tree.last-viewed-column', 'Last viewed'),
+      Cell: (props: DashboardsTreeCellProps) => <LastViewedCell {...props} />,
+    };
+
     const tagsColumns: DashboardsTreeColumn = {
       id: 'tags',
       width: 2,
@@ -104,7 +112,7 @@ export function DashboardsTree({
       Cell: (props: DashboardsTreeCellProps) => <TagsCell {...props} onTagClick={onTagClick} />,
     };
     const canSelect = canSelectItems(permissions);
-    const columns = [canSelect && checkboxColumn, nameColumn, tagsColumns].filter(isTruthy);
+    const columns = [canSelect && checkboxColumn, nameColumn, lastViewedColumn, tagsColumns].filter(isTruthy);
 
     return columns;
   }, [onFolderClick, onTagClick, permissions]);

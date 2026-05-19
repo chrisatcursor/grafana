@@ -126,6 +126,11 @@ export function queryResultToViewItem(
     }
   }
 
+  const lastViewed = item.lastViewed;
+  if (typeof lastViewed === 'string' || typeof lastViewed === 'number') {
+    viewItem.lastViewed = lastViewed;
+  }
+
   return viewItem;
 }
 

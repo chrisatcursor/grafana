@@ -67,6 +67,11 @@ export interface DashboardQueryResult {
    */
   managedBy?: ManagedBy | ManagerKind;
 
+  /**
+   * When the current user last opened this dashboard; supplied by unified/legacy search when implemented server-side.
+   */
+  lastViewed?: string | number;
+
   // enterprise sends extra properties through for sorting (views, errors, etc)
   [key: string]: unknown;
 }

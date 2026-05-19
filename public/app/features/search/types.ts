@@ -83,6 +83,12 @@ export interface DashboardViewItem {
   sortMeta?: number | string; // value sorted by
   sortMetaName?: string; // name of the value being sorted e.g. 'Views'
   managedBy?: ManagerKind;
+
+  /**
+   * When the current user last opened this dashboard (from search / API).
+   * ISO 8601 string or epoch ms from backend; drives the Browse table "Last viewed" column.
+   */
+  lastViewed?: string | number;
 }
 
 export interface SearchAction extends Action {
