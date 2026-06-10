@@ -101,6 +101,7 @@ import (
 	spm "github.com/grafana/grafana/pkg/services/secrets/kvstore/migrations"
 	"github.com/grafana/grafana/pkg/services/serviceaccounts"
 	"github.com/grafana/grafana/pkg/services/shorturls"
+	"github.com/grafana/grafana/pkg/services/dashboardview"
 	"github.com/grafana/grafana/pkg/services/star"
 	starApi "github.com/grafana/grafana/pkg/services/star/api"
 	"github.com/grafana/grafana/pkg/services/stats"
@@ -195,6 +196,7 @@ type HTTPServer struct {
 	dashboardVersionService      dashver.Service
 	PublicDashboardsApi          *publicdashboardsApi.Api
 	starService                  star.Service
+	dashboardViewService         dashboardview.Service
 	playlistService              playlist.Service
 	apiKeyService                apikey.Service
 	kvStore                      kvstore.KVStore
@@ -263,7 +265,7 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 	avatarCacheServer *avatar.AvatarCacheServer, preferenceService pref.Service,
 	folderPermissionsService accesscontrol.FolderPermissionsService,
 	dashboardPermissionsService accesscontrol.DashboardPermissionsService, dashboardVersionService dashver.Service,
-	starService star.Service, csrfService csrf.Service, managedPlugins managedplugins.Manager,
+	starService star.Service, dashboardViewService dashboardview.Service, csrfService csrf.Service, managedPlugins managedplugins.Manager,
 	playlistService playlist.Service, apiKeyService apikey.Service, kvStore kvstore.KVStore,
 	secretsMigrator secrets.Migrator, secretsService secrets.Service,
 	secretMigrationProvider spm.SecretMigrationProvider, secretsStore secretsKV.SecretsKVStore,
@@ -350,6 +352,7 @@ func ProvideHTTPServer(opts ServerOptions, cfg *setting.Cfg, routeRegister routi
 		dashboardPermissionsService:  dashboardPermissionsService,
 		dashboardVersionService:      dashboardVersionService,
 		starService:                  starService,
+		dashboardViewService:         dashboardViewService,
 		playlistService:              playlistService,
 		apiKeyService:                apiKeyService,
 		kvStore:                      kvStore,

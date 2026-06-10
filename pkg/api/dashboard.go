@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -25,6 +26,7 @@ import (
 	contextmodel "github.com/grafana/grafana/pkg/services/contexthandler/model"
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/dashboards/dashboardaccess"
+	"github.com/grafana/grafana/pkg/services/dashboardview"
 	dashver "github.com/grafana/grafana/pkg/services/dashboardversion"
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/services/org"
@@ -244,6 +246,21 @@ func (hs *HTTPServer) GetDashboard(c *contextmodel.ReqContext) response.Response
 
 	// make sure db version is in sync with json model version
 	dash.Data.Set("version", dash.Version)
+
+	if hs.dashboardViewService != nil && c.IsSignedIn && c.IsIdentityType(claims.TypeUser) {
+		if userID, err := c.GetInternalID(); err == nil {
+			viewedAt := time.Now().UTC()
+			if err := hs.dashboardViewService.RecordView(ctx, &dashboardview.RecordDashboardViewCommand{
+				UserID:       userID,
+				OrgID:        c.OrgID,
+				DashboardID:  dash.ID,
+				DashboardUID: dash.UID,
+				Viewed:       viewedAt,
+			}); err == nil {
+				meta.LastViewed = &viewedAt
+			}
+		}
+	}
 
 	dto := dtos.DashboardFullWithMeta{
 		Dashboard: dash.Data,

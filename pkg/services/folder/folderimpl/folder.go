@@ -29,6 +29,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/apiserver/client"
 	"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request"
 	"github.com/grafana/grafana/pkg/services/dashboards"
+	"github.com/grafana/grafana/pkg/services/dashboardview/viewimpl"
 	"github.com/grafana/grafana/pkg/services/dashboards/dashboardaccess"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/folder"
@@ -94,6 +95,7 @@ func ProvideService(
 	sorter sort.Service,
 	restConfig apiserver.RestConfigProvider,
 ) *Service {
+	dashboardViewService := viewimpl.ProvideService(db)
 	srv := &Service{
 		log:                    slog.Default().With("logger", "folder-service"),
 		dashboardStore:         dashboardStore,
@@ -124,6 +126,7 @@ func ProvideService(
 		userService,
 		resourceClient,
 		sorter,
+		dashboardViewService,
 		features,
 	)
 
@@ -141,6 +144,7 @@ func ProvideService(
 		userService,
 		resourceClient,
 		sorter,
+		dashboardViewService,
 		features,
 	)
 	srv.dashboardK8sClient = dashHandler

@@ -166,6 +166,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/ssosettings"
 	ssoSettingsImpl "github.com/grafana/grafana/pkg/services/ssosettings/ssosettingsimpl"
 	starApi "github.com/grafana/grafana/pkg/services/star/api"
+	"github.com/grafana/grafana/pkg/services/dashboardview/viewimpl"
 	"github.com/grafana/grafana/pkg/services/star/starimpl"
 	"github.com/grafana/grafana/pkg/services/stats/statsimpl"
 	"github.com/grafana/grafana/pkg/services/store"
@@ -386,6 +387,7 @@ var wireBasicSet = wire.NewSet(
 	ossaccesscontrol.ProvideReceiverPermissionsService,
 	wire.Bind(new(accesscontrol.ReceiverPermissionsService), new(*ossaccesscontrol.ReceiverPermissionsService)),
 	starimpl.ProvideService,
+	viewimpl.ProvideService,
 	playlistimpl.ProvideService,
 	apikeyimpl.ProvideService,
 	dashverimpl.ProvideService,

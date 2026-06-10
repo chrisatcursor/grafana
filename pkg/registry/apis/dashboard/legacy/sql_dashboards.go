@@ -32,6 +32,7 @@ import (
 	"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request"
 	gapiutil "github.com/grafana/grafana/pkg/services/apiserver/utils"
 	"github.com/grafana/grafana/pkg/services/dashboards"
+	"github.com/grafana/grafana/pkg/services/dashboardview"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/libraryelements"
 	"github.com/grafana/grafana/pkg/services/librarypanels"
@@ -117,8 +118,9 @@ func NewDashboardSQLAccess(sql legacysql.LegacyDatabaseProvider,
 	dashboardPermissionSvc accesscontrol.DashboardPermissionsService,
 	accessControl accesscontrol.AccessControl,
 	features featuremgmt.FeatureToggles,
+	viewService dashboardview.Service,
 ) *dashboardSqlAccess {
-	dashboardSearchClient := legacysearcher.NewDashboardSearchClient(dashStore, sorter)
+	dashboardSearchClient := legacysearcher.NewDashboardSearchClient(dashStore, sorter, viewService)
 	return &dashboardSqlAccess{
 		sql:                    sql,
 		namespacer:             namespacer,

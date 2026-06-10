@@ -448,6 +448,7 @@ func setupServer(b testing.TB, sc benchScenario, features featuremgmt.FeatureTog
 			sc.userSvc,
 			nil,
 			sort.ProvideService(),
+			sc.db,
 			dualwrite.ProvideTestService(),
 			nil,
 			features,

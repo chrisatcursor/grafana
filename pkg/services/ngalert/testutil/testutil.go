@@ -77,6 +77,7 @@ func SetupDashboardService(tb testing.TB, sqlStore db.DB, cfg *setting.Cfg) (*da
 			nil,
 			nil,
 			sort.ProvideService(),
+			sqlStore,
 			dualwrite.ProvideTestService(),
 			nil,
 			features,
