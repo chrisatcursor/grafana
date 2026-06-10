@@ -17,7 +17,10 @@ import (
 	"github.com/grafana/grafana/pkg/services/apiserver"
 	"github.com/grafana/grafana/pkg/services/apiserver/client"
 	"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request"
+	"github.com/grafana/grafana/pkg/infra/db"
 	"github.com/grafana/grafana/pkg/services/dashboards"
+	"github.com/grafana/grafana/pkg/services/dashboardview"
+	"github.com/grafana/grafana/pkg/services/dashboardview/viewimpl"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/search/sort"
 	"github.com/grafana/grafana/pkg/services/user"
@@ -61,10 +64,11 @@ func ProvideK8sClientWithFallback(
 	featureToggles featuremgmt.FeatureToggles,
 	dualWriter dualwrite.Service,
 	sorter sort.Service,
+	sqlStore db.DB,
 	reg prometheus.Registerer,
 ) K8sHandlerWithFallback {
 	return NewK8sClientWithFallback(
-		cfg, restConfigProvider, dashboardStore, userService, resourceClient, sorter, dualWriter, reg, featureToggles,
+		cfg, restConfigProvider, dashboardStore, userService, resourceClient, sorter, sqlStore, dualWriter, reg, featureToggles,
 	)
 }
 
@@ -76,11 +80,13 @@ func NewK8sClientWithFallback(
 	userService user.Service,
 	resourceClient resource.ResourceClient,
 	sorter sort.Service,
+	sqlStore db.DB,
 	dual dualwrite.Service,
 	reg prometheus.Registerer,
 	features featuremgmt.FeatureToggles,
 ) *K8sClientWithFallback {
-	newClientFunc := newK8sClientFactory(cfg, restConfigProvider, dashboardStore, userService, resourceClient, sorter, dual, features)
+	dashboardViewService := viewimpl.ProvideService(sqlStore)
+	newClientFunc := newK8sClientFactory(cfg, restConfigProvider, dashboardStore, userService, resourceClient, sorter, dashboardViewService, dual, features)
 	return &K8sClientWithFallback{
 		K8sHandler:    newClientFunc(context.Background(), dashboardv0.VERSION),
 		newClientFunc: newClientFunc,
@@ -306,6 +312,7 @@ func newK8sClientFactory(
 	userService user.Service,
 	resourceClient resource.ResourceClient,
 	sorter sort.Service,
+	dashboardViewService dashboardview.Service,
 	dual dualwrite.Service,
 	features featuremgmt.FeatureToggles,
 ) K8sClientFactory {
@@ -345,7 +352,7 @@ func newK8sClientFactory(
 		}
 
 		span.AddEvent("Creating new client")
-		newClient := client.NewK8sHandler(dual, request.GetNamespaceMapper(cfg), gvr, restConfigProvider.GetRestConfig, dashboardStore, userService, resourceClient, sorter, features)
+		newClient := client.NewK8sHandler(dual, request.GetNamespaceMapper(cfg), gvr, restConfigProvider.GetRestConfig, dashboardStore, userService, resourceClient, sorter, dashboardViewService, features)
 		clientCache[version] = newClient
 
 		return newClient

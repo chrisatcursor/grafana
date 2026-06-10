@@ -533,6 +533,7 @@ func setupEnv(t *testing.T, sqlStore db.DB, cfg *setting.Cfg, b bus.Bus, quotaSe
 			nil,
 			nil,
 			sort.ProvideService(),
+			sqlStore,
 			dualwrite.ProvideTestService(),
 			nil,
 			featuremgmt.WithFeatures(),

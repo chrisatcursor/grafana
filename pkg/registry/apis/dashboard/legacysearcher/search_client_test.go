@@ -25,7 +25,7 @@ import (
 func TestDashboardSearchClient_Search(t *testing.T) {
 	mockStore := dashboards.NewFakeDashboardStore(t)
 	sortSvc := sort.ProvideService()
-	client := NewDashboardSearchClient(mockStore, sortSvc)
+	client := NewDashboardSearchClient(mockStore, sortSvc, nil)
 	ctx := context.Background()
 	user := &user.SignedInUser{OrgID: 2}
 	ctx = identity.WithRequester(ctx, user)

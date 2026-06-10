@@ -36,6 +36,7 @@ func (oss *OSSMigrations) AddMigration(mg *Migrator) {
 	addOrgMigrations(mg)
 	addDashboardMigration(mg) // Do NOT add more migrations to this function.
 	addDashboardUIDStarMigrations(mg)
+	addUserDashboardViewsMigrations(mg)
 	addDataSourceMigration(mg)
 	addApiKeyMigrations(mg)
 	addDashboardSnapshotMigrations(mg)

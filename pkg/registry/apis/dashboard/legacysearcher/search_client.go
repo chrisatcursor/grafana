@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"google.golang.org/grpc"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -19,6 +20,7 @@ import (
 	"github.com/grafana/grafana/pkg/apimachinery/utils"
 	"github.com/grafana/grafana/pkg/services/dashboards"
 	"github.com/grafana/grafana/pkg/services/dashboards/dashboardaccess"
+	"github.com/grafana/grafana/pkg/services/dashboardview"
 	"github.com/grafana/grafana/pkg/services/search/sort"
 	"github.com/grafana/grafana/pkg/services/sqlstore/searchstore"
 	"github.com/grafana/grafana/pkg/storage/unified/resource"
@@ -30,10 +32,11 @@ type DashboardSearchClient struct {
 	resourcepb.ResourceIndexClient
 	dashboardStore dashboards.Store
 	sorter         sort.Service
+	viewService    dashboardview.Service
 }
 
-func NewDashboardSearchClient(dashboardStore dashboards.Store, sorter sort.Service) *DashboardSearchClient {
-	return &DashboardSearchClient{dashboardStore: dashboardStore, sorter: sorter}
+func NewDashboardSearchClient(dashboardStore dashboards.Store, sorter sort.Service, viewService dashboardview.Service) *DashboardSearchClient {
+	return &DashboardSearchClient{dashboardStore: dashboardStore, sorter: sorter, viewService: viewService}
 }
 
 var sortByMapping = map[string]string{
@@ -348,8 +351,14 @@ func (c *DashboardSearchClient) Search(ctx context.Context, req *resourcepb.Reso
 		return nil, err
 	}
 
+	lastViewedByUID := c.getLastViewedForUser(ctx, user, res)
+
 	for _, dashboard := range res {
-		cells, err := c.createBaseCells(dashboard, sortByField)
+		var lastViewed *time.Time
+		if viewed, ok := lastViewedByUID[dashboard.UID]; ok {
+			lastViewed = &viewed
+		}
+		cells, err := c.createBaseCells(dashboard, sortByField, lastViewed)
 		if err != nil {
 			return nil, err
 		}
@@ -496,6 +505,13 @@ func (c *DashboardSearchClient) getColumns(sortByField string, query *dashboards
 		})
 	}
 
+	if c.viewService != nil {
+		columns = append(columns, &resourcepb.ResourceTableColumnDefinition{
+			Name: resource.SEARCH_FIELD_LAST_VIEWED,
+			Type: resourcepb.ResourceTableColumnDefinition_STRING,
+		})
+	}
+
 	return columns
 }
 
@@ -508,7 +524,7 @@ func (c *DashboardSearchClient) createCommonCells(title, folderUID string, id in
 	}
 }
 
-func (c *DashboardSearchClient) createBaseCells(dashboard dashboards.DashboardSearchProjection, sortByField string) ([][]byte, error) {
+func (c *DashboardSearchClient) createBaseCells(dashboard dashboards.DashboardSearchProjection, sortByField string, lastViewed *time.Time) ([][]byte, error) {
 	tags, err := json.Marshal(dashboard.Tags)
 	if err != nil {
 		return nil, err
@@ -520,7 +536,46 @@ func (c *DashboardSearchClient) createBaseCells(dashboard dashboards.DashboardSe
 		cells = append(cells, []byte(strconv.FormatInt(dashboard.SortMeta, 10)))
 	}
 
+	if c.viewService != nil {
+		cell := []byte("")
+		if lastViewed != nil && !dashboard.IsFolder {
+			cell = []byte(lastViewed.UTC().Format(time.RFC3339))
+		}
+		cells = append(cells, cell)
+	}
+
 	return cells, nil
+}
+
+func (c *DashboardSearchClient) getLastViewedForUser(ctx context.Context, user identity.Requester, dashboards []dashboards.DashboardSearchProjection) map[string]time.Time {
+	if c.viewService == nil || !user.IsIdentityType(claims.TypeUser) {
+		return nil
+	}
+
+	userID, err := user.GetInternalID()
+	if err != nil || userID == 0 {
+		return nil
+	}
+
+	uids := make([]string, 0, len(dashboards))
+	for _, dashboard := range dashboards {
+		if !dashboard.IsFolder {
+			uids = append(uids, dashboard.UID)
+		}
+	}
+	if len(uids) == 0 {
+		return nil
+	}
+
+	views, err := c.viewService.GetLastViewedForDashboards(ctx, &dashboardview.GetLastViewedQuery{
+		UserID:        userID,
+		OrgID:         user.GetOrgID(),
+		DashboardUIDs: uids,
+	})
+	if err != nil {
+		return nil
+	}
+	return views
 }
 
 func (c *DashboardSearchClient) createProvisioningCells(dashboard *dashboards.Dashboard, query *dashboards.FindPersistedDashboardsQuery) [][]byte {
