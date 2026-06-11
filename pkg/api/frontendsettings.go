@@ -195,7 +195,13 @@ func (hs *HTTPServer) getFrontendSettings(c *contextmodel.ReqContext) (*dtos.Fro
 	hasAccess := accesscontrol.HasAccess(hs.AccessControl, c)
 	trustedTypesDefaultPolicyEnabled := (hs.Cfg.CSPEnabled && strings.Contains(hs.Cfg.CSPTemplate, "require-trusted-types-for")) || (hs.Cfg.CSPReportOnlyEnabled && strings.Contains(hs.Cfg.CSPReportOnlyTemplate, "require-trusted-types-for"))
 	isCloudMigrationTarget := hs.Cfg.CloudMigration.Enabled && hs.Cfg.CloudMigration.IsTarget
-	featureToggles := hs.Features.GetEnabled(c.Req.Context())
+	isDevMode := hs.Cfg.Env == setting.Dev
+	var featureToggles map[string]bool
+	if fm, ok := hs.Features.(*featuremgmt.FeatureManager); ok {
+		featureToggles = featuremgmt.GetEnabledViaOpenFeature(c.Req.Context(), fm.GetFlags(), isDevMode)
+	} else {
+		featureToggles = hs.Features.GetEnabled(c.Req.Context())
+	}
 	// this is needed for backwards compatibility with external plugins
 	// we should remove this once we can be sure that no external plugins rely on this
 	featureToggles["topnav"] = true
