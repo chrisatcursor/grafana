@@ -4,13 +4,15 @@
  * `getFeatureFlagClient()` from `@grafana/runtime/internal`.
  *
  * Existing patterns this builds on:
- * - Boot snapshot: `config.featureToggles` (legacy, broad usage).
+ * - Boot snapshot: `config.featureToggles` (legacy; used as OpenFeature default during migration).
  * - `@grafana/ui` `getFeatureToggle()` reads boot without React hooks.
  * - `@openfeature/react-sdk` hooks — wrapped here for consistent imports during migration.
- * - `useGrafanaStringFlag` / `useGrafanaNumberFlag` / `useGrafanaFlag` for non-boolean flags and full query details.
+ * - `getGrafanaBooleanFlag()` for RTK/services; defaults align with boot via `resolveGrafanaBooleanFlagDefault`.
  */
 
 export type { GrafanaFeatureFlagKey } from './types';
+export { resolveGrafanaBooleanFlagDefault } from './resolveGrafanaBooleanFlagDefault';
+export { getGrafanaBooleanFlag } from './getGrafanaBooleanFlag';
 export { useGrafanaBooleanFlag } from './hooks/useGrafanaBooleanFlag';
 export { useGrafanaStringFlag } from './hooks/useGrafanaStringFlag';
 export { useGrafanaNumberFlag } from './hooks/useGrafanaNumberFlag';

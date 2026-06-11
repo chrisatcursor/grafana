@@ -1,5 +1,6 @@
 import { t } from '@grafana/i18n';
 import { config, getBackendSrv } from '@grafana/runtime';
+import { getGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { contextSrv } from 'app/core/services/context_srv';
 import { GENERAL_FOLDER_UID } from 'app/features/search/constants';
 import { getGrafanaSearcher } from 'app/features/search/service/searcher';
@@ -68,7 +69,7 @@ export async function listFolders(
 ): Promise<DashboardViewItem[]> {
   let folders: NestedFolderDTO[] = [];
   if (contextSrv.hasPermission(AccessControlAction.FoldersRead)) {
-    if (config.featureToggles.foldersAppPlatformAPI) {
+    if (getGrafanaBooleanFlag('foldersAppPlatformAPI')) {
       folders = await searchNewAPI(parentUID, page, pageSize);
     } else {
       folders = await searchOldAPI(parentUID, page, pageSize);

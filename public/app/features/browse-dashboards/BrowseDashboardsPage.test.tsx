@@ -8,7 +8,7 @@ import { render as testRender, screen, waitFor, testWithFeatureToggles } from 't
 import { selectors } from '@grafana/e2e-selectors';
 import { config, setBackendSrv } from '@grafana/runtime';
 import server, { setupMockServer } from '@grafana/test-utils/server';
-import { getFolderFixtures, setTestFlags } from '@grafana/test-utils/unstable';
+import { getFolderFixtures } from '@grafana/test-utils/unstable';
 import { backendSrv } from 'app/core/services/backend_srv';
 import { contextSrv } from 'app/core/services/context_srv';
 
@@ -117,13 +117,14 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     });
 
     it('shows the "Recently deleted" button when restore is enabled', async () => {
-      setTestFlags({ restoreDashboards: true });
+      const previousFlag = config.featureToggles.restoreDashboards;
+      config.featureToggles.restoreDashboards = true;
 
       render(<BrowseDashboardsPage queryParams={{}} />);
       await screen.findByPlaceholderText('Search for dashboards and folders');
       expect(await screen.findByRole('link', { name: 'Recently deleted' })).toBeInTheDocument();
 
-      setTestFlags({ restoreDashboards: false });
+      config.featureToggles.restoreDashboards = previousFlag;
     });
 
     it('does not show the "New" button if the user does not have permissions', async () => {
@@ -206,12 +207,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     describe('folder owner', () => {
       testWithFeatureToggles({ enable: ['foldersAppPlatformAPI', 'teamFolders'] });
       beforeEach(() => {
-        setTestFlags({ teamFolders: true, foldersAppPlatformAPI: true });
         jest.spyOn(contextSrv, 'hasRole').mockReturnValue(true);
-      });
-
-      afterEach(() => {
-        setTestFlags({ teamFolders: false, foldersAppPlatformAPI: false });
       });
 
       it('allows choosing a team to own the folder', async () => {
@@ -406,7 +402,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
 
   describe('Template dashboard modal', () => {
     beforeEach(() => {
-      setTestFlags({ dashboardTemplates: true });
+      config.featureToggles.dashboardTemplates = true;
       server.use(
         http.get('/api/gnet/dashboards', () => {
           return HttpResponse.json({
@@ -426,10 +422,6 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
       );
     });
 
-    afterEach(() => {
-      setTestFlags({ dashboardTemplates: false });
-    });
-
     it('should show TemplateDashboard modal when the feature flag is enabled', async () => {
       render(<BrowseDashboardsPage queryParams={{}} />, {
         historyOptions: { initialEntries: [`/dashboards?templateDashboards=true`] },
@@ -438,7 +430,7 @@ describe('browse-dashboards BrowseDashboardsPage', () => {
     });
 
     it('should not show TemplateDashboard modal when the feature flag is disabled', async () => {
-      setTestFlags({ dashboardTemplates: false });
+      config.featureToggles.dashboardTemplates = false;
       render(<BrowseDashboardsPage queryParams={{}} />, {
         historyOptions: { initialEntries: [`/dashboards?templateDashboards=true`] },
       });
