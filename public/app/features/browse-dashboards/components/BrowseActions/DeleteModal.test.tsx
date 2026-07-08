@@ -1,12 +1,6 @@
-import { render as rtlRender, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { TestProvider } from 'test/helpers/TestProvider';
+import { render, screen } from 'test/test-utils';
 
 import { DeleteModal, Props } from './DeleteModal';
-
-function render(...[ui, options]: Parameters<typeof rtlRender>) {
-  rtlRender(<TestProvider>{ui}</TestProvider>, options);
-}
 
 describe('browse-dashboards DeleteModal', () => {
   const mockOnDismiss = jest.fn();
@@ -43,35 +37,35 @@ describe('browse-dashboards DeleteModal', () => {
   });
 
   it('only enables the `Delete` button if the confirmation text is typed', async () => {
-    render(<DeleteModal {...defaultProps} />);
+    const { user } = render(<DeleteModal {...defaultProps} />);
 
     const confirmationInput = await screen.findByPlaceholderText('Type "Delete" to confirm');
-    await userEvent.type(confirmationInput, 'Delete');
+    await user.type(confirmationInput, 'Delete');
 
     expect(await screen.findByRole('button', { name: 'Delete' })).toBeEnabled();
   });
 
   it('calls onConfirm when clicking the `Delete` button', async () => {
-    render(<DeleteModal {...defaultProps} />);
+    const { user } = render(<DeleteModal {...defaultProps} />);
 
     const confirmationInput = await screen.findByPlaceholderText('Type "Delete" to confirm');
-    await userEvent.type(confirmationInput, 'Delete');
+    await user.type(confirmationInput, 'Delete');
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }));
+    await user.click(await screen.findByRole('button', { name: 'Delete' }));
     expect(mockOnConfirm).toHaveBeenCalled();
   });
 
   it('calls onDismiss when clicking the `Cancel` button', async () => {
-    render(<DeleteModal {...defaultProps} />);
+    const { user } = render(<DeleteModal {...defaultProps} />);
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }));
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }));
     expect(mockOnDismiss).toHaveBeenCalled();
   });
 
   it('calls onDismiss when clicking the X', async () => {
-    render(<DeleteModal {...defaultProps} />);
+    const { user } = render(<DeleteModal {...defaultProps} />);
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Close' }));
+    await user.click(await screen.findByRole('button', { name: 'Close' }));
     expect(mockOnDismiss).toHaveBeenCalled();
   });
 });
