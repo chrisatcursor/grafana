@@ -14,6 +14,7 @@ import { buildNotificationButton } from 'app/core/components/AppNotifications/No
 import { createSuccessNotification } from 'app/core/copy/appNotification';
 import { notifyApp } from 'app/core/reducers/appNotification';
 import { setStarred } from 'app/core/reducers/navBarTree';
+import { getGrafanaBooleanFlag } from 'app/core/featureFlags';
 import { contextSrv } from 'app/core/services/context_srv';
 import { AnnoKeyFolder, Resource, ResourceList } from 'app/features/apiserver/types';
 import { getDashboardAPI } from 'app/features/dashboard/api/dashboard_api';
@@ -247,7 +248,7 @@ export const browseDashboardsAPI = createApi({
           const dashboard = isDashboardV2Resource(fullDash) ? fullDash.spec : fullDash.dashboard;
           const k8s = isDashboardV2Resource(fullDash) ? fullDash.metadata : undefined;
 
-          if (config.featureToggles.provisioning) {
+          if (getGrafanaBooleanFlag('provisioning')) {
             if (isProvisionedDashboard(fullDash)) {
               appEvents.publish({
                 type: AppEvents.alertWarning.name,
@@ -356,7 +357,7 @@ export const browseDashboardsAPI = createApi({
       invalidatesTags: ['getFolder'],
       queryFn: async ({ dashboardUIDs }) => {
         const pageStateManager = getDashboardScenePageStateManager();
-        const restoreDashboardsEnabled = config.featureToggles.restoreDashboards;
+        const restoreDashboardsEnabled = getGrafanaBooleanFlag('restoreDashboards');
         let deletedCount = 0;
         const deletedDashboardUIDs: string[] = [];
         // Delete all the dashboards sequentially
@@ -365,7 +366,7 @@ export const browseDashboardsAPI = createApi({
           for (const dashboardUID of dashboardUIDs) {
             // It's not possible to select a mix of provisioned and non-provisioned dashboards
             // from the UI, so this is mostly a guard in case that somehow happens
-            if (config.featureToggles.provisioning) {
+            if (getGrafanaBooleanFlag('provisioning')) {
               const dto = await getDashboardAPI().getDashboardDTO(dashboardUID);
               if (isProvisionedDashboard(dto)) {
                 appEvents.publish({
@@ -404,7 +405,7 @@ export const browseDashboardsAPI = createApi({
                 href: config.appSubUrl + '/dashboard/recently-deleted',
               });
               dispatch(notifyApp(createSuccessNotification('', '', undefined, component)));
-            } else if (config.featureToggles.kubernetesDashboards) {
+            } else if (getGrafanaBooleanFlag('kubernetesDashboards')) {
               // Legacy notification for kubernetes dashboards
               appEvents.publish({
                 type: AppEvents.alertSuccess.name,

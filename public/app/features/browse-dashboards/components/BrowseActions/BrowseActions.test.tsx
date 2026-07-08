@@ -1,11 +1,6 @@
-import { render as rtlRender, screen } from '@testing-library/react';
-import { TestProvider } from 'test/helpers/TestProvider';
+import { render, screen } from 'test/test-utils';
 
 import { BrowseActions } from './BrowseActions';
-
-function render(...[ui, options]: Parameters<typeof rtlRender>) {
-  rtlRender(<TestProvider>{ui}</TestProvider>, options);
-}
 
 describe('browse-dashboards BrowseActions', () => {
   it('displays Move and Delete buttons', () => {
