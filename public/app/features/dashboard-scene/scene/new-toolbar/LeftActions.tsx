@@ -1,6 +1,7 @@
 import { ToolbarButtonRow } from '@grafana/ui';
 
 import { dynamicDashNavActions } from '../../utils/registerDynamicDashNavAction';
+import { QuickNotesButton } from '../../quick-notes/QuickNotesButton';
 import { DashboardScene } from '../DashboardScene';
 import { ManagedDashboardNavBarBadge } from '../ManagedDashboardNavBarBadge';
 
@@ -32,6 +33,12 @@ export const LeftActions = ({ dashboard }: { dashboard: DashboardScene }) => {
         component: StarButton,
         group: 'actions',
         condition: hasUid && canStar && isShowingDashboard && !isEditingDashboard,
+      },
+      {
+        key: 'quick-notes-button',
+        component: QuickNotesButton,
+        group: 'actions',
+        condition: hasUid && isShowingDashboard && !isEditingDashboard && !isSnapshot && !isEmbedded,
       },
       {
         key: 'public-dashboard-badge',
