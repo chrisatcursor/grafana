@@ -1,11 +1,11 @@
-import { css } from '@emotion/css';
 import { useEffect, useState } from 'react';
 
-import { GrafanaTheme2, dateTimeFormat } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
-import { Alert, Button, Field, Spinner, Stack, Text, TextArea, useStyles2 } from '@grafana/ui';
+import { Alert, Spinner, Stack, Text } from '@grafana/ui';
 
-import { QUICK_NOTES_MAX_BODY_LENGTH } from './constants';
+import { QuickNotesEditor } from './QuickNotesEditor';
+import { QuickNotesEmptyState } from './QuickNotesEmptyState';
+import { QuickNotesMeta } from './QuickNotesMeta';
 import { QuickNote } from './types';
 
 export interface QuickNotesContentProps {
@@ -30,7 +30,6 @@ export function QuickNotesContent({
   onSave,
   onDelete,
 }: QuickNotesContentProps) {
-  const styles = useStyles2(getStyles);
   const [body, setBody] = useState(note?.body ?? '');
   const [isDirty, setIsDirty] = useState(false);
 
@@ -64,13 +63,6 @@ export function QuickNotesContent({
     );
   }
 
-  const metaText =
-    note?.updatedAt != null
-      ? t('dashboard.quick-notes.meta.updated', 'Last updated {{time}}', {
-          time: dateTimeFormat(note.updatedAt),
-        })
-      : undefined;
-
   return (
     <Stack direction="column" gap={2} data-testid="quick-notes-drawer">
       {!canEdit && (
@@ -91,73 +83,21 @@ export function QuickNotesContent({
         </Alert>
       )}
 
-      <Field
-        label={t('dashboard.quick-notes.field.label', 'Note for {{dashboardTitle}}', { dashboardTitle })}
-        description={
-          canEdit
-            ? t('dashboard.quick-notes.field.description', 'Add context, runbooks, or reminders for this dashboard.')
-            : undefined
-        }
-      >
-        <TextArea
-          data-testid="quick-notes-textarea"
-          value={body}
-          onChange={(event) => handleBodyChange(event.currentTarget.value)}
-          rows={12}
-          disabled={!canEdit || isSaving}
-          maxLength={QUICK_NOTES_MAX_BODY_LENGTH}
-          placeholder={
-            canEdit
-              ? t('dashboard.quick-notes.placeholder', 'Write a quick note...')
-              : t('dashboard.quick-notes.empty-readonly', 'No notes for this dashboard.')
-          }
-        />
-      </Field>
+      {!note && <QuickNotesEmptyState canEdit={canEdit} />}
 
-      {metaText && (
-        <Text variant="bodySmall" color="secondary" className={styles.meta}>
-          {metaText}
-        </Text>
-      )}
+      <QuickNotesEditor
+        dashboardTitle={dashboardTitle}
+        body={body}
+        canEdit={canEdit}
+        isSaving={isSaving}
+        isDirty={isDirty}
+        hasExistingNote={Boolean(note)}
+        onBodyChange={handleBodyChange}
+        onSave={handleSave}
+        onDelete={onDelete}
+      />
 
-      {canEdit && (
-        <Stack direction="row" gap={1} justifyContent="flex-end" className={styles.actions}>
-          {note && (
-            <Button
-              variant="destructive"
-              fill="outline"
-              disabled={isSaving}
-              data-testid="quick-notes-delete"
-              onClick={() => onDelete()}
-            >
-              <Trans i18nKey="dashboard.quick-notes.delete">Delete</Trans>
-            </Button>
-          )}
-          <Button
-            variant="primary"
-            disabled={isSaving || !body.trim() || (!isDirty && Boolean(note))}
-            data-testid="quick-notes-save"
-            onClick={handleSave}
-          >
-            {isSaving ? (
-              <Trans i18nKey="dashboard.quick-notes.saving">Saving...</Trans>
-            ) : (
-              <Trans i18nKey="dashboard.quick-notes.save">Save</Trans>
-            )}
-          </Button>
-        </Stack>
-      )}
+      {note && <QuickNotesMeta note={note} />}
     </Stack>
   );
 }
-
-const getStyles = (theme: GrafanaTheme2) => ({
-  meta: css({
-    marginTop: theme.spacing(-1),
-  }),
-  actions: css({
-    borderTop: `1px solid ${theme.colors.border.weak}`,
-    paddingTop: theme.spacing(2),
-    marginTop: theme.spacing(1),
-  }),
-});

@@ -32,11 +32,12 @@ LeftActions
 DashboardSceneRenderer
 └── overlay (QuickNotesDrawer SceneObject)
     └── QuickNotesDrawer.Component
-        └── @grafana/ui Drawer
+        └── @grafana/ui Drawer (size="sm")
             └── QuickNotesContent
-                ├── QuickNotesEmptyState (no note yet)
-                ├── QuickNotesEditor (TextArea + actions)
-                └── QuickNotesMeta (updated by / timestamp)
+                ├── Alert (read-only / error)
+                ├── QuickNotesEmptyState (when no note)
+                ├── QuickNotesEditor (TextArea + Save/Delete + ConfirmModal)
+                └── QuickNotesMeta (last updated timestamp)
 ```
 
 ## Design tokens & UI primitives
@@ -89,9 +90,23 @@ DELETE /api/dashboards/uid/:uid/quick-notes/:noteUid
 | Save button | `quick-notes-save` |
 | Delete button | `quick-notes-delete` |
 
-## Out of scope (design phase)
+## Scaffold status (design phase)
 
+| Artifact | Status |
+|----------|--------|
+| `DESIGN.md` | Done |
+| `QuickNotesButton` → `LeftActions` | Done |
+| `QuickNotesDrawer` SceneObject + `openQuickNotesDrawer()` | Done |
+| `QuickNotesContent` / `Editor` / `EmptyState` / `Meta` | Done |
+| Delete `ConfirmModal` | Done |
+| `api.ts` / `types.ts` / `useQuickNotes` stubs | Done |
+| Component unit tests | Done |
+
+## Out of scope (implementation phase)
+
+- Backend CRUD API + migration
 - Markdown rendering
 - Multiple notes / threaded comments
 - Legacy `DashNav` integration
-- Feature toggle wiring (placeholder constant in `constants.ts`)
+- Feature toggle generation (`QUICK_NOTES_ENABLED` is a local constant)
+- E2E selectors in `@grafana/e2e-selectors`

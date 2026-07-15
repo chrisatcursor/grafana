@@ -1,6 +1,9 @@
 export { QuickNotesButton } from './QuickNotesButton';
 export { QuickNotesContent } from './QuickNotesContent';
 export { QuickNotesDrawer } from './QuickNotesDrawer';
+export { QuickNotesEditor } from './QuickNotesEditor';
+export { QuickNotesEmptyState } from './QuickNotesEmptyState';
+export { QuickNotesMeta } from './QuickNotesMeta';
 export * from './api';
 export * from './constants';
 export * from './types';
