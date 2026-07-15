@@ -52,6 +52,7 @@ import { dashboardEditActions } from '../edit-pane/shared';
 import { DashboardMutationClient } from '../mutation-api/DashboardMutationClient';
 import { PanelEditor } from '../panel-edit/PanelEditor';
 import { DashboardSceneChangeTracker } from '../saving/DashboardSceneChangeTracker';
+import { QuickNotesDrawer } from '../quick-notes/QuickNotesDrawer';
 import { SaveDashboardDrawer } from '../saving/SaveDashboardDrawer';
 import { DashboardChangeInfo } from '../saving/shared';
 import {
@@ -519,6 +520,18 @@ export class DashboardScene extends SceneObjectBase<DashboardSceneState> impleme
         saveAsCopy,
         onSaveSuccess,
         showVariablesWarning: this.hasVariableErrors(),
+      }),
+    });
+  }
+
+  public openQuickNotesDrawer() {
+    if (!this.state.uid) {
+      return;
+    }
+
+    this.setState({
+      overlay: new QuickNotesDrawer({
+        dashboardRef: this.getRef(),
       }),
     });
   }
